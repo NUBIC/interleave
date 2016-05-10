@@ -1,0 +1,9 @@
+CREATE DATABASE interleave_development;
+CREATE USER interleave_development WITH CREATEDB PASSWORD 'interleave_development';
+ALTER DATABASE interleave_development OWNER TO interleave_development;
+ALTER USER interleave_development SUPERUSER;
+
+CREATE DATABASE interleave_test;
+CREATE USER interleave_test WITH CREATEDB PASSWORD 'interleave_test';
+ALTER DATABASE interleave_test OWNER TO interleave_test;
+ALTER USER interleave_test SUPERUSER;
