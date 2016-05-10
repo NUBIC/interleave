@@ -13,6 +13,7 @@ capybara-*.html
 rerun.txt
 /GEM_HOME/*
 .gem/*
+/db/omop_common_data_model/PostgreSQL/VocabImport/CDMV5VOCAB/
 
 
 # TODO Comment out these rules if you are OK with secrets being uploaded to the repo
