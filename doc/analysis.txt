@@ -6,17 +6,17 @@ Support multi-Tenancy
 
 	interleave_registry_affiliates
 		id							INTEGER				NOT NULL,
-		interleave_registry_id			INTEGER				NOT NULL,
+		interleave_registry_id		INTEGER				NOT NULL,
 		name						VARCHAR(255)		NOT NULL
 
 	interleave_registry_affiliate_users
-		id								INTEGER				NOT NULL,
+		id									INTEGER				NOT NULL,
 		interleave_registry_affiliate_id	INTEGER				NOT NULL,	
-		username						VARCHAR(255)		NOT NULL
+		username							VARCHAR(255)		NOT NULL
 
 	interleave_registry_cdm_sources
 		id							INTEGER				NOT NULL,
-		interleave_registry_id			INTEGER				NOT NULL,
+		interleave_registry_id		INTEGER				NOT NULL,
 		cdm_source_name				VARCHAR(255)		NOT NULL		--A registry can have multiple sources. Examples: 'RedCap', 'NM EDW', 'Catalona Database', 'PSPORE legacy'
 																		--Every registry will include an 'Ex nihlo' entry to support manual entry. 	
 
@@ -27,10 +27,9 @@ Support incremental loads and 'Ex niholo' entry.
 
 	interleave_registry_entities
 		id							INTEGER				NOT NULL,
-		interleave_registry_id			INTEGER				NOT NULL,
-	?	domain_id					VARCHAR(255)		NOT NULL,		--polymorphic pointer to representation of entity within OMOP cdm
-	?	domain_entity_id			INTEGER				NOT NULL
-
+		interleave_registry_id		INTEGER				NOT NULL,
+	?	domain_concept_id			INTEGER				NOT NULL,		--polymorphic pointer to representation of entity within OMOP cdm
+	?	fact_id						INTEGER				NOT NULL
 		cdm_source_name				VARCHAR(255)		NOT NULL,		--polymorphic pointer to source of data
 		cdm_source_domain_id		VARCHAR(255)		NULL,			--name of entity within source, not releveant for 'Ex nihlo'
 		cdm_source_value			VARCHAR(255)		NULL			--stable identifier, not releveant for 'Ex nihlo'
@@ -38,15 +37,14 @@ Support incremental loads and 'Ex niholo' entry.
 
 Support PHI within OMOP
 
-
-	winnnow_registry_person
+	interleave_person
 		interleave_registry_affiliate_id	INTEGER				NOT NULL,	
-		person_id						INTEGER				NOT NULL,	
-		first_name						VARCHAR(255)		NOT NULL,
-		last_name						VARCHAR(255)		NOT NULL,	
-		middle_name						VARCHAR(255)		NOT NULL,		
+		person_id							INTEGER				NOT NULL,	
+		first_name							VARCHAR(255)		NOT NULL,
+		last_name							VARCHAR(255)		NOT NULL,	
+		middle_name							VARCHAR(255)		NOT NULL,		
 
-	winnnow_registry_identifiers
+	interleave_person_identifiers
 		person_id						INTEGER				NOT NULL,	
 		identifier						VARCHAR(255)		NOT NULL,
 		identifier_concept_id			INTEGER				NOT NULL,
@@ -57,24 +55,23 @@ Support regsitry expectation configuration
 
 	interleave_data_points
 		id							INTEGER				NOT NULL,
-		interleave_registry_id			INTEGER				NOT NULL,
+		interleave_registry_id		INTEGER				NOT NULL,
 		name						VARCHAR(255)		NOT NULL,
 		domain_id					VARCHAR(255)		NOT NULL,
-x		parent_id					INTEGER				NOT NULL,
-x		cardinality					INTEGER				NOT NULL,
+		cardinality					INTEGER				NOT NULL,
 		unrestricted				BOOLEAN			  	NOT NULL
 
 	interleave_data_point_concepts
 		id								INTEGER				NOT NULL,
-		interleave_data_point_id			INTEGER				NOT NULL,
+		interleave_data_point_id		INTEGER				NOT NULL,
 		domain_concept_id				INTEGER				NOT NULL		
 
 
 	interleave_data_point_relationships
-		id							INTEGER			NOT NULL,
+		id								INTEGER			NOT NULL,
 		interleave_data_point_id		INTEGER			NOT NULL,
-		domain_concept_id			INTEGER			NOT NULL,
-		relationship_concept_id		INTEGER			NOT NULL
+		domain_concept_id				INTEGER			NOT NULL,
+		relationship_concept_id			INTEGER			NOT NULL
 		
 		
 		
