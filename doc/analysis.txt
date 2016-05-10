@@ -20,12 +20,10 @@ Support multi-Tenancy
 		cdm_source_name				VARCHAR(255)		NOT NULL		--A registry can have multiple sources. Examples: 'RedCap', 'NM EDW', 'Catalona Database', 'PSPORE legacy'
 																		--Every registry will include an 'Ex nihlo' entry to support manual entry. 	
 
-		* Should this be at the affiliate level?
-
 Support incremental loads and 'Ex niholo' entry.
 
 
-	interleave_registry_entities
+	interleave_entities
 		id							INTEGER				NOT NULL,
 		interleave_registry_id		INTEGER				NOT NULL,
 	?	domain_concept_id			INTEGER				NOT NULL,		--polymorphic pointer to representation of entity within OMOP cdm
@@ -53,7 +51,7 @@ Support PHI within OMOP
 
 Support regsitry expectation configuration
 
-	interleave_data_points
+	interleave_datapoints
 		id							INTEGER				NOT NULL,
 		interleave_registry_id		INTEGER				NOT NULL,
 		name						VARCHAR(255)		NOT NULL,
@@ -61,19 +59,18 @@ Support regsitry expectation configuration
 		cardinality					INTEGER				NOT NULL,
 		unrestricted				BOOLEAN			  	NOT NULL
 
-	interleave_data_point_concepts
+	interleave_datapoint_domain_concepts
 		id								INTEGER				NOT NULL,
-		interleave_data_point_id		INTEGER				NOT NULL,
+		interleave_datapoint_id			INTEGER				NOT NULL,
 		domain_concept_id				INTEGER				NOT NULL		
 
 
-	interleave_data_point_relationships
+	interleave_datapoint_relationships
 		id								INTEGER			NOT NULL,
-		interleave_data_point_id		INTEGER			NOT NULL,
+		interleave_datapoint_id			INTEGER			NOT NULL,
 		domain_concept_id				INTEGER			NOT NULL,
 		relationship_concept_id			INTEGER			NOT NULL
-		
-		
+				
 		
 ln -s /etc/cdsi/db/interleave.yml database.yml 
 

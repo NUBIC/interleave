@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160510173418) do
+ActiveRecord::Schema.define(version: 20160510202730) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -254,6 +254,98 @@ ActiveRecord::Schema.define(version: 20160510173418) do
     t.integer "domain_concept_id_2",     null: false
     t.integer "fact_id_2",               null: false
     t.integer "relationship_concept_id", null: false
+  end
+
+  create_table "interleave_datapoint_domain_concepts", force: :cascade do |t|
+    t.integer  "interleave_datapoint_id", null: false
+    t.integer  "domain_concept_id",       null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  create_table "interleave_datapoint_relationships", force: :cascade do |t|
+    t.integer  "interleave_datapoint_id", null: false
+    t.integer  "domain_concept_id",       null: false
+    t.integer  "relationship_concept_id", null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  create_table "interleave_datapoints", force: :cascade do |t|
+    t.string   "name",         null: false
+    t.string   "domain_id",    null: false
+    t.integer  "cardinality",  null: false
+    t.boolean  "unrestricted", null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  create_table "interleave_entities", force: :cascade do |t|
+    t.integer  "interleave_registry_id",                null: false
+    t.integer  "domain_concept_id",                     null: false
+    t.integer  "fact_id",                               null: false
+    t.integer  "interleave_registry_cdm_source_id",     null: false
+    t.string   "domain_concept_source_value"
+    t.string   "fact_source_value"
+    t.datetime "overriden_date"
+    t.integer  "overriden_interleave_registry_user_id"
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+  end
+
+  create_table "interleave_people", force: :cascade do |t|
+    t.integer  "interleave_registry_affiliate_id", null: false
+    t.integer  "person_id",                        null: false
+    t.string   "first_name",                       null: false
+    t.string   "last_name",                        null: false
+    t.string   "middle_name"
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+  end
+
+  create_table "interleave_person_identifiers", force: :cascade do |t|
+    t.integer  "person_id",                      null: false
+    t.string   "identifier",                     null: false
+    t.integer  "identifier_concept_id",          null: false
+    t.string   "identifer_source_concept_value", null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  create_table "interleave_registries", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "interleave_registry_affiliate_users", force: :cascade do |t|
+    t.integer  "interleave_registry_affiliate_id", null: false
+    t.integer  "interleave_user_id",               null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+  end
+
+  create_table "interleave_registry_affiliates", force: :cascade do |t|
+    t.string   "name",                   null: false
+    t.integer  "interleave_registry_id", null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  create_table "interleave_registry_cdm_sources", force: :cascade do |t|
+    t.integer  "interleave_registry_id", null: false
+    t.string   "cdm_source_name",        null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  create_table "interleave_users", force: :cascade do |t|
+    t.string   "first_name",  null: false
+    t.string   "last_name",   null: false
+    t.string   "middle_name", null: false
+    t.string   "username",    null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "location", id: false, force: :cascade do |t|
