@@ -1,0 +1,81 @@
+#registries {
+  @include grid-row();
+
+  .registries_header {
+    @include grid-column(
+     $columns: 24
+    );
+    .banner {
+      vertical-align: middle;
+    }
+  }
+}
+
+#registries {
+  @include grid-row();
+
+  .registries_header {
+    @include grid-column(
+     $columns: 24
+    );
+
+    .banner {
+      vertical-align: middle;
+    }
+
+    #search_registries_form {
+      @include grid-column(
+       $columns: 24
+      );
+
+      label {
+        font-weight: bold;
+        margin-bottom: .5rem;
+        padding-left: .25rem;
+      }
+
+      .search {
+        @include grid-column(
+          $columns: 4
+        );
+				@include grid-column-collapse();
+      }
+
+      .navigation {
+        margin-top: 2rem;
+        @include grid-column(
+          $columns: 5
+        );
+				#search_registries_button {
+					margin-bottom: 0;
+				}
+      }
+    }
+  }
+
+  .registries_list {
+		@include grid-column(
+		  $columns: 24
+		);
+
+    th .current {
+      padding-right: 2em;
+      background-repeat: no-repeat;
+      background-position: right center;
+    }
+
+    th .asc {
+      background-image: asset_url("drop25.png");
+    }
+
+    th .desc {
+      background-image: asset_url("drop27.png");
+    }
+
+    table {
+      @include grid-column(
+       $columns: 24
+      );
+    }
+  }
+}

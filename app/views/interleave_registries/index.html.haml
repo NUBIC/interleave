@@ -1,0 +1,33 @@
+- content_for(:title) do
+  Registries
+
+#registries
+  .registries_header
+    .banner
+      %h2
+        %b
+          Registries
+    = form_tag interleave_registries_path(), method: 'get', id: 'search_registries_form'  do
+      .search
+        = label_tag :search, 'Search'
+        = text_field_tag :search, (params[:search].nil? ? '' : params[:search]), type: 'search'
+      .navigation
+        %button{ type: 'submit', id: 'search_registries_button', class: 'tiny button' }
+          Search
+        = link_to 'Clear', interleave_registries_path()
+  .registries_list
+    = will_paginate @registries
+    %table
+      %thead
+        %tr
+          %th.registries_name{ width: 200 }
+            = sortable 'name'
+          %th.review{ width: 100 }
+      - @registries.each do |registry|
+        %tbody
+          = content_tag_for(:tr, registry) do
+            %td.registry_name
+              = registry.name
+            %td.review
+              = link_to 'People', interleave_registry_people_url(registry), { class: 'registry_people_index_link' }
+    = will_paginate @registries
