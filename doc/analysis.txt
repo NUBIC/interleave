@@ -11,14 +11,14 @@ Support multi-Tenancy
 
 	interleave_registry_affiliate_users
 		id									INTEGER				NOT NULL,
-		interleave_registry_affiliate_id	INTEGER				NOT NULL,	
+		interleave_registry_affiliate_id	INTEGER				NOT NULL,
 		username							VARCHAR(255)		NOT NULL
 
 	interleave_registry_cdm_sources
 		id							INTEGER				NOT NULL,
 		interleave_registry_id		INTEGER				NOT NULL,
 		cdm_source_name				VARCHAR(255)		NOT NULL		--A registry can have multiple sources. Examples: 'RedCap', 'NM EDW', 'Catalona Database', 'PSPORE legacy'
-																		--Every registry will include an 'Ex nihlo' entry to support manual entry. 	
+																		--Every registry will include an 'Ex nihlo' entry to support manual entry.
 
 Support incremental loads and 'Ex niholo' entry.
 
@@ -31,19 +31,19 @@ Support incremental loads and 'Ex niholo' entry.
 		cdm_source_name				VARCHAR(255)		NOT NULL,		--polymorphic pointer to source of data
 		cdm_source_domain_id		VARCHAR(255)		NULL,			--name of entity within source, not releveant for 'Ex nihlo'
 		cdm_source_value			VARCHAR(255)		NULL			--stable identifier, not releveant for 'Ex nihlo'
-		overriden					BOOLEAN				NULL			--keep track if an entity created by a non-'Ex nihlo' source has been overrriden	
+		overriden					BOOLEAN				NULL			--keep track if an entity created by a non-'Ex nihlo' source has been overrriden
 
 Support PHI within OMOP
 
 	interleave_person
-		interleave_registry_affiliate_id	INTEGER				NOT NULL,	
-		person_id							INTEGER				NOT NULL,	
+		interleave_registry_affiliate_id	INTEGER				NOT NULL,
+		person_id							INTEGER				NOT NULL,
 		first_name							VARCHAR(255)		NOT NULL,
-		last_name							VARCHAR(255)		NOT NULL,	
-		middle_name							VARCHAR(255)		NOT NULL,		
+		last_name							VARCHAR(255)		NOT NULL,
+		middle_name							VARCHAR(255)		NOT NULL,
 
 	interleave_person_identifiers
-		person_id						INTEGER				NOT NULL,	
+		person_id						INTEGER				NOT NULL,
 		identifier						VARCHAR(255)		NOT NULL,
 		identifier_concept_id			INTEGER				NOT NULL,
 	    identifer_source_concept_value	VARCHAR(50) 		NOT NULL
@@ -62,7 +62,7 @@ Support regsitry expectation configuration
 	interleave_datapoint_domain_concepts
 		id								INTEGER				NOT NULL,
 		interleave_datapoint_id			INTEGER				NOT NULL,
-		domain_concept_id				INTEGER				NOT NULL		
+		domain_concept_id				INTEGER				NOT NULL
 
 
 	interleave_datapoint_relationships
@@ -70,9 +70,9 @@ Support regsitry expectation configuration
 		interleave_datapoint_id			INTEGER			NOT NULL,
 		domain_concept_id				INTEGER			NOT NULL,
 		relationship_concept_id			INTEGER			NOT NULL
-				
-		
-ln -s /etc/cdsi/db/interleave.yml database.yml 
+
+
+ln -s /etc/cdsi/db/interleave.yml database.yml
 
 * possible names
 
@@ -86,7 +86,7 @@ ln -s /etc/cdsi/db/interleave.yml database.yml
 ** weave
 
 *  Maybe use the type_concept_id for provenance of system indication.  And then have another table
-maintain the type_concept_id, 
+maintain the type_concept_id,
 
 * Looks like observation_period is mandatory.
 
@@ -98,7 +98,7 @@ maintain the type_concept_id,
 * domains are roughly congate with the clinical entities
   domains correspond to domain tables
 
-*  Each Standard Concept belongs to one domain, which defines the location where the Concept would be expected to occur within data tables of the CDM.  
+*  Each Standard Concept belongs to one domain, which defines the location where the Concept would be expected to occur within data tables of the CDM.
 
 
 select *
@@ -152,4 +152,3 @@ order by concept_name
 select *
 from vocabulary
 where vocabulary_reference = 'OMOP generated'
-		

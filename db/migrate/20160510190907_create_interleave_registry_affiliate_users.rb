@@ -7,5 +7,3 @@ class CreateInterleaveRegistryAffiliateUsers < ActiveRecord::Migration
     end
   end
 end
-
-
