@@ -1,7 +1,7 @@
-#registries {
+#people {
   @include grid-row();
 
-  .registries_header {
+  .people_header {
     @include grid-column(
      $columns: 24
     );
@@ -10,7 +10,7 @@
       vertical-align: middle;
     }
 
-    #search_registries_form {
+    #search_people_form {
       @include grid-column(
        $columns: 24
       );
@@ -28,19 +28,26 @@
 				@include grid-column-collapse();
       }
 
+      .affiliate_id {
+        @include grid-column(
+          $columns: 6
+        );
+				@include grid-column-collapse();
+      }
+
       .navigation {
         margin-top: 2rem;
         @include grid-column(
           $columns: 5
         );
-				#search_registries_button {
+				#search_people_button {
 					margin-bottom: 0;
 				}
       }
     }
   }
 
-  .registries_list {
+  .people_list {
 		@include grid-column(
 		  $columns: 24
 		);

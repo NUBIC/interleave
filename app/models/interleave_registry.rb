@@ -1,5 +1,5 @@
 class InterleaveRegistry < ActiveRecord::Base
-  has_many :interleave_regsitry_affiliates
+  has_many :interleave_registry_affiliates
   has_many :interleave_registry_cdm_sources
 
   scope :search_across_fields, ->(search_token, options={}) do

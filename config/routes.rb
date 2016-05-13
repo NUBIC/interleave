@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :interleave_registries, path: 'registries' do
-    resources :people
+    resources :interleave_people, path: 'people'
   end
 
   root 'interleave_registries#index'
