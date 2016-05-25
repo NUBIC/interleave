@@ -1,0 +1,45 @@
+/ create_table "condition_occurrence", primary_key: "condition_occurrence_id", force: :cascade do |t|
+/   t.integer  "person_id",                              null: false
+/   t.integer  "condition_concept_id",                   null: false
+/   t.date     "condition_start_date",                   null: false
+/   t.date     "condition_end_date"
+/   t.integer  "condition_type_concept_id",              null: false
+/   t.string   "stop_reason",                 limit: 20
+/   t.integer  "provider_id"
+/   t.integer  "visit_occurrence_id"
+/   t.string   "condition_source_value",      limit: 50
+/   t.integer  "condition_source_concept_id"
+/   t.datetime "created_at",                             null: false
+/   t.datetime "updated_at",                             null: false
+/ end
+- content_for(:title) do
+  Condition Occurences
+= render 'interleave_people/navigation'
+#condition_occurences
+  - @condition_occurence_datapoints.each do |condition_occurence_datapoint|
+    .datapoint
+      %h3
+        = condition_occurence_datapoint[:datapoint].name
+      .condition_occurences_list
+        = will_paginate condition_occurence_datapoint[:condition_occurences]
+        %table
+          %thead
+            %tr
+              %th.condition_occurence_concept_name{ width: 200 }
+                = sortable 'concept.name', 'Condition'
+              %th.condition_occurence_start_date{ width: 200 }
+                = sortable 'condition_start_date', 'Start'
+              %th.condition_occurence_end_date{ width: 200 }
+                = sortable 'condition_end_date', 'End'
+              %th.review{ width: 100 }
+          - condition_occurence_datapoint[:condition_occurences].each do |condition_occurence|
+            %tbody
+              = content_tag_for(:tr, person) do
+                %td.condition_occurence_concept_name
+                  = condition_occurence.condition_conept.name
+                %td.condition_occurence_start_date
+                  = condition_occurence.condition_start_date
+                %td.condition_occurence_end_date
+                  = condition_occurence.condition_end_date
+                %td.review
+        = will_paginate condition_occurence_datapoint[:condition_occurences]

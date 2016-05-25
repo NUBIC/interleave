@@ -1,0 +1,14 @@
+select *
+from concept
+where domain_id = 'Condition'
+and standard_concept = 'S'
+and lower(concept_name) like '%benign prostatic hyperplasia%'
+order by vocabulary_id, concept_name
+
+
+select *
+from concept
+where domain_id = 'Condition'
+and standard_concept = 'S'
+and lower(concept_name) like '%benign prostatic hyperplasia%'
+order by vocabulary_id, concept_name

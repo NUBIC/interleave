@@ -41,5 +41,5 @@
             %td.people_last_name
               = person.last_name
             %td.review
-              / = link_to 'Person', interleave_people_url(registry), { class: 'registry_people_index_link' }
+              = link_to 'Person', edit_interleave_registry_interleave_person_url(@registry, person), { class: 'registry_people_edit_link' }
     = will_paginate @people

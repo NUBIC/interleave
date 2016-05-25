@@ -1,0 +1,5 @@
+%ul#example-tabs.tabs
+  %li.tabs-title.is-active
+    = link_to 'Person', edit_interleave_registry_interleave_person_url(@registry, @person), { class: 'registry_people_edit_link', 'aria-selected' => tab_selected?('interleave_people', 'edit') }
+  %li.tabs-title
+    = link_to 'Conditions', interleave_registry_interleave_person_condition_occurences_url(@registry, @person), { class: 'registry_people_condition_occurences_link', 'aria-selected' => tab_selected?('condition_occurences', 'index') }

@@ -1,9 +1,11 @@
 Rails.application.routes.draw do
   resources :interleave_registries, path: 'registries' do
-    resources :interleave_people, path: 'people'
+    resources :interleave_people, path: 'people' do
+      resources :condition_occurences, path: 'conditions'
+    end
   end
 
-  root 'interleave_registries#index'
+  root 'home#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

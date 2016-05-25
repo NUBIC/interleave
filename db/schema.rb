@@ -263,16 +263,19 @@ ActiveRecord::Schema.define(version: 20160510225153) do
   end
 
   create_table "interleave_datapoints", force: :cascade do |t|
-    t.string   "name",         null: false
-    t.string   "domain_id",    null: false
-    t.integer  "cardinality",  null: false
-    t.boolean  "unrestricted", null: false
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.integer  "interleave_registry_id", null: false
+    t.string   "name",                   null: false
+    t.string   "domain_id",              null: false
+    t.integer  "cardinality",            null: false
+    t.boolean  "unrestricted",           null: false
+    t.boolean  "overlap",                null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   create_table "interleave_entities", force: :cascade do |t|
-    t.integer  "interleave_registry_id",                null: false
+    t.integer  "interleave_datapoint_id",               null: false
+    t.string   "cdm_table",                             null: false
     t.integer  "domain_concept_id",                     null: false
     t.integer  "fact_id",                               null: false
     t.integer  "interleave_registry_cdm_source_id",     null: false

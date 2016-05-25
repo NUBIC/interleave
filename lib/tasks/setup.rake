@@ -22,5 +22,13 @@ namespace :setup do
       p = Person.where(person[:omop]).first_or_create
       InterleavePerson.where(person_id: p.person_id, interleave_registry_affiliate_id: interleave_registry_affiliate_north_shore.id).where(person[:interleave]).first_or_create
     end
+
+    interleave_datapoint_diagnosis = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, name: 'Diagnosis', domain_id: 'Condition', cardinality: 1, unrestricted: false, overlap: true).first_or_create
+    concept = Concept.where(domain_id: 'Condition', concept_code: '126906006').first #Neoplasm of prostate
+    InterleaveDatapointDomainConcept.where(interleave_datapoint_id: interleave_datapoint_diagnosis.id, domain_concept_id: concept.concept_id).first_or_create
+    concept = Concept.where(domain_id: 'Condition', concept_code: '266569009').first #"Benign prostatic hyperplasia"
+    InterleaveDatapointDomainConcept.where(interleave_datapoint_id: interleave_datapoint_diagnosis.id, domain_concept_id: concept.concept_id).first_or_create
+
+    interleave_datapoint_diagnosis = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, name: 'Comorbidities', domain_id: 'Condition', cardinality: 0, unrestricted: true, overlap: false).first_or_create
   end
 end

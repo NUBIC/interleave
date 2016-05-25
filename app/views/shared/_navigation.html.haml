@@ -1,0 +1,8 @@
+%ul{ class: 'menu'}
+  %li
+    = link_to root_path, class: 'item ' do
+      = image_tag 'interleve.png', border: 0, alt: 'Interleave', class: 'interleave-logo'
+  %li
+    = link_to 'Home', root_url
+  %li
+    = link_to  'Registries',interleave_registries_url()

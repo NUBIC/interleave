@@ -1,6 +1,7 @@
 class InterleavePeopleController < ApplicationController
   helper_method :sort_column, :sort_direction
-  before_filter :load_interleave_registry
+  before_filter :load_interleave_registry, only: [:index, :edit]
+  before_filter :load_interleave_person, only: :edit
 
   def index
     params[:page]||= 1
@@ -12,9 +13,16 @@ class InterleavePeopleController < ApplicationController
     @people = InterleavePerson.search_across_fields(params[:search], @registry, params[:affiliate_id], options).paginate(per_page: 10, page: params[:page])
   end
 
+  def edit
+  end
+
   private
     def load_interleave_registry
       @registry = InterleaveRegistry.find(params[:interleave_registry_id])
+    end
+
+    def load_interleave_person
+      @person = InterleavePerson.find(params[:id])
     end
 
     def sort_column
