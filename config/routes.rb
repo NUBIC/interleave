@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   resources :interleave_registries, path: 'registries' do
     resources :interleave_people, path: 'people' do
+      member do
+        get :details
+      end
+
       resources :condition_occurences, path: 'conditions'
     end
   end
