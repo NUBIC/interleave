@@ -2,7 +2,7 @@
 
 * An application for managing longitudinal clinical research databases and registries that is based on the OHDSI/OMOP Common Data Model (CDM).
 * The application layers the following features on top of the CDM.
- * Multitenant housing of registires.
+ * Multitenant housing of registries.
  * Enrichment of the CDM to include protected health imformation fields.
  * Registry-scoped configuration of datapoints and the relationshpe between datapoints.  Dynamic diplay of datapoints per peson per registry.
  * Datapoint restriction of the list of possible values of CDM concept ID values.
