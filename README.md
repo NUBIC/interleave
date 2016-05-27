@@ -13,7 +13,7 @@
 
 
 * Why the name 'Interleve'?
-* Because clinical reserach databases and registries requrie the 'inteleaving' of manually created data and data automatically pulled from external systems (EHRs, billing/claims systems...)?  Data must be stacked on top of each other and the provenance of each entity must be tracked.  The data must be interleaved.
+  * Because clinical reserach databases and registries requrie the 'inteleaving' of manually created data and data automatically pulled from external systems (EHRs, billing/claims systems...)?  Data must be stacked on top of each other and the provenance of each entity must be tracked.  The data must be interleaved.
 
 * Setup
  * Open a psql command prompt
