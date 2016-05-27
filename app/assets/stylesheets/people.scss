@@ -73,3 +73,55 @@
     }
   }
 }
+
+#person {
+  @include grid-row();
+  .navigation {
+  }
+}
+
+.person_header {
+  margin-bottom: 1em;
+  .basic_information  {
+    .name {
+      @include grid-column(
+       $columns: 4
+      );
+    }
+    .gender {
+      @include grid-column(
+       $columns: 4
+      );
+    }
+    .birth_date {
+      @include grid-column(
+       $columns: 4
+      );
+    }
+    .race {
+      @include grid-column(
+       $columns: 4
+      );
+    }
+    .ethnicity {
+      @include grid-column(
+       $columns: 4
+      );
+    }
+    .identifiers {
+      @include grid-column(
+       $columns: 4
+      );
+    }
+
+  }
+}
+
+.person_navigation {
+  ul {
+    @include tabs-container();
+    li {
+      @include tabs-title;
+    }
+  }
+}

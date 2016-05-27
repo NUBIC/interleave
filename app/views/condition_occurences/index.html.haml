@@ -14,8 +14,9 @@
 / end
 - content_for(:title) do
   Condition Occurences
-= render 'interleave_people/navigation'
 #condition_occurences
+  = render 'interleave_people/header'
+  = render 'interleave_people/navigation'
   - @condition_occurence_datapoints.each do |condition_occurence_datapoint|
     .datapoint
       %h3

@@ -1,5 +1,6 @@
-%ul#example-tabs.tabs
-  %li.tabs-title.is-active
-    = link_to 'Details', details_interleave_registry_interleave_person_url(@registry, @person), { class: 'registry_people_edit_link', 'aria-selected' => tab_selected?('interleave_people', 'edit') }
-  %li.tabs-title
-    = link_to 'Conditions', interleave_registry_interleave_person_condition_occurences_url(@registry, @person), { class: 'registry_people_condition_occurences_link', 'aria-selected' => tab_selected?('condition_occurences', 'index') }
+.person_navigation
+  %ul
+    %li
+      = link_to 'Details', details_interleave_registry_interleave_person_url(@registry, @interleave_person), { class: 'registry_people_edit_link', 'aria-selected' => tab_selected?('interleave_people', 'details') }
+    %li
+      = link_to 'Conditions', interleave_registry_interleave_person_condition_occurences_url(@registry, @interleave_person), { class: 'registry_people_condition_occurences_link', 'aria-selected' => tab_selected?('condition_occurences', 'index') }

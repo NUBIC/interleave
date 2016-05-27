@@ -22,7 +22,7 @@ class InterleavePeopleController < ApplicationController
     end
 
     def load_interleave_person
-      @person = InterleavePerson.find(params[:id])
+      @interleave_person = InterleavePerson.find(params[:id])
     end
 
     def sort_column

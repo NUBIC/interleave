@@ -26,7 +26,7 @@ class ConditionOccurencesController < ApplicationController
     end
 
     def load_interleave_person
-      @person = InterleavePerson.find(params[:interleave_person_id])
+      @interleave_person = InterleavePerson.find(params[:interleave_person_id])
     end
 
     def sort_column

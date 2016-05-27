@@ -1,6 +1,7 @@
 class InterleavePerson < ActiveRecord::Base
   belongs_to :interleave_registry_affiliate
   belongs_to :person
+  has_many :interleave_person_identifiers
 
   scope :search_across_fields, ->(search_token, registry, affiliate_id, options={}) do
     options = { sort_column: 'name', sort_direction: 'asc' }.merge(options)
@@ -22,5 +23,9 @@ class InterleavePerson < ActiveRecord::Base
     s = s.nil? ? order(sort) : s.order(sort)
 
     s
+  end
+
+  def full_name
+    [first_name, middle_name, last_name].compact.map(&:titleize).join(' ')
   end
 end

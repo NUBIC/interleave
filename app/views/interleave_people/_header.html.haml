@@ -1,0 +1,40 @@
+.person_header.clearfix
+  .basic_information
+    .name
+      %strong
+        Name:
+      = @interleave_person.full_name
+    .gender
+      %strong
+        Gender:
+      = @interleave_person.person.gender.concept_name
+    .birth_date
+      %strong
+        Birth Date:
+      = @interleave_person.person.birth_date
+    .race
+      %strong
+        Race:
+      = @interleave_person.person.race.concept_name
+    .ethnicity
+      %strong
+        Ethnicity:
+      = @interleave_person.person.ethnicity.concept_name
+    .identifiers
+      %strong
+        Identifiers:
+      - if @interleave_person.interleave_person_identifiers.any?
+        %table{class: 'identifiers' }
+          %thead
+            %tr
+              %th.identifer_source_concept_value
+                Type
+              %th.identifier
+                Identifier
+        %tbody
+          - @interleave_person.interleave_person_identifiers.each do |interleave_person_identifier|
+            %tr
+              %th.identifer_source_concept_value
+                = interleave_person_identifier.identifer_source_concept_value
+              %th.identifer
+                = interleave_person_identifier.identifer

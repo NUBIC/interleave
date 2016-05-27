@@ -298,7 +298,7 @@ ActiveRecord::Schema.define(version: 20160510225153) do
   end
 
   create_table "interleave_person_identifiers", force: :cascade do |t|
-    t.integer  "person_id",                      null: false
+    t.integer  "interleave_person_id",           null: false
     t.string   "identifier",                     null: false
     t.integer  "identifier_concept_id",          null: false
     t.string   "identifer_source_concept_value", null: false
