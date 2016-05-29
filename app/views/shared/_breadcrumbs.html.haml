@@ -1,0 +1,6 @@
+#interleave_breadcrumbs
+  %nav{"aria-label" => "You are here:", :role => "navigation"}
+    %ul.breadcrumbs
+      - @breadcrumbs.each do |breadcrumb|
+        %li
+          = link_to breadcrumb[:name], breadcrumb[:url]

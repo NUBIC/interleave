@@ -9,11 +9,13 @@ class InterleavePeopleController < ApplicationController
     options[:sort_column] = sort_column
     options[:sort_direction] = sort_direction
     params[:affiliate_id] ||= 'all'
+    add_breadcrumbs(registry: @registry)
     @regsitry_affiliates = @registry.interleave_registry_affiliates.map { |regsitry_affiliate| [regsitry_affiliate.name,  regsitry_affiliate.id] }
     @people = InterleavePerson.search_across_fields(params[:search], @registry, params[:affiliate_id], options).paginate(per_page: 10, page: params[:page])
   end
 
   def details
+    add_breadcrumbs(registry: @registry, interleave_person: @interleave_person)
   end
 
   private

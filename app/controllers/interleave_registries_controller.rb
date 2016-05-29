@@ -6,6 +6,7 @@ class InterleaveRegistriesController < ApplicationController
     options = {}
     options[:sort_column] = sort_column
     options[:sort_direction] = sort_direction
+    add_breadcrumbs
 
     @registries = InterleaveRegistry.search_across_fields(params[:search], options).paginate(per_page: 10, page: params[:page])
   end

@@ -8,8 +8,8 @@ class ConditionOccurencesController < ApplicationController
     options = {}
     options[:sort_column] = sort_column
     options[:sort_direction] = sort_direction
-
     @datapoint = @registry.interleave_datapoints.find(params[:datapoint_id])
+    add_breadcrumbs(registry: @registry, interleave_person: @interleave_person, datapoint: @datapoint)
     @condition_occurences = ConditionOccurrence.by_interleave_data_point(@datapoint.id).paginate(per_page: 10, page: params[:page])
   end
 

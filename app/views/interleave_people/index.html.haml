@@ -7,7 +7,6 @@
       %h2
         %b
           ="#{@registry.name}: People"
-    = link_to 'Registries', interleave_registries_url()
     = form_tag interleave_registry_interleave_people_url(@registry), method: 'get', id: 'search_people_form'  do
       .search
         = label_tag :search, 'Search'

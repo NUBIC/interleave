@@ -1,0 +1,15 @@
+#home {
+  @include grid-row();
+  @include grid-column(24);
+}
+
+#interleave_navigation {
+  @include grid-row();
+  @include grid-column(24);
+}
+
+#interleave_breadcrumbs {
+  @include grid-row();
+  @include grid-column-offset(14);
+  @include grid-column(10);
+}
