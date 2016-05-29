@@ -9,7 +9,7 @@ class InterleavePeopleController < ApplicationController
     options[:sort_column] = sort_column
     options[:sort_direction] = sort_direction
     params[:affiliate_id] ||= 'all'
-    @interleave_regsitry_affiliates = @registry.interleave_registry_affiliates.map { |interleave_regsitry_affiliate| [interleave_regsitry_affiliate.name, interleave_regsitry_affiliate.id] }
+    @regsitry_affiliates = @registry.interleave_registry_affiliates.map { |regsitry_affiliate| [regsitry_affiliate.name,  regsitry_affiliate.id] }
     @people = InterleavePerson.search_across_fields(params[:search], @registry, params[:affiliate_id], options).paginate(per_page: 10, page: params[:page])
   end
 

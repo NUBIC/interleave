@@ -9,15 +9,8 @@ class ConditionOccurencesController < ApplicationController
     options[:sort_column] = sort_column
     options[:sort_direction] = sort_direction
 
-    @datapoints = @registry.interleave_datapoints.by_domain('Condition')
-    @condition_occurence_datapoints = []
-    @datapoints.each do |datapoint|
-      condition_occurence_datapoint = {}
-      condition_occurence_datapoint[:datapoint] = datapoint
-      condition_occurences = ConditionOccurrence.by_interleave_data_point(datapoint.id).paginate(per_page: 10, page: params[:page])
-      condition_occurence_datapoint[:condition_occurences] = condition_occurences
-      @condition_occurence_datapoints << condition_occurence_datapoint
-    end
+    @datapoint = @registry.interleave_datapoints.find(params[:datapoint_id])
+    @condition_occurences = ConditionOccurrence.by_interleave_data_point(@datapoint.id).paginate(per_page: 10, page: params[:page])
   end
 
   private

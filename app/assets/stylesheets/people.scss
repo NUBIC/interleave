@@ -76,11 +76,20 @@
 
 #person {
   @include grid-row();
-  .navigation {
+
+  .interleave_datapoints {
+    @include grid-column(
+     $columns: 20
+    );
   }
+
 }
 
 .person_header {
+  @include grid-column(
+   $columns: 24
+  );
+
   margin-bottom: 1em;
   .basic_information  {
     .name {
@@ -113,15 +122,15 @@
        $columns: 4
       );
     }
-
   }
 }
 
 .person_navigation {
-  ul {
-    @include tabs-container();
-    li {
-      @include tabs-title;
-    }
+  @include grid-column(
+   $columns: 4
+  );
+
+  .menu-text {
+    font-weight: normal;
   }
 }
