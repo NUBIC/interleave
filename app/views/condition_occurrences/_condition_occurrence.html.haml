@@ -1,0 +1,18 @@
+#condition_occurrence
+  = form_for [@registry, @interleave_person, @condition_occurrence] do |f|
+    = link_to '', concepts_interleave_datapoint_url(@datapoint.id), class: 'hide', id: 'concepts_interleave_datapoint_url'
+    = f.hidden_field :interleave_datapoint_id, value: @datapoint.id
+    .condition_start_date
+      %label{for: 'condition_start_date' }
+        Start
+        = f.text_field :condition_start_date, class: 'datepicker'
+    .condition_end_date
+      %label{for: 'condition_end_date' }
+        End
+        = f.text_field :condition_end_date, class: 'datepicker'
+    .condition_concept_id
+      %label{for: 'condition_concept_id' }
+        Concept
+      = f.select :condition_concept_id, options_for_select(@concepts), { include_blank: true }
+    .navigation
+      = f.submit 'Save', class: 'button'

@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
     if options[:datapoint]
       case options[:datapoint].domain_id
       when 'Condition'
-        @breadcrumbs << { name: "#{options[:datapoint].domain_id}:#{options[:datapoint].name}", url: interleave_registry_interleave_person_condition_occurences_url(@registry, @interleave_person, datapoint_id: @datapoint.id) }
+        @breadcrumbs << { name: "#{options[:datapoint].domain_id}:#{options[:datapoint].name}", url: interleave_registry_interleave_person_condition_occurrences_url(@registry, @interleave_person, datapoint_id: @datapoint.id) }
       end
     end
   end

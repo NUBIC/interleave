@@ -11,11 +11,12 @@
  * file per style scope.
  *
  *= require_self
+ *= require jquery-ui
  */
-
 @import "foundation_and_overrides";
 @import "navigation";
 @import "registries";
 @import "people";
-@import "condition_occurences";
-
+@import "condition_occurrences";
+@import "jquery.ui.override";
+@import "select2";

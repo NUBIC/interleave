@@ -1,0 +1,47 @@
+#condition_occurrences {
+  @include grid-row();
+
+  .interleave_datapoint {
+    @include grid-column(
+     $columns: 20
+    );
+  }
+}
+
+#condition_occurrence {
+  @include grid-row();
+
+  .ui-autocomplete-input {
+    width: 90%;
+    height: 2.5rem;
+  }
+  .ui-button {
+    width: 5%;
+    height: 2.5rem;
+  }
+
+  .condition_start_date {
+    @include grid-column(
+     $columns: 12
+    );
+  }
+  .condition_end_date {
+    @include grid-column(
+     $columns: 12
+    );
+  }
+  .condition_concept_id {
+    label {
+      display: block;
+    }
+    @include grid-column(
+     $columns: 12
+    );
+  }
+  .navigation {
+    @include grid-column-offset(12);
+    @include grid-column(
+     $columns: 12
+    );
+  }
+}

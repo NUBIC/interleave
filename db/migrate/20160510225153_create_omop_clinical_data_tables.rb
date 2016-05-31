@@ -26,6 +26,22 @@ class CreateOmopClinicalDataTables < ActiveRecord::Migration
       t.timestamps                             null: false
     end
 
+    create_table "device_exposure", id: false, force: :cascade do |t|
+      t.primary_key "device_exposure_id"
+      t.integer "person_id",                              null: false
+      t.integer "device_concept_id",                      null: false
+      t.date    "device_exposure_start_date",             null: false
+      t.date    "device_exposure_end_date"
+      t.integer "device_type_concept_id",                 null: false
+      t.string  "unique_device_id",           limit: 50
+      t.integer "quantity"
+      t.integer "provider_id"
+      t.integer "visit_occurrence_id"
+      t.string  "device_source_value",        limit: 100
+      t.integer "device_source_concept_id"
+      t.timestamps                             null: false
+    end
+
     create_table "drug_exposure", id: false, force: :cascade do |t|
       t.primary_key "drug_exposure_id"
       t.integer "person_id",                           null: false

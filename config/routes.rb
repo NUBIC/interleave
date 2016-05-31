@@ -5,7 +5,13 @@ Rails.application.routes.draw do
         get :details
       end
 
-      resources :condition_occurences, path: 'conditions'
+      resources :condition_occurrences, path: 'conditions'
+    end
+  end
+
+  resources :interleave_datapoints do
+    member do
+      get :concepts
     end
   end
 

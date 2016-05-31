@@ -36,8 +36,8 @@ module ApplicationHelper
     def generate_datapoint_url(registry, interleave_person, datapoint, domain_id)
       case domain_id
       when 'Condition'
-        haml_tag(:li, class: active?('active', 'condition_occurences', 'index', 'datapoint_id' => datapoint.id.to_s)) do
-          concat link_to datapoint.name, interleave_registry_interleave_person_condition_occurences_url(registry, interleave_person, datapoint_id: datapoint.id)
+        haml_tag(:li, class: active?('active', 'condition_occurrences', 'index', 'datapoint_id' => datapoint.id.to_s)) do
+          concat link_to datapoint.name, interleave_registry_interleave_person_condition_occurrences_url(registry, interleave_person, datapoint_id: datapoint.id)
         end
       end
     end

@@ -11,14 +11,23 @@
 // about supported directives.
 //
 
+
 //= require jquery
 //= require jquery_ujs
+//= require jquery-ui
 //= require foundation
+//= require select2/select2
 //= require turbolinks
+//= require interleave
 //= require_tree .
 
 
 //Solution to making Turbolinks and Foundation play nicely found here: http://foundation.zurb.com/forum/posts/36244-navigation-drop-down-not-working-with-turbolinks
-$(document).on('ready page:load', function () {
+$(document).on('page:load ready', function () {
   $(document).foundation();
+  Foundation.Reveal.defaults.closeOnClick = false;
+  Foundation.Reveal.defaults.closeOnEsc = false;
+  // var interleaveDatapointConceptsUrl = decodeURIComponent('#{concepts_interleave_datapoint_path(id: ':id')}');
+  // new Interleave.ConditionOccurencesUI({ interleaveDatapointConceptsUrl: interleaveDatapointConceptsUrl });
+  new Interleave.ConditionOccurencesUI();
 });

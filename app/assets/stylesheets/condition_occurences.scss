@@ -1,9 +1,0 @@
-#condition_occurences {
-  @include grid-row();
-
-  .interleave_datapoint {
-    @include grid-column(
-     $columns: 20
-    );
-  }
-}

@@ -4,5 +4,5 @@
   %li.menu-text
     = link_to 'Conditions', '#'
     / Conditions
-    %ul.menu.vertical.nested{ class: "#{active?('is-active','condition_occurences', 'index')}"}
+    %ul.menu.vertical.nested{ class: "#{active?('is-active','condition_occurrences', 'index')}"}
       = links_to_datapoints(@registry, @interleave_person, 'Condition')

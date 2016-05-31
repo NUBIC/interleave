@@ -172,6 +172,22 @@ ActiveRecord::Schema.define(version: 20160510225153) do
     t.datetime "updated_at",                         null: false
   end
 
+  create_table "device_exposure", primary_key: "device_exposure_id", force: :cascade do |t|
+    t.integer  "person_id",                              null: false
+    t.integer  "device_concept_id",                      null: false
+    t.date     "device_exposure_start_date",             null: false
+    t.date     "device_exposure_end_date"
+    t.integer  "device_type_concept_id",                 null: false
+    t.string   "unique_device_id",           limit: 50
+    t.integer  "quantity"
+    t.integer  "provider_id"
+    t.integer  "visit_occurrence_id"
+    t.string   "device_source_value",        limit: 100
+    t.integer  "device_source_concept_id"
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+  end
+
   create_table "domain", id: false, force: :cascade do |t|
     t.string  "domain_id",         limit: 20,  null: false
     t.string  "domain_name",       limit: 255, null: false
@@ -247,9 +263,9 @@ ActiveRecord::Schema.define(version: 20160510225153) do
     t.datetime "updated_at",              null: false
   end
 
-  create_table "interleave_datapoint_domain_concepts", force: :cascade do |t|
+  create_table "interleave_datapoint_concepts", force: :cascade do |t|
     t.integer  "interleave_datapoint_id", null: false
-    t.integer  "domain_concept_id",       null: false
+    t.integer  "concept_id",              null: false
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end

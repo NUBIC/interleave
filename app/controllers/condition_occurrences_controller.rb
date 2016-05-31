@@ -1,7 +1,7 @@
-class ConditionOccurencesController < ApplicationController
+class ConditionOccurrencesController < ApplicationController
   helper_method :sort_column, :sort_direction
-  before_filter :load_interleave_registry, only: :index
-  before_filter :load_interleave_person, only: :index
+  before_filter :load_interleave_registry, only: [:index, :new]
+  before_filter :load_interleave_person, only: [:index, :new]
 
   def index
     params[:page]||= 1
@@ -10,7 +10,16 @@ class ConditionOccurencesController < ApplicationController
     options[:sort_direction] = sort_direction
     @datapoint = @registry.interleave_datapoints.find(params[:datapoint_id])
     add_breadcrumbs(registry: @registry, interleave_person: @interleave_person, datapoint: @datapoint)
-    @condition_occurences = ConditionOccurrence.by_interleave_data_point(@datapoint.id).paginate(per_page: 10, page: params[:page])
+    @condition_occurrences = ConditionOccurrence.by_interleave_data_point(@datapoint.id).paginate(per_page: 10, page: params[:page])
+  end
+
+  def new
+    @datapoint = @registry.interleave_datapoints.find(params[:datapoint_id])
+    @concepts = []
+    @condition_occurrence = ConditionOccurrence.new()
+    respond_to do |format|
+      format.html { render :layout => false }
+    end
   end
 
   private

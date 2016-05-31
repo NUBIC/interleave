@@ -1,13 +1,13 @@
 /*********************************************************************************
 # Copyright 2014 Observational Health Data Sciences and Informatics
 #
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,14 +17,14 @@
 
 /************************
 
- ####### #     # ####### ######      #####  ######  #     #           #######     #####                                                                 
- #     # ##   ## #     # #     #    #     # #     # ##   ##    #    # #          #     #  ####  #    #  ####  ##### #####    ##   # #    # #####  ####  
- #     # # # # # #     # #     #    #       #     # # # # #    #    # #          #       #    # ##   # #        #   #    #  #  #  # ##   #   #   #      
- #     # #  #  # #     # ######     #       #     # #  #  #    #    # ######     #       #    # # #  #  ####    #   #    # #    # # # #  #   #    ####  
- #     # #     # #     # #          #       #     # #     #    #    #       #    #       #    # #  # #      #   #   #####  ###### # #  # #   #        # 
- #     # #     # #     # #          #     # #     # #     #     #  #  #     #    #     # #    # #   ## #    #   #   #   #  #    # # #   ##   #   #    # 
- ####### #     # ####### #           #####  ######  #     #      ##    #####      #####   ####  #    #  ####    #   #    # #    # # #    #   #    ####  
-                                                                              
+ ####### #     # ####### ######      #####  ######  #     #           #######     #####
+ #     # ##   ## #     # #     #    #     # #     # ##   ##    #    # #          #     #  ####  #    #  ####  ##### #####    ##   # #    # #####  ####
+ #     # # # # # #     # #     #    #       #     # # # # #    #    # #          #       #    # ##   # #        #   #    #  #  #  # ##   #   #   #
+ #     # #  #  # #     # ######     #       #     # #  #  #    #    # ######     #       #    # # #  #  ####    #   #    # #    # # # #  #   #    ####
+ #     # #     # #     # #          #       #     # #     #    #    #       #    #       #    # #  # #      #   #   #####  ###### # #  # #   #        #
+ #     # #     # #     # #          #     # #     # #     #     #  #  #     #    #     # #    # #   ## #    #   #   #   #  #    # # #   ##   #   #    #
+ ####### #     # ####### #           #####  ######  #     #      ##    #####      #####   ####  #    #  ####    #   #    # #    # # #    #   #    ####
+
 
 script to create constraints within OMOP common data model, version 5.0 for PostgreSQL database
 
@@ -104,29 +104,29 @@ Standardized clinical data
 
 /**PRIMARY KEY NONCLUSTERED constraints**/
 
-ALTER TABLE person ADD CONSTRAINT xpk_person PRIMARY KEY ( person_id ) ;
+-- ALTER TABLE person ADD CONSTRAINT xpk_person PRIMARY KEY ( person_id ) ;
 
-ALTER TABLE observation_period ADD CONSTRAINT xpk_observation_period PRIMARY KEY ( observation_period_id ) ;
+-- ALTER TABLE observation_period ADD CONSTRAINT xpk_observation_period PRIMARY KEY ( observation_period_id ) ;
 
-ALTER TABLE specimen ADD CONSTRAINT xpk_specimen PRIMARY KEY ( specimen_id ) ;
+-- ALTER TABLE specimen ADD CONSTRAINT xpk_specimen PRIMARY KEY ( specimen_id ) ;
 
-ALTER TABLE death ADD CONSTRAINT xpk_death PRIMARY KEY ( person_id ) ;
+-- ALTER TABLE death ADD CONSTRAINT xpk_death PRIMARY KEY ( person_id ) ;
 
-ALTER TABLE visit_occurrence ADD CONSTRAINT xpk_visit_occurrence PRIMARY KEY ( visit_occurrence_id ) ;
+-- ALTER TABLE visit_occurrence ADD CONSTRAINT xpk_visit_occurrence PRIMARY KEY ( visit_occurrence_id ) ;
 
-ALTER TABLE procedure_occurrence ADD CONSTRAINT xpk_procedure_occurrence PRIMARY KEY ( procedure_occurrence_id ) ;
+-- ALTER TABLE procedure_occurrence ADD CONSTRAINT xpk_procedure_occurrence PRIMARY KEY ( procedure_occurrence_id ) ;
 
-ALTER TABLE drug_exposure ADD CONSTRAINT xpk_drug_exposure PRIMARY KEY ( drug_exposure_id ) ;
+-- ALTER TABLE drug_exposure ADD CONSTRAINT xpk_drug_exposure PRIMARY KEY ( drug_exposure_id ) ;
 
-ALTER TABLE device_exposure ADD CONSTRAINT xpk_device_exposure PRIMARY KEY ( device_exposure_id ) ;
+-- ALTER TABLE device_exposure ADD CONSTRAINT xpk_device_exposure PRIMARY KEY ( device_exposure_id ) ;
 
-ALTER TABLE condition_occurrence ADD CONSTRAINT xpk_condition_occurrence PRIMARY KEY ( condition_occurrence_id ) ;
+-- ALTER TABLE condition_occurrence ADD CONSTRAINT xpk_condition_occurrence PRIMARY KEY ( condition_occurrence_id ) ;
 
-ALTER TABLE measurement ADD CONSTRAINT xpk_measurement PRIMARY KEY ( measurement_id ) ;
+-- ALTER TABLE measurement ADD CONSTRAINT xpk_measurement PRIMARY KEY ( measurement_id ) ;
 
-ALTER TABLE note ADD CONSTRAINT xpk_note PRIMARY KEY ( note_id ) ;
+-- ALTER TABLE note ADD CONSTRAINT xpk_note PRIMARY KEY ( note_id ) ;
 
-ALTER TABLE observation  ADD CONSTRAINT xpk_observation PRIMARY KEY ( observation_id ) ;
+-- ALTER TABLE observation  ADD CONSTRAINT xpk_observation PRIMARY KEY ( observation_id ) ;
 
 
 
@@ -138,11 +138,11 @@ Standardized health system data
 ************************/
 
 
-ALTER TABLE location ADD CONSTRAINT xpk_location PRIMARY KEY ( location_id ) ;
+-- ALTER TABLE location ADD CONSTRAINT xpk_location PRIMARY KEY ( location_id ) ;
 
-ALTER TABLE care_site ADD CONSTRAINT xpk_care_site PRIMARY KEY ( care_site_id ) ;
+-- ALTER TABLE care_site ADD CONSTRAINT xpk_care_site PRIMARY KEY ( care_site_id ) ;
 
-ALTER TABLE provider ADD CONSTRAINT xpk_provider PRIMARY KEY ( provider_id ) ;
+-- ALTER TABLE provider ADD CONSTRAINT xpk_provider PRIMARY KEY ( provider_id ) ;
 
 
 
@@ -153,15 +153,15 @@ Standardized health economics
 ************************/
 
 
-ALTER TABLE payer_plan_period ADD CONSTRAINT xpk_payer_plan_period PRIMARY KEY ( payer_plan_period_id ) ;
+-- ALTER TABLE payer_plan_period ADD CONSTRAINT xpk_payer_plan_period PRIMARY KEY ( payer_plan_period_id ) ;
 
-ALTER TABLE visit_cost ADD CONSTRAINT xpk_visit_cost PRIMARY KEY ( visit_cost_id ) ;
+-- ALTER TABLE visit_cost ADD CONSTRAINT xpk_visit_cost PRIMARY KEY ( visit_cost_id ) ;
 
-ALTER TABLE procedure_cost ADD CONSTRAINT xpk_procedure_cost PRIMARY KEY ( procedure_cost_id ) ;
+-- ALTER TABLE procedure_cost ADD CONSTRAINT xpk_procedure_cost PRIMARY KEY ( procedure_cost_id ) ;
 
-ALTER TABLE drug_cost ADD CONSTRAINT xpk_drug_cost PRIMARY KEY ( drug_cost_id ) ;
+-- ALTER TABLE drug_cost ADD CONSTRAINT xpk_drug_cost PRIMARY KEY ( drug_cost_id ) ;
 
-ALTER TABLE device_cost ADD CONSTRAINT xpk_device_cost PRIMARY KEY ( device_cost_id ) ;
+-- ALTER TABLE device_cost ADD CONSTRAINT xpk_device_cost PRIMARY KEY ( device_cost_id ) ;
 
 
 
@@ -171,15 +171,15 @@ Standardized derived elements
 
 ************************/
 
-ALTER TABLE cohort ADD CONSTRAINT xpk_cohort PRIMARY KEY ( cohort_definition_id, subject_id, cohort_start_date, cohort_end_date  ) ;
+-- ALTER TABLE cohort ADD CONSTRAINT xpk_cohort PRIMARY KEY ( cohort_definition_id, subject_id, cohort_start_date, cohort_end_date  ) ;
 
-ALTER TABLE cohort_attribute ADD CONSTRAINT xpk_cohort_attribute PRIMARY KEY ( cohort_definition_id, subject_id, cohort_start_date, cohort_end_date, attribute_definition_id ) ;
+-- ALTER TABLE cohort_attribute ADD CONSTRAINT xpk_cohort_attribute PRIMARY KEY ( cohort_definition_id, subject_id, cohort_start_date, cohort_end_date, attribute_definition_id ) ;
 
-ALTER TABLE drug_era ADD CONSTRAINT xpk_drug_era PRIMARY KEY ( drug_era_id ) ;
+-- ALTER TABLE drug_era ADD CONSTRAINT xpk_drug_era PRIMARY KEY ( drug_era_id ) ;
 
-ALTER TABLE dose_era  ADD CONSTRAINT xpk_dose_era PRIMARY KEY ( dose_era_id ) ;
+-- ALTER TABLE dose_era  ADD CONSTRAINT xpk_dose_era PRIMARY KEY ( dose_era_id ) ;
 
-ALTER TABLE condition_era ADD CONSTRAINT xpk_condition_era PRIMARY KEY ( condition_era_id ) ;
+-- ALTER TABLE condition_era ADD CONSTRAINT xpk_condition_era PRIMARY KEY ( condition_era_id ) ;
 
 
 
