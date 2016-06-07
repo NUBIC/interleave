@@ -24,11 +24,17 @@
     @include grid-column(
      $columns: 12
     );
+    input {
+      margin-bottom: 0;
+    }
   }
   .condition_end_date {
     @include grid-column(
      $columns: 12
     );
+    input {
+      margin-bottom: 0;
+    }
   }
   .condition_concept_id {
     label {
@@ -37,6 +43,21 @@
     @include grid-column(
      $columns: 12
     );
+    select {
+      margin-bottom: 0;
+    }
+  }
+
+  .condition_type_concept_id {
+    label {
+      display: block;
+    }
+    @include grid-column(
+     $columns: 12
+    );
+    select {
+      margin-bottom: 0;
+    }
   }
   .navigation {
     @include grid-column-offset(12);

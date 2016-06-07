@@ -45,6 +45,10 @@ GEM
       debug_inspector (>= 0.0.1)
     builder (3.2.2)
     byebug (8.2.5)
+    client_side_validations (4.2.3)
+      jquery-rails (>= 3.1.2, < 5.0.0)
+      js_regex (~> 1.0, >= 1.0.9)
+      rails (>= 4.0.0, < 4.3.0)
     coffee-rails (4.1.1)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.1.x)
@@ -74,6 +78,8 @@ GEM
       thor (>= 0.14, < 2.0)
     jquery-ui-rails (5.0.5)
       railties (>= 3.2.16)
+    js_regex (1.0.16)
+      regexp_parser (= 0.3.5)
     json (1.8.3)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
@@ -118,6 +124,7 @@ GEM
     rake (11.1.2)
     rdoc (4.2.2)
       json (~> 1.4)
+    regexp_parser (0.3.5)
     sass (3.4.22)
     sass-rails (5.0.4)
       railties (>= 4.0.0, < 5.0)
@@ -161,6 +168,7 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
+  client_side_validations
   coffee-rails (~> 4.1.0)
   foundation-rails (= 6.2.3.0)
   haml

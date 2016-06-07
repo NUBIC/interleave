@@ -9,7 +9,6 @@ class InterleaveDatapoint < ActiveRecord::Base
   def concepts(search_token = nil)
     if unrestricted
       results = Concept.where(domain_id: domain_id, standard_concept: 'S').order('concept_name ASC')
-
     else
       results = interleave_datapoint_concepts.joins(:concept).order('concept.concept_name ASC')
     end

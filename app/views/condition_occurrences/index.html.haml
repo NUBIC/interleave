@@ -32,10 +32,10 @@
               %td.condition_occurrence_condition_type_concept_name
                 = condition_occurrence.condition_type_concept.name
               %td.review
-      .new_condition_occurrence
+      .new_condition_occurrence_link
         = link_to 'Add', new_interleave_registry_interleave_person_condition_occurrence_url(@registry, @interleave_person, datapoint_id: @datapoint.id), 'data-no-turbolink' => '', id: 'new_condition_occurrence_link'
       = will_paginate @condition_occurrences
-  #new_condition_occurrence.reveal.large{ "data-reveal" => "", "data-options" => 'close_on_background_click:false;close_on_esc:false;' }
+  #new_condition_occurrence_modal.reveal.large{ "data-reveal" => "", "data-options" => 'close_on_background_click:false;close_on_esc:false;' }
     .condition_occurrence
     %button.close-button{"aria-label" => "Close modal", "data-close" => "", :type => "button"}
       %span{"aria-hidden" => "true"} &times;

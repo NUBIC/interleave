@@ -3,17 +3,22 @@
 (exports ? this).Interleave.ConditionOccurencesUI = (config) ->
 
   $('#new_condition_occurrence_link').on 'click', (e) ->
-    $modal = $('#new_condition_occurrence')
-    $condition_occurrence = $('#new_condition_occurrence .condition_occurrence')
+    $modal = $('#new_condition_occurrence_modal')
+    $condition_occurrence = $('#new_condition_occurrence_modal .condition_occurrence')
     $.ajax(this.href).done (response) ->
       $condition_occurrence.html(response)
       $modal.foundation 'open'
-      $('.datepicker').datepicker()
+      $('.datepicker').datepicker
+        onClose: (dateText, inst) ->
+          $(inst.input).change().focusout()
+          return
+        changeMonth: true
+        changeYear: true
       interleaveDatapointConceptsUrl = $('#concepts_interleave_datapoint_url').attr('href')
-      templateResult = (concept) ->
-        concept.text
-      templateSelection = (concept) ->
-        concept.id
+      $('#new_condition_occurrence').enableClientSideValidations()
+      $('#new_condition_occurrence').submit (e) ->
+          e.preventDefault
+          false
       $('#condition_occurrence_condition_concept_id').select2
         ajax:
           url: interleaveDatapointConceptsUrl
@@ -25,15 +30,10 @@
               page: params.page
             }
           processResults: (data, params) ->
-            # parse the results into the format expected by Select2
-            # since we are using custom formatting functions we do not need to
-            # alter the remote JSON data, except to indicate that infinite
-            # scrolling can be used
             params.page = params.page or 1
-
-            results = $.map(data, (obj) ->
+            results = $.map(data.concepts, (obj) ->
               obj.id = obj.concept_id
-              obj.text = obj.name
+              obj.text = obj.text
               obj
             )
 
@@ -45,8 +45,14 @@
         escapeMarkup: (markup) ->
           markup
         minimumInputLength: 2
-        templateResult: templateResult
-        templateSelection: templateSelection
+      $('#condition_occurrence_condition_concept_id').on 'select2:select', (e) ->
+        $(this).blur()
+        return
+
+      $('#condition_occurrence_condition_type_concept_id').on 'change', (e) ->
+        $(this).blur()
+        return
+
       return
     e.preventDefault()
     return
