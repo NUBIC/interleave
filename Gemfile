@@ -27,6 +27,8 @@ gem 'haml'
 gem 'foundation-rails', '6.2.3.0'
 gem 'will_paginate'
 gem 'client_side_validations'
+gem 'american_date'
+gem 'will_paginate-foundation'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

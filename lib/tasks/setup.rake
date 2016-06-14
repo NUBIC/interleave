@@ -5,7 +5,7 @@ namespace :setup do
     interleave_registry_affiliate_northwestern = InterleaveRegistryAffiliate.where(name: 'Northwestern', interleave_registry: interleave_registry).first_or_create
     interleave_registry_affiliate_north_shore = InterleaveRegistryAffiliate.where(name: 'NorthShore University Health System', interleave_registry: interleave_registry).first_or_create
 
-    interleave_registry_cdm_source = InterleaveRegistryCdmSource.where(cdm_source_name: 'Ex nihilo', interleave_registry: interleave_registry).first_or_create
+    interleave_registry_cdm_source = InterleaveRegistryCdmSource.where(cdm_source_name: InterleaveRegistryCdmSource::CDM_SOURCE_EX_NIHILO, interleave_registry: interleave_registry).first_or_create
 
     people = []
     people << { omop: { gender: Concept.where(domain_id: 'Gender').first, year_of_birth: 1971, month_of_birth: 12, day_of_birth: 10, race: Concept.where(domain_id: 'Race').first, ethnicity: Concept.where(domain_id: 'Ethnicity').first }, interleave: { first_name: 'little', last_name: 'my', middle_name: nil } }

@@ -7,7 +7,7 @@
     %h3
       = @datapoint.name
     .condition_occurrences_list
-      = will_paginate @condition_occurrences
+      = will_paginate @condition_occurrences, renderer: FoundationPagination::Rails
       %table
         %thead
           %tr
@@ -24,17 +24,17 @@
           %tbody
             = content_tag_for(:tr, condition_occurrence) do
               %td.condition_occurrence_concept_name
-                = condition_occurrence.condition_conept.name
+                = condition_occurrence.condition_concept.concept_name
               %td.condition_occurrence_start_date
                 = condition_occurrence.condition_start_date
               %td.condition_occurrence_end_date
                 = condition_occurrence.condition_end_date
               %td.condition_occurrence_condition_type_concept_name
-                = condition_occurrence.condition_type_concept.name
+                = condition_occurrence.condition_type_concept.concept_name
               %td.review
       .new_condition_occurrence_link
         = link_to 'Add', new_interleave_registry_interleave_person_condition_occurrence_url(@registry, @interleave_person, datapoint_id: @datapoint.id), 'data-no-turbolink' => '', id: 'new_condition_occurrence_link'
-      = will_paginate @condition_occurrences
+      = will_paginate @condition_occurrences, renderer: FoundationPagination::Rails
   #new_condition_occurrence_modal.reveal.large{ "data-reveal" => "", "data-options" => 'close_on_background_click:false;close_on_esc:false;' }
     .condition_occurrence
     %button.close-button{"aria-label" => "Close modal", "data-close" => "", :type => "button"}

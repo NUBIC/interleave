@@ -19,7 +19,7 @@
           Search
         = link_to 'Clear', interleave_registry_interleave_people_url(@registry)
   .people_list
-    = will_paginate @people
+    = will_paginate @people, renderer: FoundationPagination::Rails
     %table
       %thead
         %tr
@@ -41,4 +41,4 @@
               = person.last_name
             %td.review
               = link_to 'Person', details_interleave_registry_interleave_person_url(@registry, person), { class: 'registry_people_edit_link' }
-    = will_paginate @people
+    = will_paginate @people, renderer: FoundationPagination::Rails

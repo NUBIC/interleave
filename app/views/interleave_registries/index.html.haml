@@ -16,7 +16,7 @@
           Search
         = link_to 'Clear', interleave_registries_path()
   .registries_list
-    = will_paginate @registries
+    = will_paginate @registries, renderer: FoundationPagination::Rails
     %table
       %thead
         %tr
@@ -30,4 +30,4 @@
               = registry.name
             %td.review
               = link_to 'People', interleave_registry_interleave_people_url(registry), { class: 'registry_people_index_link' }
-    = will_paginate @registries
+    = will_paginate @registries, renderer: FoundationPagination::Rails

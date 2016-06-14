@@ -1,5 +1,5 @@
 #condition_occurrence
-  = form_for [@registry, @interleave_person, @condition_occurrence], validate: true do |f|
+  = form_for [@registry, @interleave_person, @condition_occurrence], remote: true, validate: true do |f|
     = link_to '', concepts_interleave_datapoint_url(@datapoint.id), class: 'hide', id: 'concepts_interleave_datapoint_url'
     = f.hidden_field :interleave_datapoint_id, value: @datapoint.id
     .row
@@ -22,3 +22,4 @@
           = f.select :condition_type_concept_id, options_for_select(@type_concepts), { include_blank: true }
       .navigation
         = f.submit 'Save', class: 'button'
+        = link_to 'Cancel', '#', class: 'cancel-link button warning'

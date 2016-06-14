@@ -7,7 +7,7 @@
     = stylesheet_link_tag    "application"
     = javascript_include_tag "application"
     = csrf_meta_tags
-  %body
+  %body{ class: "#{controller_name} #{action_name}"}
     = render 'shared/navigation'
     = render 'shared/breadcrumbs'
     = yield
