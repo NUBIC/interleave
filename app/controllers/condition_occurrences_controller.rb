@@ -16,7 +16,7 @@ class ConditionOccurrencesController < ApplicationController
   def new
     @datapoint = @registry.interleave_datapoints.find(params[:datapoint_id])
     @concepts = []
-    @type_concepts = Concept.condition_types.map { |condition_type| [condition_type.concept_name, condition_type.concept_id] }
+    @type_concepts = Concept.condition_types.valid.standard.map { |condition_type| [condition_type.concept_name, condition_type.concept_id] }
     @condition_occurrence = ConditionOccurrence.new()
     respond_to do |format|
       format.html { render :layout => false }

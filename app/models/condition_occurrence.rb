@@ -18,7 +18,7 @@ class ConditionOccurrence < ActiveRecord::Base
   end
 
   def self.domain_concept
-    Concept.domain_concepts.where(concept_name: self.domain_name).first
+    Concept.domain_concepts.valid.where(concept_name: self.domain_name).first
   end
 
   def self.domain_name
