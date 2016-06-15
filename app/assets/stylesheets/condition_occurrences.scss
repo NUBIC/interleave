@@ -60,6 +60,7 @@
     }
   }
   .navigation {
+    padding: 1rem;
     @include grid-column-offset(12);
     @include grid-column(
      $columns: 12

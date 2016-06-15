@@ -6,10 +6,10 @@
  * Enrichment of the CDM to include protected health information fields.
  * Registry-scoped configuration of datapoints and the relationshpe between datapoints.  Dynamic display of datapoints per peson per registry.
  * Datapoint restriction of the list of possible values of CDM concept ID values.
- * Provenance tracking per CDM entity back to source system rows.
+ * Provenance tracking per imported standardized CDM clinical entity back to source system rows.
  * Support the incremental load of data from multiple outside source systems.
  * A user interface to allow for the creation 'ex nihlo' of standardized CDM clinical entities.
- * A user interface to allow for the overide of externally imported CDM entities.
+ * A user interface to allow for the override of externally imported standardized CDM clinical entities.
 
 * Why the name 'Interleve'?
   * Because clinical reserach databases and registries requrie the 'inteleaving' of manually created data and data automatically pulled from external systems (EHRs, billing/claims systems...)?  Data must be stacked on top of each other and the provenance of each entity must be tracked.  The data must be interleaved.

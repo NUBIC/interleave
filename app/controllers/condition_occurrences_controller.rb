@@ -25,7 +25,8 @@ class ConditionOccurrencesController < ApplicationController
 
   def create
     @condition_occurrence = ConditionOccurrence.new(condition_occurence_params)
-    @condition_occurrence.interleave_registry_cdm_source = @registry.interleave_registry_cdm_sources.where(cdm_source_name: InterleaveRegistryCdmSource::CDM_SOURCE_EX_NIHILO).first
+    interleave_registry_cdm_source =  @registry.interleave_registry_cdm_sources.where(cdm_source_name: InterleaveRegistryCdmSource::CDM_SOURCE_EX_NIHILO).first
+    @condition_occurrence.interleave_registry_cdm_source_id = interleave_registry_cdm_source.id
     @condition_occurrence.person = @interleave_person.person
     respond_to do |format|
       if @condition_occurrence.save

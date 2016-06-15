@@ -5,6 +5,7 @@ RSpec.describe Concept, type: :model do
     @concept_condition_type = FactoryGirl.create(:concept_condition_type, concept_id: 1, concept_name: 'moomin')
     @concept_domain = FactoryGirl.create(:concept_domain, concept_id: 2, concept_name: 'peanut')
   end
+
   it 'reports condition type concepts', focus: false do
     expect(Concept.condition_types).to match_array([@concept_condition_type])
   end
@@ -20,7 +21,7 @@ RSpec.describe Concept, type: :model do
     expect(Concept.standard).to be_empty
   end
 
-  it 'reports valid concepts', focus: true do
+  it 'reports valid concepts', focus: false do
     expect(Concept.valid).to match_array([@concept_condition_type, @concept_domain])
     @concept_condition_type.invalid_reason = 'U'
     @concept_condition_type.save!
