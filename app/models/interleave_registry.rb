@@ -3,14 +3,11 @@ class InterleaveRegistry < ActiveRecord::Base
   has_many :interleave_registry_cdm_sources
   has_many :interleave_datapoints
 
-  scope :search_across_fields, ->(search_token, options={}) do
-    if search_token
-      search_token.downcase!
-    end
+  def self.search_across_fields(search, options={})
     options = { sort_column: 'name', sort_direction: 'asc' }.merge(options)
 
-    if search_token
-      s = where(['lower(name) like ?', "%#{search_token}%"])
+    if search
+      s = where(['lower(name) like ?', "%#{search.downcase}%"])
     end
 
     sort = options[:sort_column] + ' ' + options[:sort_direction]

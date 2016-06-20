@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature "Homes", type: :feature do
+RSpec.feature "Home", type: :feature do
 
   scenario "Visiting hoe",  js: true, focus: false do
     visit root_path

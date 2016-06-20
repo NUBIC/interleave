@@ -10,6 +10,7 @@ require 'factory_girl'
 require 'capybara/rails'
 require 'capybara/rspec'
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+include InterleaveSpecSetup
 
 Capybara.register_driver :chrome do |app|
   Capybara::Selenium::Driver.new(app, :browser => :chrome)

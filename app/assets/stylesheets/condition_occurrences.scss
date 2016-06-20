@@ -8,6 +8,15 @@
   }
 }
 
+#new_condition_occurrence_modal {
+  position: fixed;
+  bottom: 0;
+  top: 30% !important;
+  right: 0;
+  left: 0;
+  width: 100%;
+}
+
 #condition_occurrence {
   @include grid-row();
 
@@ -45,6 +54,10 @@
     );
     select {
       margin-bottom: 0;
+    }
+
+    .select2 {
+      width: 100% !important;
     }
   }
 

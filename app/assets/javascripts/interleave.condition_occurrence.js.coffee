@@ -9,7 +9,7 @@ class Interleave.ConditionOccurrence
         $modal.foundation 'open'
         $('.datepicker').datepicker
           onClose: (dateText, inst) ->
-            $(inst.input).change().focusout()
+            $(inst.input).focusout()
             return
           changeMonth: true
           changeYear: true
@@ -58,6 +58,7 @@ class Interleave.ConditionOccurrence
 
         $('#new_condition_occurrence .cancel-link').on 'click', (e) ->
           $modal.foundation 'close'
+          e.preventDefault()
 
         return
       e.preventDefault()

@@ -3,24 +3,21 @@ class InterleavePerson < ActiveRecord::Base
   belongs_to :person
   has_many :interleave_person_identifiers
 
-  scope :search_across_fields, ->(search_token, registry, affiliate_id, options={}) do
-    options = { sort_column: 'name', sort_direction: 'asc' }.merge(options)
-    affiliate_ids = []
-    if affiliate_id == 'all'
-      affiliate_ids = registry.interleave_registry_affiliates.map(&:id)
-    else
-      affiliate_ids << affiliate_id.to_i
+  def self.search_across_fields(registry, options={})
+    options = { search: nil, affiliate_id: [], sort_column: 'last_name', sort_direction: 'asc' }.merge(options)
+    if options[:affiliate_id].blank?
+      options[:affiliate_id] = registry.interleave_registry_affiliates.map(&:id)
     end
 
-    s = joins(:interleave_registry_affiliate)
+    s = joins(:interleave_registry_affiliate).where('interleave_registry_affiliates.interleave_registry_id = ? AND interleave_registry_affiliate_id IN(?)', registry.id, options[:affiliate_id])
 
-    if search_token
-      search_token.downcase!
-      s = s.where(['interleave_registry_affiliate_id IN(?) AND (lower(first_name) like ? OR lower(last_name) like ?)', affiliate_ids, "%#{search_token}%", "%#{search_token}%"])
+    if options[:search]
+      options[:search] = options[:search].downcase
+      s = s.where(['(lower(first_name) like ? OR lower(last_name) like ?)', "%#{options[:search]}%", "%#{options[:search]}%"])
     end
 
     sort = options[:sort_column] + ' ' + options[:sort_direction]
-    s = s.nil? ? order(sort) : s.order(sort)
+    s = s.order(sort)
 
     s
   end

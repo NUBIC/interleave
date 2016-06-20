@@ -13,7 +13,7 @@ class InterleaveRegistriesController < ApplicationController
 
   private
     def sort_column
-      !params[:sort].blank? ? params[:sort] : 'name'
+      ['name'].include?(params[:sort]) ? params[:sort] : 'name'
     end
 
     def sort_direction

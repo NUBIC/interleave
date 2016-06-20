@@ -8,10 +8,11 @@ class InterleavePeopleController < ApplicationController
     options = {}
     options[:sort_column] = sort_column
     options[:sort_direction] = sort_direction
-    params[:affiliate_id] ||= 'all'
+    options[:search] = params[:search]
+    options[:affiliate_id] = params[:affiliate_id].to_i unless params[:affiliate_id].blank?
     add_breadcrumbs(registry: @registry)
     @regsitry_affiliates = @registry.interleave_registry_affiliates.map { |regsitry_affiliate| [regsitry_affiliate.name,  regsitry_affiliate.id] }
-    @people = InterleavePerson.search_across_fields(params[:search], @registry, params[:affiliate_id], options).paginate(per_page: 10, page: params[:page])
+    @people = InterleavePerson.search_across_fields(@registry, options).paginate(per_page: 10, page: params[:page])
   end
 
   def details
@@ -28,10 +29,10 @@ class InterleavePeopleController < ApplicationController
     end
 
     def sort_column
-      !params[:sort].blank? ? params[:sort] : 'last_name'
+      ['first_name', 'last_name', 'interleave_registry_affiliates.name'].include?(params[:sort]) ? params[:sort] : 'last_name'
     end
 
     def sort_direction
-      %w[asc desc].include?(params[:direction]) ? params[:direction] : 'asc'
+      ['asc', 'desc'].include?(params[:direction]) ? params[:direction] : 'asc'
     end
 end

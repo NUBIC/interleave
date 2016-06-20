@@ -13,7 +13,7 @@
         = text_field_tag :search, (params[:search].nil? ? '' : params[:search]), type: 'search'
       .affiliate_id
         = label_tag :affiliate_id, 'Affiliate'
-        = select_tag :affiliate_id, options_for_select(['all'].concat(@regsitry_affiliates), selected = params[:affiliate_id])
+        = select_tag :affiliate_id, options_for_select(@regsitry_affiliates, selected = params[:affiliate_id]), include_blank: true
       .navigation
         %button{ type: 'submit', id: 'search_people_button', class: 'tiny button' }
           Search
