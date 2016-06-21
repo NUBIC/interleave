@@ -30,15 +30,15 @@
           %th.people_last_name{ width: 200 }
             = sortable 'last_name'
           %th.review{ width: 100 }
-      - @people.each do |person|
-        %tbody
+      %tbody
+        - @people.each do |person|
           = content_tag_for(:tr, person) do
-            %td.people_first_name
+            %td.registry_affiliate_name
               = person.interleave_registry_affiliate.name
             %td.people_first_name
               = person.first_name
             %td.people_last_name
               = person.last_name
             %td.review
-              = link_to 'Person', details_interleave_registry_interleave_person_url(@registry, person), { class: 'registry_people_edit_link' }
+              = link_to 'Edit', details_interleave_registry_interleave_person_url(@registry, person), { class: 'registry_people_edit_link' }
     = will_paginate @people, renderer: FoundationPagination::Rails

@@ -3,4 +3,4 @@
     %ul.breadcrumbs
       - @breadcrumbs.each do |breadcrumb|
         %li
-          = link_to breadcrumb[:name], breadcrumb[:url]
+          = link_to breadcrumb[:name], breadcrumb[:url], class: "#{breadcrumb[:class]}"

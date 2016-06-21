@@ -20,11 +20,11 @@
     %table
       %thead
         %tr
-          %th.registries_name{ width: 200 }
+          %th.registry_name{ width: 200 }
             = sortable 'name'
           %th.review{ width: 100 }
-      - @registries.each do |registry|
-        %tbody
+      %tbody
+        - @registries.each do |registry|
           = content_tag_for(:tr, registry) do
             %td.registry_name
               = registry.name
