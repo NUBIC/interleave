@@ -149,7 +149,7 @@ RSpec.feature 'Interleave Person', type: :feature do
     expect(page.has_css?('.condition_type_concept_id .field_with_errors'))
   end
 
-  scenario 'Sorting condition occurrences', js: true, focus: true do
+  scenario 'Sorting condition occurrences', js: true, focus: false do
     start_date_1 = Date.parse('1/1/2015')
     end_date_1 = Date.parse('2/1/2015')
     condition_occurrence_1 = FactoryGirl.create(:condition_occurrence, person:  @person_moomin, condition_concept: @concept_condition_neoplasam_of_prostate, condition_type_concept: @concept_condition_type_ehr_chief_complaint, interleave_datapoint_id: @interleave_datapoint_diagnosis.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source.id, condition_start_date: start_date_1, condition_end_date: end_date_1)
