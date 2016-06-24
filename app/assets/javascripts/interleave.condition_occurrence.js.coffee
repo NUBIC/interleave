@@ -1,9 +1,9 @@
 class Interleave.ConditionOccurrence
   constructor: () ->
-  render: ->
-    $('#new_condition_occurrence_link').on 'click', (e) ->
-      $modal = $('#new_condition_occurrence_modal')
-      $condition_occurrence = $('#new_condition_occurrence_modal .condition_occurrence')
+  render: (link) ->
+    $(link).on 'click', (e) ->
+      $modal = $('#condition_occurrence_modal')
+      $condition_occurrence = $('#condition_occurrence_modal .condition_occurrence')
       $.ajax(this.href).done (response) ->
         $condition_occurrence.html(response)
         $modal.foundation 'open'
@@ -14,7 +14,7 @@ class Interleave.ConditionOccurrence
           changeMonth: true
           changeYear: true
         interleaveDatapointConceptsUrl = $('#concepts_interleave_datapoint_url').attr('href')
-        $('#new_condition_occurrence').enableClientSideValidations()
+        $('.condition_occurrence_form').enableClientSideValidations()
         $('#condition_occurrence_condition_concept_id').select2
           ajax:
             url: interleaveDatapointConceptsUrl
@@ -50,13 +50,13 @@ class Interleave.ConditionOccurrence
           $(this).blur()
           return
 
-        $('#new_condition_occurrence').on('ajax:success', (e, data, status, xhr) ->
+        $('.condition_occurrence_form').on('ajax:success', (e, data, status, xhr) ->
           $modal.foundation 'close'
           Turbolinks.visit(location.toString())
           $('.condition_occurrences_list').fadeOut()
         ).on 'ajax:error', (e, xhr, status, error) ->
 
-        $('#new_condition_occurrence .cancel-link').on 'click', (e) ->
+        $('.condition_occurrence_form .cancel-link').on 'click', (e) ->
           $modal.foundation 'close'
           e.preventDefault()
 
@@ -68,4 +68,4 @@ class Interleave.ConditionOccurrence
 $(document).on 'page:load ready', ->
   return unless $('.condition_occurrences.index').length > 0
   ui = new Interleave.ConditionOccurrence
-  ui.render()
+  ui.render('.condition_occurrence_link')

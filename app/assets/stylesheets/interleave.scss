@@ -5,3 +5,7 @@
 .field_with_errors {
   border: .10rem solid $alert-color;
 }
+
+.required {
+  color: $alert-color;
+}

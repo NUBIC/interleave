@@ -1,11 +1,16 @@
+%h3
+  Condition:
+  = @datapoint.name
 #condition_occurrence
-  = form_for [@registry, @interleave_person, @condition_occurrence], remote: true, validate: true do |f|
+  = form_for [@registry, @interleave_person, @condition_occurrence], html: { class: 'condition_occurrence_form' }, remote: true, validate: true do |f|
     = link_to '', concepts_interleave_datapoint_url(@datapoint.id), class: 'hide', id: 'concepts_interleave_datapoint_url'
     = f.hidden_field :interleave_datapoint_id, value: @datapoint.id
     .row
       .condition_start_date
         %label{for: 'condition_start_date' }
           Start
+          %span{ class: 'required' }
+            *
           = f.text_field :condition_start_date, class: 'datepicker'
       .condition_end_date
         %label{for: 'condition_end_date' }
@@ -15,11 +20,19 @@
       .condition_concept_id
         %label{for: 'condition_concept_id' }
           Concept
-          = f.select :condition_concept_id, options_for_select(@concepts), { include_blank: true }
+          %span{ class: 'required' }
+            *
+          = f.select :condition_concept_id, options_for_select(@concepts,  selected: f.object.condition_concept_id), { include_blank: true }
       .condition_type_concept_id
         %label{for: 'condition_type_concept_id' }
           Type
-          = f.select :condition_type_concept_id, options_for_select(@type_concepts), { include_blank: true }
+          %span{ class: 'required' }
+            *
+          = f.select :condition_type_concept_id, options_for_select(@type_concepts, selected: f.object.condition_type_concept_id), { include_blank: true }
       .navigation
+        %p.help-text
+          %span{ class: 'required' }
+            *
+          Indicates required field
         = f.submit 'Save', class: 'button'
         = link_to 'Cancel', '#', class: 'cancel-link button warning'

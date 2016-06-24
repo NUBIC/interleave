@@ -1,7 +1,8 @@
 class ConditionOccurrencesController < ApplicationController
   helper_method :sort_column, :sort_direction
-  before_filter :load_interleave_registry, only: [:index, :new, :create]
-  before_filter :load_interleave_person, only: [:index, :new, :create]
+  before_filter :load_interleave_registry, only: [:index, :new, :create, :edit]
+  before_filter :load_interleave_person, only: [:index, :new, :create, :edit]
+  before_filter :load_condition_occurrence, only: [:edit, :update]
 
   def index
     params[:page]||= 1
@@ -10,7 +11,7 @@ class ConditionOccurrencesController < ApplicationController
     options[:sort_direction] = sort_direction
     @datapoint = @registry.interleave_datapoints.find(params[:datapoint_id])
     add_breadcrumbs(registry: @registry, interleave_person: @interleave_person, datapoint: @datapoint)
-    @condition_occurrences = ConditionOccurrence.by_person(@interleave_person.person.person_id).by_interleave_data_point(@datapoint.id).paginate(per_page: 10, page: params[:page])
+    @condition_occurrences = ConditionOccurrence.by_person(@interleave_person.person.person_id).by_interleave_data_point(@datapoint.id, options).paginate(per_page: 10, page: params[:page])
   end
 
   def new
@@ -30,9 +31,28 @@ class ConditionOccurrencesController < ApplicationController
     @condition_occurrence.person = @interleave_person.person
     respond_to do |format|
       if @condition_occurrence.save
-        format.js   {}
+        format.js { }
       else
-        format.js   {}
+        format.js { render json: { errors: @condition_occurrence.errors.full_messages }, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def edit
+    @datapoint = @registry.interleave_datapoints.find(params[:datapoint_id])
+    @concepts = [[@condition_occurrence.condition_concept.concept_name, @condition_occurrence.condition_concept_id]]
+    @type_concepts = Concept.condition_types.valid.standard.map { |condition_type| [condition_type.concept_name, condition_type.concept_id] }
+    respond_to do |format|
+      format.html { render :layout => false }
+    end
+  end
+
+  def update
+    respond_to do |format|
+      if @condition_occurrence.update_attributes(condition_occurence_params)
+        format.js { }
+      else
+        format.js { render json: { errors: @condition_occurrence.errors.full_messages }, status: :unprocessable_entity }
       end
     end
   end
@@ -50,8 +70,12 @@ class ConditionOccurrencesController < ApplicationController
       @interleave_person = InterleavePerson.find(params[:interleave_person_id])
     end
 
+    def load_condition_occurrence
+      @condition_occurrence = ConditionOccurrence.find(params[:id])
+    end
+
     def sort_column
-      !params[:sort].blank? ? params[:sort] : 'condition_start_date'
+      ['condition_start_date', 'condition_end_date', 'condition_concept.concept_name', 'condition_type_concept.concept_name'].include?(params[:sort]) ? params[:sort] : 'condition_start_date'
     end
 
     def sort_direction

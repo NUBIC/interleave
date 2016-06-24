@@ -11,7 +11,7 @@
     .birth_date
       %strong
         Birth Date:
-      = @interleave_person.person.birth_date
+      = @interleave_person.person.birth_date.to_s(:date)
     .race
       %strong
         Race:

@@ -6,9 +6,35 @@
      $columns: 20
     );
   }
+
+  .condition_occurrences_list {
+		@include grid-column(
+		  $columns: 24
+		);
+
+    th .current {
+      padding-right: 2em;
+      background-repeat: no-repeat;
+      background-position: right center;
+    }
+
+    th .asc {
+      background-image: asset_url("drop25.png");
+    }
+
+    th .desc {
+      background-image: asset_url("drop27.png");
+    }
+
+    table {
+      @include grid-column(
+       $columns: 24
+      );
+    }
+  }
 }
 
-#new_condition_occurrence_modal {
+#condition_occurrence_modal {
   position: fixed;
   bottom: 0;
   top: 30% !important;
