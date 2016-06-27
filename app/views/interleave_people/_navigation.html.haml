@@ -3,6 +3,9 @@
     = link_to 'Details', details_interleave_registry_interleave_person_url(@registry, @interleave_person), { class: 'registry_people_details_link'  }
   %li.menu-text
     = link_to 'Conditions', '#'
-    / Conditions
     %ul.menu.vertical.nested{ class: "#{active?('is-active','condition_occurrences', 'index')}"}
       = links_to_datapoints(@registry, @interleave_person, 'Condition')
+  %li.menu-text
+    = link_to 'Procedures', '#'
+    %ul.menu.vertical.nested{ class: "#{active?('is-active','procedure_occurrences', 'index')}"}
+      = links_to_datapoints(@registry, @interleave_person, 'Procedure')

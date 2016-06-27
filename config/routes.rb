@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       end
 
       resources :condition_occurrences, path: 'conditions'
+      resources :procedure_occurrences, path: 'procedures'
     end
   end
 

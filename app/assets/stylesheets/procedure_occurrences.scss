@@ -1,0 +1,113 @@
+#procedure_occurrences {
+  @include grid-row();
+
+  .interleave_datapoint {
+    @include grid-column(
+     $columns: 20
+    );
+  }
+
+  .procedure_occurrences_list {
+		@include grid-column(
+		  $columns: 24
+		);
+
+    th .current {
+      padding-right: 2em;
+      background-repeat: no-repeat;
+      background-position: right center;
+    }
+
+    th .asc {
+      background-image: asset_url("drop25.png");
+    }
+
+    th .desc {
+      background-image: asset_url("drop27.png");
+    }
+
+    table {
+      @include grid-column(
+       $columns: 24
+      );
+    }
+  }
+}
+
+#procedure_occurrence_modal {
+  position: fixed;
+  bottom: 0;
+  top: 30% !important;
+  right: 0;
+  left: 0;
+  width: 100%;
+}
+
+#procedure_occurrence {
+  @include grid-row();
+
+  .ui-autocomplete-input {
+    width: 90%;
+    height: 2.5rem;
+  }
+  .ui-button {
+    width: 5%;
+    height: 2.5rem;
+  }
+
+  .procedure_date {
+    @include grid-column(
+     $columns: 12
+    );
+    input {
+      margin-bottom: 0;
+    }
+  }
+
+  .quantity {
+    label {
+      display: block;
+    }
+    @include grid-column(
+     $columns: 12
+    );
+    select {
+      margin-bottom: 0;
+    }
+
+    .select2 {
+      width: 100% !important;
+    }
+  }
+
+  .procedure_concept_id {
+    label {
+      display: block;
+    }
+    @include grid-column(
+     $columns: 12
+    );
+    select {
+      margin-bottom: 0;
+    }
+  }
+
+  .procedure_type_concept_id {
+    label {
+      display: block;
+    }
+    @include grid-column(
+     $columns: 12
+    );
+    select {
+      margin-bottom: 0;
+    }
+  }
+  .navigation {
+    padding: 1rem;
+    @include grid-column-offset(12);
+    @include grid-column(
+     $columns: 12
+    );
+  }
+}

@@ -19,3 +19,4 @@
 //= require turbolinks
 //= require init
 //= require interleave.condition_occurrence
+//= require interleave.procedure_occurrence

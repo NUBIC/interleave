@@ -17,6 +17,10 @@ RSpec.feature 'Interleave Person', type: :feature do
     FactoryGirl.create(:interleave_datapoint_concept, interleave_datapoint: @interleave_datapoint_diagnosis, concept: @concept_condition_neoplasam_of_prostate)
     FactoryGirl.create(:interleave_datapoint_concept, interleave_datapoint: @interleave_datapoint_diagnosis, concept: @concept_condition_benign_prostatic_hyperplasia)
 
+    @interleave_datapoint_biopsy = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry_prostate, name: 'Biopsy', domain_id: ProcedureOccurrence::DOMAIN_ID, cardinality: 0, unrestricted: true, overlap: true)
+    FactoryGirl.create(:interleave_datapoint_concept, interleave_datapoint: @interleave_datapoint_biopsy, concept: @concept_procedure_biopsy_prostate_needle)
+    FactoryGirl.create(:interleave_datapoint_concept, interleave_datapoint: @interleave_datapoint_biopsy, concept: @concept_procedure_biopsy_prostate_incisional)
+
     visit interleave_registries_path
 
     within("#interleave_registry_#{@interleave_registry_prostate.id}") do
@@ -27,7 +31,6 @@ RSpec.feature 'Interleave Person', type: :feature do
       click_link('Edit')
     end
   end
-
 
   scenario 'Visiting breadcrumbs', js: true, focus: false do
     within('.breadcrumbs') do
@@ -55,6 +58,32 @@ RSpec.feature 'Interleave Person', type: :feature do
     end
 
     match_person(@interleave_person_moomin)
+
+    within('.person_navigation') do
+      click_link('Conditions')
+    end
+
+    within('.person_navigation') do
+      click_link('Diagnosis')
+    end
+
+    within('.breadcrumbs') do
+      click_link('Condition:Diagnosis')
+    end
+
+    within('.person_navigation') do
+      click_link('Procedures')
+    end
+
+    within('.person_navigation') do
+      click_link('Biopsy')
+    end
+
+    within('.breadcrumbs') do
+      click_link('Procedure:Biopsy')
+    end
+
+    sleep(1)
   end
 
   scenario 'Displaying multiple datapoints', js: true, focus: false do
@@ -77,9 +106,19 @@ RSpec.feature 'Interleave Person', type: :feature do
     click_link('Diagnosis')
     click_link('Add')
     click_button('Save')
-    expect(page.has_css?('.condition_start_date .field_with_errors'))
-    expect(page.has_css?('.condition_concept_id .field_with_errors'))
-    expect(page.has_css?('.condition_type_concept_id .field_with_errors'))
+    expect(page.has_css?('.condition_start_date .field_with_errors')).to be_truthy
+    expect(page.has_css?('.condition_concept_id .field_with_errors')).to be_truthy
+    expect(page.has_css?('.condition_type_concept_id .field_with_errors')).to be_truthy
+  end
+
+  scenario 'Adding a procedure occurrence with validation', js: true, focus: false do
+    click_link('Procedures')
+    click_link('Biopsy')
+    click_link('Add')
+    click_button('Save')
+    expect(page.has_css?('.procedure_date .field_with_errors')).to be_truthy
+    expect(page.has_css?('.procedure_concept_id .field_with_errors')).to be_truthy
+    expect(page.has_css?('.procedure_type_concept_id .field_with_errors')).to be_truthy
   end
 
   scenario 'Adding a condition occurrence', js: true, focus: false do
@@ -87,7 +126,7 @@ RSpec.feature 'Interleave Person', type: :feature do
     click_link('Diagnosis')
     click_link('Add')
     page.find('.select2-selection ').native.send_keys(:return)
-    concept_name = 'Neoplasm of prostate'
+    concept_name = @concept_condition_neoplasam_of_prostate.concept_name
     find('.select2-dropdown input').set(concept_name)
     find('.select2-results__option--highlighted').click
     condition_type_concept_name = 'EHR problem list entry'
@@ -98,6 +137,24 @@ RSpec.feature 'Interleave Person', type: :feature do
     page.execute_script("$('#condition_occurrence_condition_start_date').val('#{start_date}')")
     click_button('Save')
     match_condition(1, concept_name, Date.parse(start_date), Date.parse(end_date), condition_type_concept_name)
+  end
+
+  scenario 'Adding a procedure occurrence', js: true, focus: false do
+    click_link('Procedures')
+    click_link('Biopsy')
+    click_link('Add')
+    page.find('.select2-selection ').native.send_keys(:return)
+    concept_name = @concept_procedure_biopsy_prostate_needle.concept_name
+    find('.select2-dropdown input').set(concept_name)
+    find('.select2-results__option--highlighted').click
+    procedure_type_concept_name = @concept_procedure_type_primary_procedure.concept_name
+    select(procedure_type_concept_name, from: 'Type')
+    procedure_date = '02/01/2016'
+    page.execute_script("$('#procedure_occurrence_procedure_date').val('#{procedure_date}')")
+    quantity = 1
+    fill_in('Quantity', with: quantity)
+    click_button('Save')
+    match_procedure(1, concept_name, Date.parse(procedure_date), procedure_type_concept_name, quantity)
   end
 
   scenario 'Editing a condition occurrence', js: true, focus: false do
@@ -125,6 +182,30 @@ RSpec.feature 'Interleave Person', type: :feature do
     match_condition(1, @concept_condition_benign_prostatic_hyperplasia.concept_name, Date.parse(start_date), Date.parse(end_date), @concept_condition_type_ehr_chief_complaint.concept_name)
   end
 
+  scenario 'Editing a procedure occurrence', js: true, focus: false do
+    procedure_date = '1/1/2015'
+    quantity = 1
+    procedure_occurrence = FactoryGirl.create(:procedure_occurrence, person: @person_moomin, procedure_concept: @concept_procedure_biopsy_prostate_needle, procedure_type_concept: @concept_procedure_type_primary_procedure, interleave_datapoint_id: @interleave_datapoint_biopsy.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source.id, procedure_date: procedure_date, quantity: quantity)
+    click_link('Procedure')
+    click_link('Biopsy')
+    match_procedure(1, @concept_procedure_biopsy_prostate_needle.concept_name, Date.parse(procedure_date), @concept_procedure_type_primary_procedure.concept_name, quantity)
+
+    within("#procedure_occurrence_#{procedure_occurrence.id}") do
+      click_link('Edit')
+    end
+
+    page.find('.select2-selection ').native.send_keys(:return)
+    find('.select2-dropdown input').set(@concept_procedure_biopsy_prostate_incisional.concept_name)
+    find('.select2-results__option--highlighted').click
+    select(@concept_procedure_type_secondary_procedure.concept_name, from: 'Type')
+    procedure_date = '02/01/2016'
+    page.execute_script("$('#procedure_occurrence_procedure_date').val('#{procedure_date}')")
+    quantity = 2
+    fill_in('Quantity', with: quantity)
+    click_button('Save')
+    match_procedure(1, @concept_procedure_biopsy_prostate_incisional.concept_name, Date.parse(procedure_date), @concept_procedure_type_secondary_procedure.concept_name, quantity)
+  end
+
   scenario 'Editing a condition occurrence with validation', js: true, focus: false do
     start_date = Date.parse('1/1/2015')
     end_date = Date.parse('2/1/2015')
@@ -144,9 +225,34 @@ RSpec.feature 'Interleave Person', type: :feature do
     page.execute_script("$('#condition_occurrence_condition_start_date').val('#{start_date}')")
     click_button('Save')
     expect(page.has_css?('.condition_start_date .field_with_errors'))
-    #ttd Figure out how to set a select2 to a blank value
+    #TTD Figure out how to set a select2 to a blank value
     expect(page.has_css?('.condition_concept_id .field_with_errors'))
     expect(page.has_css?('.condition_type_concept_id .field_with_errors'))
+  end
+
+  scenario 'Editing a procedure occurrence with validation', js: true, focus: false do
+    procedure_date = '1/1/2015'
+    quantity = 1
+    procedure_occurrence = FactoryGirl.create(:procedure_occurrence, person: @person_moomin, procedure_concept: @concept_procedure_biopsy_prostate_needle, procedure_type_concept: @concept_procedure_type_primary_procedure, interleave_datapoint_id: @interleave_datapoint_biopsy.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source.id, procedure_date: procedure_date, quantity: quantity)
+    click_link('Procedure')
+    click_link('Biopsy')
+    match_procedure(1, @concept_procedure_biopsy_prostate_needle.concept_name, Date.parse(procedure_date), @concept_procedure_type_primary_procedure.concept_name, quantity)
+
+    within("#procedure_occurrence_#{procedure_occurrence.id}") do
+      click_link('Edit')
+    end
+    sleep(1)
+    select('', from: 'Type')
+    fill_in('Quantity', with: 'foo')
+    procedure_date = ''
+    page.execute_script("$('#procedure_occurrence_procedure_date').val('#{procedure_date}')")
+    page.execute_script("$('#procedure_occurrence_procedure_date').focusout()")
+    click_button('Save')
+    expect(page.has_css?('.procedure_date .field_with_errors')).to be_truthy
+    expect(page.has_css?('.quantity .field_with_errors')).to be_truthy
+    #TTD Figure out how to set a select2 to a blank value
+    # expect(page.has_css?('.procedure_concept_id .field_with_errors')).to be_truthy
+    expect(page.has_css?('.procedure_type_concept_id .field_with_errors')).to be_truthy
   end
 
   scenario 'Sorting condition occurrences', js: true, focus: false do
@@ -221,6 +327,78 @@ RSpec.feature 'Interleave Person', type: :feature do
     match_condition(1, @concept_condition_neoplasam_of_prostate.concept_name, start_date_1, end_date_1, @concept_condition_type_ehr_chief_complaint.concept_name)
     match_condition(2, @concept_condition_benign_prostatic_hyperplasia.concept_name, start_date_2, end_date_2, @concept_condition_type_ehr_episode_entry.concept_name)
   end
+
+  scenario 'Sorting procedure occurrences', js: true, focus: false do
+    procedure_date_1 = '1/1/2015'
+    quantity_1 = 1
+    procedure_occurrence = FactoryGirl.create(:procedure_occurrence, person: @person_moomin, procedure_concept: @concept_procedure_biopsy_prostate_needle, procedure_type_concept: @concept_procedure_type_primary_procedure, interleave_datapoint_id: @interleave_datapoint_biopsy.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source.id, procedure_date: procedure_date_1, quantity: quantity_1)
+
+    procedure_date_2 = '2/1/2015'
+    quantity_2 = 2
+    procedure_occurrence = FactoryGirl.create(:procedure_occurrence, person: @person_moomin, procedure_concept: @concept_procedure_biopsy_prostate_incisional, procedure_type_concept: @concept_procedure_type_secondary_procedure, interleave_datapoint_id: @interleave_datapoint_biopsy.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source.id, procedure_date: procedure_date_2, quantity: quantity_2)
+
+    click_link('Procedures')
+    click_link('Biopsy')
+
+    match_procedure(1, @concept_procedure_biopsy_prostate_needle.concept_name, Date.parse(procedure_date_1), @concept_procedure_type_primary_procedure.concept_name, quantity_1)
+    match_procedure(2, @concept_procedure_biopsy_prostate_incisional.concept_name, Date.parse(procedure_date_2), @concept_procedure_type_secondary_procedure.concept_name, quantity_2)
+
+    within(".procedure_occurrences_list") do
+      click_link('Procedure')
+    end
+
+    match_procedure(1, @concept_procedure_biopsy_prostate_incisional.concept_name, Date.parse(procedure_date_2), @concept_procedure_type_secondary_procedure.concept_name, quantity_2)
+    match_procedure(2, @concept_procedure_biopsy_prostate_needle.concept_name, Date.parse(procedure_date_1), @concept_procedure_type_primary_procedure.concept_name, quantity_1)
+
+    within(".procedure_occurrences_list") do
+      click_link('Procedure')
+    end
+
+    match_procedure(1, @concept_procedure_biopsy_prostate_needle.concept_name, Date.parse(procedure_date_1), @concept_procedure_type_primary_procedure.concept_name, quantity_1)
+    match_procedure(2, @concept_procedure_biopsy_prostate_incisional.concept_name, Date.parse(procedure_date_2), @concept_procedure_type_secondary_procedure.concept_name, quantity_2)
+
+    within(".procedure_occurrences_list") do
+      click_link('Date')
+    end
+
+    match_procedure(1, @concept_procedure_biopsy_prostate_needle.concept_name, Date.parse(procedure_date_1), @concept_procedure_type_primary_procedure.concept_name, quantity_1)
+    match_procedure(2, @concept_procedure_biopsy_prostate_incisional.concept_name, Date.parse(procedure_date_2), @concept_procedure_type_secondary_procedure.concept_name, quantity_2)
+
+    within(".procedure_occurrences_list") do
+      click_link('Date')
+    end
+
+    match_procedure(1, @concept_procedure_biopsy_prostate_incisional.concept_name, Date.parse(procedure_date_2), @concept_procedure_type_secondary_procedure.concept_name, quantity_2)
+    match_procedure(2, @concept_procedure_biopsy_prostate_needle.concept_name, Date.parse(procedure_date_1), @concept_procedure_type_primary_procedure.concept_name, quantity_1)
+
+    within(".procedure_occurrences_list") do
+      click_link('Quantity')
+    end
+
+    match_procedure(1, @concept_procedure_biopsy_prostate_needle.concept_name, Date.parse(procedure_date_1), @concept_procedure_type_primary_procedure.concept_name, quantity_1)
+    match_procedure(2, @concept_procedure_biopsy_prostate_incisional.concept_name, Date.parse(procedure_date_2), @concept_procedure_type_secondary_procedure.concept_name, quantity_2)
+
+    within(".procedure_occurrences_list") do
+      click_link('Quantity')
+    end
+
+    match_procedure(1, @concept_procedure_biopsy_prostate_incisional.concept_name, Date.parse(procedure_date_2), @concept_procedure_type_secondary_procedure.concept_name, quantity_2)
+    match_procedure(2, @concept_procedure_biopsy_prostate_needle.concept_name, Date.parse(procedure_date_1), @concept_procedure_type_primary_procedure.concept_name, quantity_1)
+
+    within(".procedure_occurrences_list") do
+      click_link('Procedure Type')
+    end
+
+    match_procedure(1, @concept_procedure_biopsy_prostate_needle.concept_name, Date.parse(procedure_date_1), @concept_procedure_type_primary_procedure.concept_name, quantity_1)
+    match_procedure(2, @concept_procedure_biopsy_prostate_incisional.concept_name, Date.parse(procedure_date_2), @concept_procedure_type_secondary_procedure.concept_name, quantity_2)
+
+    within(".procedure_occurrences_list") do
+      click_link('Procedure Type')
+    end
+
+    match_procedure(1, @concept_procedure_biopsy_prostate_incisional.concept_name, Date.parse(procedure_date_2), @concept_procedure_type_secondary_procedure.concept_name, quantity_2)
+    match_procedure(2, @concept_procedure_biopsy_prostate_needle.concept_name, Date.parse(procedure_date_1), @concept_procedure_type_primary_procedure.concept_name, quantity_1)
+  end
 end
 
 def match_person(interleave_person)
@@ -266,5 +444,24 @@ def match_condition(index, concept_name, start_date, end_date, condition_type_co
 
   within(".condition_occurrence:nth-of-type(#{index}) .condition_occurrence_condition_type_concept_name") do
     expect(page).to have_content(condition_type_concept_name)
+  end
+end
+
+
+def match_procedure(index, concept_name, procedure_date, procedure_type_concept_name, quantity)
+  within(".procedure_occurrence:nth-of-type(#{index}) .procedure_occurrence_concept_name") do
+    expect(page).to have_content(concept_name)
+  end
+
+  within(".procedure_occurrence:nth-of-type(#{index}) .procedure_occurrence_procedure_date") do
+    expect(page).to have_content(procedure_date.to_s(:date))
+  end
+
+  within(".procedure_occurrence:nth-of-type(#{index}) .procedure_occurrence_procedure_type_concept_name") do
+    expect(page).to have_content(procedure_type_concept_name)
+  end
+
+  within(".procedure_occurrence:nth-of-type(#{index}) .procedure_occurrence_quantity") do
+    expect(page).to have_content(quantity)
   end
 end

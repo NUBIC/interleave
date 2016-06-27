@@ -1,0 +1,40 @@
+%h3
+  Procedure:
+  = @datapoint.name
+#procedure_occurrence
+  = form_for [@registry, @interleave_person, @procedure_occurrence], html: { class: 'procedure_occurrence_form' }, remote: true, validate: true do |f|
+    = link_to '', concepts_interleave_datapoint_url(@datapoint.id), class: 'hide', id: 'concepts_interleave_datapoint_url'
+    = f.hidden_field :interleave_datapoint_id, value: @datapoint.id
+    .row
+      .procedure_date
+        %label{for: 'procedure_date' }
+          Date
+          %span{ class: 'required' }
+            *
+          = f.text_field :procedure_date, class: 'datepicker'
+      .quantity
+        %label{for: 'quantity' }
+          Quantity
+          %span{ class: 'required' }
+            *
+          = f.text_field :quantity
+    .row
+      .procedure_concept_id
+        %label{for: 'procedure_concept_id' }
+          Concept
+          %span{ class: 'required' }
+            *
+          = f.select :procedure_concept_id, options_for_select(@concepts,  selected: f.object.procedure_concept_id), { include_blank: true }
+      .procedure_type_concept_id
+        %label{for: 'procedure_type_concept_id' }
+          Type
+          %span{ class: 'required' }
+            *
+          = f.select :procedure_type_concept_id, options_for_select(@type_concepts, selected: f.object.procedure_type_concept_id), { include_blank: true }
+      .navigation
+        %p.help-text
+          %span{ class: 'required' }
+            *
+          Indicates required field
+        = f.submit 'Save', class: 'button'
+        = link_to 'Cancel', '#', class: 'cancel-link button warning'

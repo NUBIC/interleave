@@ -1,0 +1,42 @@
+- content_for(:title) do
+  Procedure occurrences
+#procedure_occurrences
+  = render 'interleave_people/header'
+  = render 'interleave_people/navigation'
+  .interleave_datapoint
+    %h3
+      = @datapoint.name
+    .procedure_occurrences_list
+      = will_paginate @procedure_occurrences, renderer: FoundationPagination::Rails
+      %table
+        %thead
+          %tr
+            %th.procedure_occurrence_concept_name{ width: 200 }
+              = sortable 'procedure_concept.concept_name', 'Procedure'
+            %th.procedure_occurrence_procedure_date{ width: 200 }
+              = sortable 'procedure_date', 'Date'
+            %th.procedure_occurrence_quantity{ width: 200 }
+              = sortable 'quantity', 'Quantity'
+            %th.procedure_occurrence_procedure_type_concept_name{ width: 200 }
+              = sortable 'procedure_type_concept.concept_name', 'Procedure Type'
+            %th.review{ width: 100 }
+        %tbody
+          - @procedure_occurrences.each do |procedure_occurrence|
+            = content_tag_for(:tr, procedure_occurrence) do
+              %td.procedure_occurrence_concept_name
+                = procedure_occurrence.procedure_concept.concept_name
+              %td.procedure_occurrence_procedure_date
+                = procedure_occurrence.procedure_date.to_s(:date)
+              %td.procedure_occurrence_quantity
+                = procedure_occurrence.quantity
+              %td.procedure_occurrence_procedure_type_concept_name
+                = procedure_occurrence.procedure_type_concept.concept_name
+              %td.review
+                = link_to 'Edit', edit_interleave_registry_interleave_person_procedure_occurrence_url(@registry, @interleave_person, procedure_occurrence, datapoint_id: @datapoint.id), 'data-no-turbolink' => '', class: 'edit_procedure_occurrence_link procedure_occurrence_link'
+      .new_procedure_occurrence_link
+        = link_to 'Add', new_interleave_registry_interleave_person_procedure_occurrence_url(@registry, @interleave_person, datapoint_id: @datapoint.id), 'data-no-turbolink' => '', id: 'new_procedure_occurrence_link', class: 'procedure_occurrence_link'
+      = will_paginate @procedure_occurrences, renderer: FoundationPagination::Rails
+  #procedure_occurrence_modal.reveal.large{ "data-reveal" => "" }
+    .procedure_occurrence
+    %button.close-button{"aria-label" => "Close modal", "data-close" => "", :type => "button"}
+      %span{"aria-hidden" => "true"} &times;

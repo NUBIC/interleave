@@ -21,6 +21,14 @@ module InterleaveSpecSetup
     @concept_condition_type_ehr_episode_entry = FactoryGirl.create(:concept_condition_type, concept_name: 'EHR Episode Entry' ,concept_id: 15)
     @concept_condition_type_ehr_problem_list_entry = FactoryGirl.create(:concept_condition_type, concept_name: 'EHR problem list entry' ,concept_id: 16)
 
-    @concept_domain_condition = FactoryGirl.create(:concept_domain, concept_name: 'Condition', concept_id: 17)
+    @concept_procedure_ultrasound_transrectal = FactoryGirl.create(:concept_procedure, concept_name: 'Ultrasound, transrectal', concept_code: '76872', concept_id: 17)
+    @concept_procedure_biopsy_prostate_needle = FactoryGirl.create(:concept_procedure, concept_name: 'Biopsy, prostate; needle or punch, single or multiple, any approach', concept_code: '55700', concept_id: 18)
+    @concept_procedure_biopsy_prostate_incisional = FactoryGirl.create(:concept_procedure, concept_name: 'Biopsy, prostate; incisional, any approach', concept_code: '55705', concept_id: 19)
+
+    @concept_procedure_type_primary_procedure = FactoryGirl.create(:concept_procedure_type, concept_name: 'Primary Procedure', concept_id: 20)
+    @concept_procedure_type_secondary_procedure = FactoryGirl.create(:concept_procedure_type, concept_name: 'Secondary Procedure', concept_id: 21)
+
+    @concept_domain_condition = FactoryGirl.create(:concept_domain, concept_name: 'Condition', concept_id: 22)
+    @concept_domain_procedure = FactoryGirl.create(:concept_domain, concept_name: 'Procedure', concept_id: 23)
   end
 end

@@ -3,9 +3,11 @@ class Concept < ActiveRecord::Base
   self.primary_key = 'concept_id'
 
   VOCABULARY_ID_CONDITION_TYPE = 'Condition Type'
+  VOCABULARY_ID_CPT4 = 'CPT4'
   VOCABULARY_ID_DOMAIN = 'Domain'
   VOCABULARY_ID_ETHNICITY = 'Ethnicity'
   VOCABULARY_ID_GENDER = 'Gender'
+  VOCABULARY_ID_PROCEDURE_TYPE = 'Procedure Type'
   VOCABULARY_ID_RACE = 'Race'
   VOCABULARY_ID_SNOMED = 'SNOMED'
   VOCABULARY_IDS = [VOCABULARY_ID_CONDITION_TYPE, VOCABULARY_ID_DOMAIN, VOCABULARY_ID_ETHNICITY, VOCABULARY_ID_GENDER, VOCABULARY_ID_RACE, VOCABULARY_ID_SNOMED]
@@ -21,9 +23,11 @@ class Concept < ActiveRecord::Base
 
   CONCEPT_CLASS_CLINICAL_FINDING = 'Clinical Finding'
   CONCEPT_CLASS_CONDITION_TYPE = 'Condition Type'
+  CONCEPT_CLASS_CPT4 = 'CPT4'
   CONCEPT_CLASS_DOMAIN = 'Domain'
   CONCEPT_CLASS_GENDER = 'Gender'
   CONCEPT_CLASS_ETHNICITY = 'Ethnicity'
+  CONCEPT_CLASS_PROCEDURE_TYPE = 'Procedure Type'
   CONCEPT_CLASS_RACE = 'Race'
   CONCEPT_CLASSES = [CONCEPT_CLASS_CONDITION_TYPE, CONCEPT_CLASS_DOMAIN, CONCEPT_CLASS_GENDER, CONCEPT_CLASS_ETHNICITY, CONCEPT_CLASS_RACE]
 
@@ -37,6 +41,10 @@ class Concept < ActiveRecord::Base
 
   def self.condition_types
     where(domain_id: Concept::DOMAIN_ID_TYPE_CONCEPT, vocabulary_id: Concept::VOCABULARY_ID_CONDITION_TYPE , concept_class_id: Concept::CONCEPT_CLASS_CONDITION_TYPE)
+  end
+
+  def self.procedure_types
+    where(domain_id: Concept::DOMAIN_ID_TYPE_CONCEPT, vocabulary_id: Concept::VOCABULARY_ID_PROCEDURE_TYPE , concept_class_id: Concept::CONCEPT_CLASS_PROCEDURE_TYPE)
   end
 
   def self.domain_concepts
