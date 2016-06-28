@@ -3,6 +3,7 @@ class ProcedureOccurrencesController < ApplicationController
   before_filter :load_interleave_registry, only: [:index, :new, :create, :edit]
   before_filter :load_interleave_person, only: [:index, :new, :create, :edit]
   before_filter :load_procedure_occurrence, only: [:edit, :update]
+  before_filter :load_interleave_datapoint, only: [:new, :edit]
 
   def index
     params[:page]||= 1
@@ -15,10 +16,9 @@ class ProcedureOccurrencesController < ApplicationController
   end
 
   def new
-    @datapoint = @registry.interleave_datapoints.find(params[:datapoint_id])
-    @concepts = []
-    @type_concepts = Concept.procedure_types.valid.standard.map { |procedure_type| [procedure_type.concept_name, procedure_type.concept_id] }
     @procedure_occurrence = ProcedureOccurrence.new()
+    @concepts = []
+    @type_concepts = load_type_concepts
     respond_to do |format|
       format.html { render :layout => false }
     end
@@ -39,9 +39,8 @@ class ProcedureOccurrencesController < ApplicationController
   end
 
   def edit
-    @datapoint = @registry.interleave_datapoints.find(params[:datapoint_id])
     @concepts = [[@procedure_occurrence.procedure_concept.concept_name, @procedure_occurrence.procedure_concept_id]]
-    @type_concepts = Concept.procedure_types.valid.standard.map { |procedure_type| [procedure_type.concept_name, procedure_type.concept_id] }
+    @type_concepts = load_type_concepts
     respond_to do |format|
       format.html { render :layout => false }
     end
@@ -72,6 +71,14 @@ class ProcedureOccurrencesController < ApplicationController
 
     def load_procedure_occurrence
       @procedure_occurrence = ProcedureOccurrence.find(params[:id])
+    end
+
+    def load_interleave_datapoint
+      @datapoint = InterleaveDatapoint.find(params[:datapoint_id])
+    end
+
+    def load_type_concepts
+      @datapoint.concepts('procedure_type_concept_id').map { |condition_type| [condition_type.concept_name, condition_type.concept_id] }
     end
 
     def sort_column

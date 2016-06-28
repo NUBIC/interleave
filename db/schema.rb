@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160510225153) do
+ActiveRecord::Schema.define(version: 20160628195204) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -265,17 +265,28 @@ ActiveRecord::Schema.define(version: 20160510225153) do
 
   create_table "interleave_datapoint_concepts", force: :cascade do |t|
     t.integer  "interleave_datapoint_id", null: false
+    t.string   "column",                  null: false
     t.integer  "concept_id",              null: false
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end
 
-  create_table "interleave_datapoint_relationships", force: :cascade do |t|
+  create_table "interleave_datapoint_defaults", force: :cascade do |t|
     t.integer  "interleave_datapoint_id", null: false
-    t.integer  "domain_concept_id",       null: false
-    t.integer  "relationship_concept_id", null: false
+    t.string   "column",                  null: false
+    t.decimal  "value_as_number"
+    t.string   "value_as_string"
+    t.integer  "value_as_concept_id"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+  end
+
+  create_table "interleave_datapoint_relationships", force: :cascade do |t|
+    t.integer  "interleave_datapoint_id_1", null: false
+    t.integer  "interleave_datapoint_id_2", null: false
+    t.integer  "relationship_concept_id",   null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
   create_table "interleave_datapoints", force: :cascade do |t|
@@ -285,6 +296,7 @@ ActiveRecord::Schema.define(version: 20160510225153) do
     t.integer  "cardinality",            null: false
     t.boolean  "unrestricted",           null: false
     t.boolean  "overlap",                null: false
+    t.string   "value_type"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end

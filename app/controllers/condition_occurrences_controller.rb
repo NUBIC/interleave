@@ -3,6 +3,7 @@ class ConditionOccurrencesController < ApplicationController
   before_filter :load_interleave_registry, only: [:index, :new, :create, :edit]
   before_filter :load_interleave_person, only: [:index, :new, :create, :edit]
   before_filter :load_condition_occurrence, only: [:edit, :update]
+  before_filter :load_interleave_datapoint, only: [:new, :edit]
 
   def index
     params[:page]||= 1
@@ -15,10 +16,9 @@ class ConditionOccurrencesController < ApplicationController
   end
 
   def new
-    @datapoint = @registry.interleave_datapoints.find(params[:datapoint_id])
-    @concepts = []
-    @type_concepts = Concept.condition_types.valid.standard.map { |condition_type| [condition_type.concept_name, condition_type.concept_id] }
     @condition_occurrence = ConditionOccurrence.new()
+    @concepts = []
+    @type_concepts = load_type_concepts
     respond_to do |format|
       format.html { render :layout => false }
     end
@@ -39,9 +39,8 @@ class ConditionOccurrencesController < ApplicationController
   end
 
   def edit
-    @datapoint = @registry.interleave_datapoints.find(params[:datapoint_id])
     @concepts = [[@condition_occurrence.condition_concept.concept_name, @condition_occurrence.condition_concept_id]]
-    @type_concepts = Concept.condition_types.valid.standard.map { |condition_type| [condition_type.concept_name, condition_type.concept_id] }
+    @type_concepts = load_type_concepts
     respond_to do |format|
       format.html { render :layout => false }
     end
@@ -72,6 +71,14 @@ class ConditionOccurrencesController < ApplicationController
 
     def load_condition_occurrence
       @condition_occurrence = ConditionOccurrence.find(params[:id])
+    end
+
+    def load_interleave_datapoint
+      @datapoint = InterleaveDatapoint.find(params[:datapoint_id])
+    end
+
+    def load_type_concepts
+      @datapoint.concepts('condition_type_concept_id').map { |condition_type| [condition_type.concept_name, condition_type.concept_id] }
     end
 
     def sort_column

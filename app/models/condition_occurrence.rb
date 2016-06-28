@@ -11,7 +11,7 @@ class ConditionOccurrence < ActiveRecord::Base
 
   def self.by_interleave_data_point(interleave_data_point_id, options = {})
     options = { sort_column: 'condition_start_date', sort_direction: 'asc' }.merge(options)
-    s = joins("JOIN concept AS condition_type_concept ON condition_occurrence.condition_concept_id = condition_type_concept.concept_id JOIN concept AS condition_concept ON condition_occurrence.condition_concept_id = condition_concept.concept_id JOIN interleave_entities ON condition_occurrence.condition_occurrence_id = interleave_entities.fact_id AND interleave_entities.cdm_table = 'condition_occurrence'").where('interleave_entities.interleave_datapoint_id = ?', interleave_data_point_id)
+    s = joins("JOIN concept AS condition_type_concept ON condition_occurrence.condition_type_concept_id = condition_type_concept.concept_id JOIN concept AS condition_concept ON condition_occurrence.condition_concept_id = condition_concept.concept_id JOIN interleave_entities ON condition_occurrence.condition_occurrence_id = interleave_entities.fact_id AND interleave_entities.cdm_table = 'condition_occurrence'").where('interleave_entities.interleave_datapoint_id = ?', interleave_data_point_id)
     sort = options[:sort_column] + ' ' + options[:sort_direction]
     s = s.order(sort)
 

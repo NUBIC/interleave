@@ -14,12 +14,12 @@ RSpec.feature 'Interleave Person', type: :feature do
     @interleave_registry_cdm_source = FactoryGirl.create(:interleave_registry_cdm_source, cdm_source_name: InterleaveRegistryCdmSource::CDM_SOURCE_EX_NIHILO, interleave_registry: @interleave_registry_prostate)
     @interleave_datapoint_diagnosis = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry_prostate, name: 'Diagnosis', domain_id: ConditionOccurrence::DOMAIN_ID, cardinality: 1, unrestricted: false, overlap: true)
     @interleave_datapoint_comorbidities = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry_prostate, name: 'Comorbidities', domain_id: ConditionOccurrence::DOMAIN_ID, cardinality: 0, unrestricted: true, overlap: false)
-    FactoryGirl.create(:interleave_datapoint_concept, interleave_datapoint: @interleave_datapoint_diagnosis, concept: @concept_condition_neoplasam_of_prostate)
-    FactoryGirl.create(:interleave_datapoint_concept, interleave_datapoint: @interleave_datapoint_diagnosis, concept: @concept_condition_benign_prostatic_hyperplasia)
+    FactoryGirl.create(:interleave_datapoint_concept, interleave_datapoint: @interleave_datapoint_diagnosis, concept: @concept_condition_neoplasam_of_prostate, column: 'condition_concept_id')
+    FactoryGirl.create(:interleave_datapoint_concept, interleave_datapoint: @interleave_datapoint_diagnosis, concept: @concept_condition_benign_prostatic_hyperplasia, column: 'condition_concept_id')
 
     @interleave_datapoint_biopsy = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry_prostate, name: 'Biopsy', domain_id: ProcedureOccurrence::DOMAIN_ID, cardinality: 0, unrestricted: true, overlap: true)
-    FactoryGirl.create(:interleave_datapoint_concept, interleave_datapoint: @interleave_datapoint_biopsy, concept: @concept_procedure_biopsy_prostate_needle)
-    FactoryGirl.create(:interleave_datapoint_concept, interleave_datapoint: @interleave_datapoint_biopsy, concept: @concept_procedure_biopsy_prostate_incisional)
+    FactoryGirl.create(:interleave_datapoint_concept, interleave_datapoint: @interleave_datapoint_biopsy, concept: @concept_procedure_biopsy_prostate_needle, column: 'procedure_concept_id')
+    FactoryGirl.create(:interleave_datapoint_concept, interleave_datapoint: @interleave_datapoint_biopsy, concept: @concept_procedure_biopsy_prostate_incisional, column: 'procedure_concept_id')
 
     visit interleave_registries_path
 
@@ -83,7 +83,7 @@ RSpec.feature 'Interleave Person', type: :feature do
       click_link('Procedure:Biopsy')
     end
 
-    sleep(1)
+    sleep(2)
   end
 
   scenario 'Displaying multiple datapoints', js: true, focus: false do
@@ -129,14 +129,14 @@ RSpec.feature 'Interleave Person', type: :feature do
     concept_name = @concept_condition_neoplasam_of_prostate.concept_name
     find('.select2-dropdown input').set(concept_name)
     find('.select2-results__option--highlighted').click
-    condition_type_concept_name = 'EHR problem list entry'
-    select(condition_type_concept_name, from: 'Type')
+    select(@concept_condition_type_ehr_problem_list_entry.concept_name, from: 'Type')
     end_date = '02/01/2016'
     page.execute_script("$('#condition_occurrence_condition_end_date').val('#{end_date}')")
     start_date = '01/01/2016'
     page.execute_script("$('#condition_occurrence_condition_start_date').val('#{start_date}')")
+    sleep(10)
     click_button('Save')
-    match_condition(1, concept_name, Date.parse(start_date), Date.parse(end_date), condition_type_concept_name)
+    match_condition(1, concept_name, Date.parse(start_date), Date.parse(end_date), @concept_condition_type_ehr_problem_list_entry.concept_name)
   end
 
   scenario 'Adding a procedure occurrence', js: true, focus: false do
@@ -317,15 +317,16 @@ RSpec.feature 'Interleave Person', type: :feature do
       click_link('Condition Type')
     end
 
-    match_condition(1, @concept_condition_benign_prostatic_hyperplasia.concept_name, start_date_2, end_date_2, @concept_condition_type_ehr_episode_entry.concept_name)
-    match_condition(2, @concept_condition_neoplasam_of_prostate.concept_name, start_date_1, end_date_1, @concept_condition_type_ehr_chief_complaint.concept_name)
+    match_condition(1, @concept_condition_neoplasam_of_prostate.concept_name, start_date_1, end_date_1, @concept_condition_type_ehr_chief_complaint.concept_name)
+    match_condition(2, @concept_condition_benign_prostatic_hyperplasia.concept_name, start_date_2, end_date_2, @concept_condition_type_ehr_episode_entry.concept_name)
+
 
     within(".condition_occurrences_list") do
       click_link('Condition Type')
     end
 
-    match_condition(1, @concept_condition_neoplasam_of_prostate.concept_name, start_date_1, end_date_1, @concept_condition_type_ehr_chief_complaint.concept_name)
-    match_condition(2, @concept_condition_benign_prostatic_hyperplasia.concept_name, start_date_2, end_date_2, @concept_condition_type_ehr_episode_entry.concept_name)
+    match_condition(1, @concept_condition_benign_prostatic_hyperplasia.concept_name, start_date_2, end_date_2, @concept_condition_type_ehr_episode_entry.concept_name)
+    match_condition(2, @concept_condition_neoplasam_of_prostate.concept_name, start_date_1, end_date_1, @concept_condition_type_ehr_chief_complaint.concept_name)
   end
 
   scenario 'Sorting procedure occurrences', js: true, focus: false do

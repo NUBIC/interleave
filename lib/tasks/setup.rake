@@ -25,19 +25,20 @@ namespace :setup do
 
     interleave_datapoint_diagnosis = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, name: 'Diagnosis', domain_id: 'Condition', cardinality: 1, unrestricted: false, overlap: true).first_or_create
     concept = Concept.standard.where(domain_id: Concept::DOMAIN_ID_CONDITION, concept_code: '126906006').first #Neoplasm of prostate
-    InterleaveDatapointConcept.where(interleave_datapoint_id: interleave_datapoint_diagnosis.id, concept_id: concept.concept_id).first_or_create
+    InterleaveDatapointConcept.where(interleave_datapoint_id: interleave_datapoint_diagnosis.id, concept_id: concept.concept_id, column: 'condition_concept_id').first_or_create
     concept = Concept.standard.where(domain_id: Concept::DOMAIN_ID_CONDITION, concept_code: '266569009').first #"Benign prostatic hyperplasia"
-    InterleaveDatapointConcept.where(interleave_datapoint_id: interleave_datapoint_diagnosis.id, concept_id: concept.concept_id).first_or_create
+    InterleaveDatapointConcept.where(interleave_datapoint_id: interleave_datapoint_diagnosis.id, concept_id: concept.concept_id, column: 'condition_concept_id').first_or_create
+
     interleave_datapoint_comorbidities = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, name: 'Comorbidities', domain_id: 'Condition', cardinality: 0, unrestricted: true, overlap: false).first_or_create
 
     interleave_datapoint_trus = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, name: 'TRUS', domain_id: 'Procedure', cardinality: 0, unrestricted: false, overlap: true).first_or_create
     concept = Concept.standard.where(domain_id: Concept::DOMAIN_ID_PROCEDURE, concept_code: '76872').first #Ultrasound, transrectal
-    InterleaveDatapointConcept.where(interleave_datapoint_id: interleave_datapoint_trus.id, concept_id: concept.concept_id).first_or_create
+    InterleaveDatapointConcept.where(interleave_datapoint_id: interleave_datapoint_trus.id, concept_id: concept.concept_id, column: 'procedure_concept_id').first_or_create
+
     interleave_datapoint_biopsy = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, name: 'Biopsy', domain_id: 'Procedure', cardinality: 0, unrestricted: false, overlap: true).first_or_create
     concept = Concept.standard.where(domain_id: Concept::DOMAIN_ID_PROCEDURE, concept_code: '55700').first #Biopsy, prostate; needle or punch, single or multiple, any approach
-    InterleaveDatapointConcept.where(interleave_datapoint_id: interleave_datapoint_biopsy.id, concept_id: concept.concept_id).first_or_create
-
+    InterleaveDatapointConcept.where(interleave_datapoint_id: interleave_datapoint_biopsy.id, concept_id: concept.concept_id, column: 'procedure_concept_id').first_or_create
     concept = Concept.standard.where(domain_id: Concept::DOMAIN_ID_PROCEDURE, concept_code: '55705').first #Biopsy, prostate; incisional, any approach
-    InterleaveDatapointConcept.where(interleave_datapoint_id: interleave_datapoint_biopsy.id, concept_id: concept.concept_id).first_or_create
+    InterleaveDatapointConcept.where(interleave_datapoint_id: interleave_datapoint_biopsy.id, concept_id: concept.concept_id, column: 'procedure_concept_id').first_or_create
   end
 end

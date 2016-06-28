@@ -5,8 +5,8 @@ class CreateInterleaveDatapoints < ActiveRecord::Migration
       t.string    :name,                    null: false
       t.string    :domain_id,               null: false
       t.integer   :cardinality,             null: false
-      t.boolean   :unrestricted,            null: false
       t.boolean   :overlap,                 null: false
+      t.string    :value_type,              null: true
       t.timestamps                          null: false
     end
   end

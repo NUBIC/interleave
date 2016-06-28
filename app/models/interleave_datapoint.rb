@@ -1,12 +1,25 @@
 class InterleaveDatapoint < ActiveRecord::Base
   belongs_to :interleave_registry
   has_many :interleave_datapoint_concepts
+  VALUE_TYPE_VALUE_AS_CONCEPT = 'Value as concept'
+  VALUE_TYPE_VALUE_AS_NUMBER = 'Value as number'
+  VALUE_TYPE_VALUE_AS_STRING = 'Value as string'
+  VALUE_TYPES = [VALUE_TYPE_VALUE_AS_CONCEPT, VALUE_TYPE_VALUE_AS_NUMBER, VALUE_TYPE_VALUE_AS_STRING]
 
-  def concepts(search_token = nil)
-    if unrestricted
-      results = Concept.standard.where(domain_id: domain_id)
+  def concepts(column, search_token = nil)
+    if interleave_datapoint_concepts.where(column: column).count > 0
+      results = Concept.standard.valid.where(concept_id: interleave_datapoint_concepts.where(column: column).map(&:concept_id))
     else
-      results = Concept.standard.where(concept_id: interleave_datapoint_concepts.map(&:concept_id))
+      results = case column
+      when 'condition_concept_id', 'procedure_concept_id'
+        Concept.standard.valid.where(domain_id: domain_id)
+      when 'condition_type_concept_id'
+        Concept.standard.valid.condition_types
+      when 'procedure_type_concept_id'
+        Concept.standard.valid.procedure_types
+      else
+        raise ArgumentError.new('Unknown column.')
+      end
     end
 
     if search_token

@@ -3,7 +3,7 @@
   = @datapoint.name
 #procedure_occurrence
   = form_for [@registry, @interleave_person, @procedure_occurrence], html: { class: 'procedure_occurrence_form' }, remote: true, validate: true do |f|
-    = link_to '', concepts_interleave_datapoint_url(@datapoint.id), class: 'hide', id: 'concepts_interleave_datapoint_url'
+    = link_to '', concepts_interleave_datapoint_url(@datapoint.id, column: 'procedure_concept_id'), class: 'hide', id: 'concepts_interleave_datapoint_url'
     = f.hidden_field :interleave_datapoint_id, value: @datapoint.id
     .row
       .procedure_date
