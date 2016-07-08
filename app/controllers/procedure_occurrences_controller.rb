@@ -19,6 +19,7 @@ class ProcedureOccurrencesController < ApplicationController
     @procedure_occurrence = ProcedureOccurrence.new()
     @concepts = []
     @type_concepts = load_type_concepts
+    @sub_datapoints = @datapoint.initialize_sub_datapoint_entities
     respond_to do |format|
       format.html { render :layout => false }
     end
@@ -27,10 +28,10 @@ class ProcedureOccurrencesController < ApplicationController
   def create
     @procedure_occurrence = ProcedureOccurrence.new(procedure_occurence_params)
     interleave_registry_cdm_source =  @registry.interleave_registry_cdm_sources.where(cdm_source_name: InterleaveRegistryCdmSource::CDM_SOURCE_EX_NIHILO).first
-    @procedure_occurrence.interleave_registry_cdm_source_id = interleave_registry_cdm_source.id
     @procedure_occurrence.person = @interleave_person.person
+
     respond_to do |format|
-      if @procedure_occurrence.save
+      if @procedure_occurrence.create_with_sub_datapoints!(interleave_registry_cdm_source, measurements: params[:measurements])
         format.js { }
       else
         format.js { render json: { errors: @procedure_occurrence.errors.full_messages }, status: :unprocessable_entity }
@@ -41,6 +42,7 @@ class ProcedureOccurrencesController < ApplicationController
   def edit
     @concepts = [[@procedure_occurrence.procedure_concept.concept_name, @procedure_occurrence.procedure_concept_id]]
     @type_concepts = load_type_concepts
+    @sub_datapoints = @datapoint.initialize_sub_datapoint_entities(@procedure_occurrence.interleave_entity)
     respond_to do |format|
       format.html { render :layout => false }
     end
@@ -48,7 +50,7 @@ class ProcedureOccurrencesController < ApplicationController
 
   def update
     respond_to do |format|
-      if @procedure_occurrence.update_attributes(procedure_occurence_params)
+      if @procedure_occurrence.update_with_sub_datapoints!(procedure_occurence_params, measurements: params[:measurements])
         format.js { }
       else
         format.js { render json: { errors: @procedure_occurrence.errors.full_messages }, status: :unprocessable_entity }
@@ -78,7 +80,7 @@ class ProcedureOccurrencesController < ApplicationController
     end
 
     def load_type_concepts
-      @datapoint.concepts('procedure_type_concept_id').map { |condition_type| [condition_type.concept_name, condition_type.concept_id] }
+      @datapoint.concept_values('procedure_type_concept_id').map { |condition_type| [condition_type.concept_name, condition_type.concept_id] }
     end
 
     def sort_column

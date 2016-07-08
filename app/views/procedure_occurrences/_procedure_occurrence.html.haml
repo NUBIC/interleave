@@ -24,13 +24,25 @@
           Concept
           %span{ class: 'required' }
             *
-          = f.select :procedure_concept_id, options_for_select(@concepts,  selected: f.object.procedure_concept_id), { include_blank: true }
+          = f.select :procedure_concept_id, options_for_select(@concepts, selected: f.object.procedure_concept_id), { include_blank: true }
       .procedure_type_concept_id
         %label{for: 'procedure_type_concept_id' }
           Type
           %span{ class: 'required' }
             *
           = f.select :procedure_type_concept_id, options_for_select(@type_concepts, selected: f.object.procedure_type_concept_id), { include_blank: true }
+    .interleave_sub_datapoints
+      - @sub_datapoints.in_groups_of(2).each do |sub_datapoints_group|
+        .row
+          - sub_datapoints_group.each_with_index do |sub_datapoint, i|
+            - if i.even?
+              .left
+                - if sub_datapoint.class.to_s == 'Measurement'
+                  = render 'measurement/measurement_sub_datapoint', measurement: sub_datapoint
+            - else
+              .right
+                - if sub_datapoint.class.to_s == 'Measurement'
+                  = render 'measurement/measurement_sub_datapoint', measurement: sub_datapoint
       .navigation
         %p.help-text
           %span{ class: 'required' }

@@ -27,10 +27,9 @@ class ConditionOccurrencesController < ApplicationController
   def create
     @condition_occurrence = ConditionOccurrence.new(condition_occurence_params)
     interleave_registry_cdm_source =  @registry.interleave_registry_cdm_sources.where(cdm_source_name: InterleaveRegistryCdmSource::CDM_SOURCE_EX_NIHILO).first
-    @condition_occurrence.interleave_registry_cdm_source_id = interleave_registry_cdm_source.id
     @condition_occurrence.person = @interleave_person.person
     respond_to do |format|
-      if @condition_occurrence.save
+      if @condition_occurrence.create_with_sub_datapoints!(interleave_registry_cdm_source)
         format.js { }
       else
         format.js { render json: { errors: @condition_occurrence.errors.full_messages }, status: :unprocessable_entity }
@@ -78,7 +77,7 @@ class ConditionOccurrencesController < ApplicationController
     end
 
     def load_type_concepts
-      @datapoint.concepts('condition_type_concept_id').map { |condition_type| [condition_type.concept_name, condition_type.concept_id] }
+      @datapoint.concept_values('condition_type_concept_id').map { |condition_type| [condition_type.concept_name, condition_type.concept_id] }
     end
 
     def sort_column

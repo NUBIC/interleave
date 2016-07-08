@@ -103,6 +103,22 @@
       margin-bottom: 0;
     }
   }
+
+  .interleave_sub_datapoints {
+    .left {
+      @include grid-column(
+       $columns: 12
+      );
+
+    }
+
+    .right {
+      @include grid-column(
+       $columns: 12
+      );
+    }
+  }
+
   .navigation {
     padding: 1rem;
     @include grid-column-offset(12);

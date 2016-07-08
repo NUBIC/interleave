@@ -25,10 +25,24 @@ module InterleaveSpecSetup
     @concept_procedure_biopsy_prostate_needle = FactoryGirl.create(:concept_procedure, concept_name: 'Biopsy, prostate; needle or punch, single or multiple, any approach', concept_code: '55700', concept_id: 18)
     @concept_procedure_biopsy_prostate_incisional = FactoryGirl.create(:concept_procedure, concept_name: 'Biopsy, prostate; incisional, any approach', concept_code: '55705', concept_id: 19)
 
-    @concept_procedure_type_primary_procedure = FactoryGirl.create(:concept_procedure_type, concept_name: 'Primary Procedure', concept_id: 20)
-    @concept_procedure_type_secondary_procedure = FactoryGirl.create(:concept_procedure_type, concept_name: 'Secondary Procedure', concept_id: 21)
+    @concept_measurement_total_number_of_cores = FactoryGirl.create(:concept_measurement, concept_name: 'Total number of cores in Tissue core by CAP cancer protocols', concept_code: '44652-6', concept_id: 20)
+    @concept_measurement_total_number_of_cores_positive = FactoryGirl.create(:concept_measurement, concept_name: 'Tissue cores.positive.carcinoma in Tissue core by CAP cancer protocols', concept_code: '44651-8', concept_id: 21)
+    @concept_measurement_gleason_primary = FactoryGirl.create(:concept_measurement, concept_name: 'Gleason pattern.primary in Prostate tumor by CAP cancer protocols', concept_code: '44641-9', concept_id: 22)
+    @concept_measurement_perineural_invaison = FactoryGirl.create(:concept_measurement, concept_name: 'Perineural invasion by CAP cancer protocols', concept_code: '33741-0', concept_id: 23)
+    @concept_measurement_answer_present = FactoryGirl.create(:concept_measurement_value, concept_name: 'Present', concept_code: 'LA9633-4', concept_id: 24)
+    @concept_measurement_answer_absent = FactoryGirl.create(:concept_measurement_value, concept_name: 'Absent', concept_code: 'LA9634-2', concept_id: 25)
 
-    @concept_domain_condition = FactoryGirl.create(:concept_domain, concept_name: 'Condition', concept_id: 22)
-    @concept_domain_procedure = FactoryGirl.create(:concept_domain, concept_name: 'Procedure', concept_id: 23)
+    @concept_procedure_type_primary_procedure = FactoryGirl.create(:concept_procedure_type, concept_name: 'Primary Procedure', concept_id: 26)
+    @concept_procedure_type_secondary_procedure = FactoryGirl.create(:concept_procedure_type, concept_name: 'Secondary Procedure', concept_id: 27)
+
+    @concept_domain_condition = FactoryGirl.create(:concept_domain, concept_name: 'Condition', concept_id: 28)
+    @concept_domain_procedure = FactoryGirl.create(:concept_domain, concept_name: 'Procedure', concept_id: 29)
+    @concept_domain_measurement = FactoryGirl.create(:concept_domain, concept_name: 'Measurement', concept_id: 30)
+
+    @concept_pathology_finding = FactoryGirl.create(:concept_type, concept_name: 'Pathology finding', concept_id: 31)
+
+    @concept_relationship_has_asso_finding = FactoryGirl.create(:concept_relationship, concept_name: 'Has associated finding (SNOMED)', concept_id: 32)
+
+    @relationship_has_asso_finding = FactoryGirl.create(:relationship, relationship_id: 'Has asso finding', relationship_name: 'Has asso finding', is_hierarchical: false, defines_ancestry: false, reverse_relationship_id: 'Asso finding of', relationship_concept_id: @concept_relationship_has_asso_finding.id)
   end
 end

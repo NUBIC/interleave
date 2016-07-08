@@ -263,15 +263,26 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.datetime "updated_at",              null: false
   end
 
-  create_table "interleave_datapoint_concepts", force: :cascade do |t|
-    t.integer  "interleave_datapoint_id", null: false
-    t.string   "column",                  null: false
-    t.integer  "concept_id",              null: false
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+  create_table "interleave_datapoint_default_values", force: :cascade do |t|
+    t.integer  "interleave_datapoint_id",     null: false
+    t.string   "column",                      null: false
+    t.decimal  "default_value_as_number"
+    t.string   "default_value_as_string"
+    t.integer  "default_value_as_concept_id"
+    t.boolean  "hardcoded"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
-  create_table "interleave_datapoint_defaults", force: :cascade do |t|
+  create_table "interleave_datapoint_relationships", force: :cascade do |t|
+    t.integer  "interleave_datapoint_id",     null: false
+    t.integer  "interleave_sub_datapoint_id", null: false
+    t.integer  "relationship_concept_id",     null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
+  create_table "interleave_datapoint_values", force: :cascade do |t|
     t.integer  "interleave_datapoint_id", null: false
     t.string   "column",                  null: false
     t.decimal  "value_as_number"
@@ -281,28 +292,22 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.datetime "updated_at",              null: false
   end
 
-  create_table "interleave_datapoint_relationships", force: :cascade do |t|
-    t.integer  "interleave_datapoint_id_1", null: false
-    t.integer  "interleave_datapoint_id_2", null: false
-    t.integer  "relationship_concept_id",   null: false
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
-  end
-
   create_table "interleave_datapoints", force: :cascade do |t|
     t.integer  "interleave_registry_id", null: false
     t.string   "name",                   null: false
     t.string   "domain_id",              null: false
     t.integer  "cardinality",            null: false
-    t.boolean  "unrestricted",           null: false
     t.boolean  "overlap",                null: false
     t.string   "value_type"
+    t.decimal  "range_low"
+    t.decimal  "range_high"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
 
   create_table "interleave_entities", force: :cascade do |t|
     t.integer  "interleave_datapoint_id",               null: false
+    t.integer  "parent_id"
     t.string   "cdm_table",                             null: false
     t.integer  "domain_concept_id",                     null: false
     t.integer  "fact_id",                               null: false

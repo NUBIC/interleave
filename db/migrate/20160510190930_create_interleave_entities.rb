@@ -2,6 +2,7 @@ class CreateInterleaveEntities < ActiveRecord::Migration
   def change
     create_table :interleave_entities do |t|
       t.integer   :interleave_datapoint_id, null: false
+      t.integer   :parent_id, null: true
       t.string    :cdm_table, null: false
       t.integer   :domain_concept_id, null: false
       t.integer   :fact_id, null: false
