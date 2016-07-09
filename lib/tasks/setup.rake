@@ -25,24 +25,23 @@ namespace :setup do
 
     relationship = Relationship.where(relationship_id: 'Has asso finding').first
     concept_pathology_finding = Concept.standard.where(vocabulary_id: Concept::VOCABULARY_ID_MEAS_TYPE, concept_name: 'Pathology finding').first #Pathology finding
-    #datapoint
+
+    #datapoint diagnosis
     interleave_datapoint_diagnosis = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, name: 'Diagnosis', domain_id: 'Condition', cardinality: 1, overlap: true,  value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NOT_APPICABLE).first_or_create
     concept = Concept.standard.where(domain_id: Concept::DOMAIN_ID_CONDITION, concept_code: '126906006').first #Neoplasm of prostate
     InterleaveDatapointValue.where(interleave_datapoint_id: interleave_datapoint_diagnosis.id, concept: concept, column: 'condition_concept_id').first_or_create
     concept = Concept.standard.where(domain_id: Concept::DOMAIN_ID_CONDITION, concept_code: '266569009').first #"Benign prostatic hyperplasia"
     InterleaveDatapointValue.where(interleave_datapoint_id: interleave_datapoint_diagnosis.id, concept: concept, column: 'condition_concept_id').first_or_create
 
-    #datapoint
+    #datapoint comorbidities
     interleave_datapoint_comorbidities = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, name: 'Comorbidities', domain_id: 'Condition', cardinality: 0, overlap: false,  value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NOT_APPICABLE).first_or_create
 
-
-    #datapoint
+    #datapoint trus
     interleave_datapoint_trus = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, name: 'TRUS', domain_id: 'Procedure', cardinality: 0, overlap: true,  value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NOT_APPICABLE).first_or_create
     concept = Concept.standard.where(domain_id: Concept::DOMAIN_ID_PROCEDURE, concept_code: '76872').first #Ultrasound, transrectal
     InterleaveDatapointValue.where(interleave_datapoint_id: interleave_datapoint_trus.id, concept: concept, column: 'procedure_concept_id').first_or_create
 
-
-    #datapoint
+    #datapoint biopsy
     interleave_datapoint_biopsy = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, name: 'Biopsy', domain_id: 'Procedure', cardinality: 0, overlap: true, value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NOT_APPICABLE).first_or_create
     concept = Concept.standard.where(domain_id: Concept::DOMAIN_ID_PROCEDURE, concept_code: '55700').first #Biopsy, prostate; needle or punch, single or multiple, any approach
     InterleaveDatapointValue.where(interleave_datapoint_id: interleave_datapoint_biopsy.id, concept: concept, column: 'procedure_concept_id').first_or_create
