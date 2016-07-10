@@ -26,3 +26,5 @@
  * ALTER USER interleave_test SUPERUSER;
  * bundle exec rake db:migrate
  * bundle exec rake setup:interleave_registries
+
+Test commit.
