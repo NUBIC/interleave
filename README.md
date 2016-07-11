@@ -14,6 +14,10 @@
 * Why the name 'Interleve'?
   * Because clinical reserach databases and registries requrie the 'inteleaving' of manually created data and data automatically pulled from external systems (EHRs, billing/claims systems...)?  Data must be stacked on top of each other and the provenance of each entity must be tracked.  The data must be interleaved.
 
+* Live Demo
+  * Here is a live demo of the application: https://interleave.herokuapp.com/
+  * The demo is setup with a subset of the datapoints necessary for the Northwestern Prostate SPORE: http://cancer.northwestern.edu/prostatespore/
+
 * Setup
  * Open a psql command prompt
  * CREATE DATABASE interleave_development;
@@ -27,3 +31,9 @@
  * bundle exec rake db:migrate
  * bundle exec rake setup:omop_vocabularies
  * bundle exec rake setup:interleave_registries
+
+* Heroku setup
+ * heroku create interleave
+ * git push heroku master
+ * PGUSER=postgres PGPASSWORD=password heroku pg:push interleave_development DATABASE_URL --app interleave
+ * https://interleave.herokuapp.com/
