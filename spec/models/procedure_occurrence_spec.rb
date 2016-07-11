@@ -51,11 +51,13 @@ RSpec.describe ProcedureOccurrence, type: :model do
       { person_id: @person_little_my.person_id, measurement_concept_id: e.measurement_concept_id, measurement_date: procedure_occurrence_1.procedure_date , value_as_concept_id: e.value_as_concept_id, value_as_number: e.value_as_number, measurement_type_concept_id: e.measurement_type_concept_id }
     end
 
+    saved_measurements = []
     actual_measuremnts = interleave_entity.children.map do |ie|
-      m = Measurement.find(ie.fact_id)
+      saved_measurements << m = Measurement.find(ie.fact_id)
       { person_id: m.person_id, measurement_concept_id: m.measurement_concept_id, measurement_date: m.measurement_date, value_as_concept_id: m.value_as_concept_id, value_as_number: m.value_as_number, measurement_type_concept_id: m.measurement_type_concept_id }
     end
     expect(expected_measurements).to match_array(actual_measuremnts)
+    expect(FactRelationship.where(domain_concept_id_1: ProcedureOccurrence.domain_concept.concept_id, fact_id_1: procedure_occurrence_1.id, domain_concept_id_2: Measurement.domain_concept.concept_id, fact_id_2: saved_measurements.map(&:id), relationship_concept_id: @concept_relationship_has_asso_finding.id).count).to eq(2)
   end
 
   it 'reports procedure occurrences by person', focus: false do

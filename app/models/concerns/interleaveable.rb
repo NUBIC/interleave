@@ -18,7 +18,15 @@ module Interleaveable
 
   def create_with_sub_datapoints!(interleave_registry_cdm_source, sub_datapoints = {})
     saved = nil
+    parent_domain_concept_id = self.class.domain_concept.concept_id
+    measurment_domain_concept_id = Measurement.domain_concept.concept_id
     begin
+      if !sub_datapoints[:measurements].blank?
+        sub_datapoints[:measurements].each do |measurement|
+          interleave_datapoint_relationship = InterleaveDatapointRelationship.where(interleave_datapoint_id: interleave_datapoint_id, interleave_sub_datapoint_id: measurement[:interleave_datapoint_id]).first
+          measurement[:relationship_concept_id] = interleave_datapoint_relationship.relationship_concept_id
+        end
+      end
       InterleaveDatapoint.transaction do
         save!
         parent_interleave_entity = create_interleave_entity!(interleave_datapoint_id, interleave_registry_cdm_source.id)
@@ -28,6 +36,7 @@ module Interleaveable
             interleave_entity = m.create_interleave_entity!(measurement[:interleave_datapoint_id], interleave_registry_cdm_source.id)
             interleave_entity.parent_id = parent_interleave_entity.id
             interleave_entity.save!
+            FactRelationship.create!(domain_concept_id_1: parent_domain_concept_id, fact_id_1: self.id, domain_concept_id_2: measurment_domain_concept_id, fact_id_2: m.id, relationship_concept_id: measurement[:relationship_concept_id])
           end
         end
       end

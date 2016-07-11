@@ -26,7 +26,7 @@ RSpec.describe InterleaveDatapoint, type: :model do
     FactoryGirl.create(:interleave_datapoint_value, interleave_datapoint: @interleave_datapoint_gleason_primary, value_as_number: 4, column: 'value_as_number')
     FactoryGirl.create(:interleave_datapoint_value, interleave_datapoint: @interleave_datapoint_gleason_primary, value_as_number: 5, column: 'value_as_number')
 
-    @interleave_datapoint_biopsy = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry, name: 'Biopsy', domain_id: ConditionOccurrence::DOMAIN_ID, cardinality: 0, overlap: true)
+    @interleave_datapoint_biopsy = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry, name: 'Biopsy', domain_id: ProcedureOccurrence::DOMAIN_ID, cardinality: 0, overlap: true)
 
     @interleave_datapoint_biopsy_total_number_of_cores = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry, name: 'Total number of cores', domain_id: Measurement::DOMAIN_ID, cardinality: 1 , overlap: false, value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NUMBER_INTEGER)
     FactoryGirl.create(:interleave_datapoint_default_value, interleave_datapoint: @interleave_datapoint_biopsy_total_number_of_cores, column: 'measurement_concept_id', concept: @concept_measurement_total_number_of_cores, hardcoded: true)
@@ -73,6 +73,21 @@ RSpec.describe InterleaveDatapoint, type: :model do
       { person_id: nil, measurement_concept_id: e.measurement_concept_id, measurement_date: nil, value_as_concept_id: nil, value_as_number: nil, measurement_type_concept_id: e.measurement_type_concept_id }
     end
     expected_entities = [{ person_id: nil, measurement_concept_id: @concept_measurement_total_number_of_cores.concept_id, measurement_date: nil, value_as_concept_id: nil, value_as_number: nil, measurement_type_concept_id: @concept_pathology_finding.concept_id },{ person_id: nil, measurement_concept_id: @concept_measurement_total_number_of_cores_positive.concept_id, measurement_date: nil, value_as_concept_id: nil, value_as_number: nil, measurement_type_concept_id: @concept_pathology_finding.concept_id }]
+    expect(expected_entities).to match_array(actual_entities)
+  end
+
+  it 'initializess sub datapoint entities from an existing interleave entity', focus: false do
+    procedure_occurrence_1 = FactoryGirl.build(:procedure_occurrence, person: @person_little_my, procedure_concept: @concept_procedure_biopsy_prostate_needle, procedure_type_concept: @concept_procedure_type_primary_procedure, procedure_date: Date.parse('1/1/2016'), interleave_datapoint_id: @interleave_datapoint_biopsy.id, quantity: 1)
+    sub_datapoint_entities = @interleave_datapoint_biopsy.initialize_sub_datapoint_entities
+    measurements = sub_datapoint_entities.map { |sub_datapoint_entity| sub_datapoint_entity.attributes.merge(interleave_datapoint_id: sub_datapoint_entity.interleave_datapoint_id).symbolize_keys }
+    expect(Measurement.count).to eq(0)
+    procedure_occurrence_1.create_with_sub_datapoints!(@interleave_registry_cdm_source, measurements: measurements)
+
+    actual_entities = @interleave_datapoint_biopsy.initialize_sub_datapoint_entities(procedure_occurrence_1.interleave_entity).map do |e|
+      { person_id: nil, measurement_concept_id: e.measurement_concept_id, measurement_date: nil, value_as_concept_id: nil, value_as_number: nil, measurement_type_concept_id: e.measurement_type_concept_id }
+    end
+    expected_entities = [{ person_id: nil, measurement_concept_id: @concept_measurement_total_number_of_cores.concept_id, measurement_date: nil, value_as_concept_id: nil, value_as_number: nil, measurement_type_concept_id: @concept_pathology_finding.concept_id },{ person_id: nil, measurement_concept_id: @concept_measurement_total_number_of_cores_positive.concept_id, measurement_date: nil, value_as_concept_id: nil, value_as_number: nil, measurement_type_concept_id: @concept_pathology_finding.concept_id }]
+
     expect(expected_entities).to match_array(actual_entities)
   end
 end
