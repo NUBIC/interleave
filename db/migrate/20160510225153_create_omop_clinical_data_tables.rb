@@ -219,6 +219,7 @@ class CreateOmopClinicalDataTables < ActiveRecord::Migration
   def down
     drop_table :condition_occurrence
     drop_table :death
+    drop_table :device_exposure
     drop_table :drug_exposure
     drop_table :fact_relationship
     drop_table :measurement
