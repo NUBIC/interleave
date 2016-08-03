@@ -43,6 +43,16 @@ RSpec.feature 'Interleave Person', type: :feature do
     FactoryGirl.create(:interleave_datapoint_value, interleave_datapoint: @interleave_datapoint_biopsy_perineural_invaision, column: 'value_as_concept_id', concept: @concept_measurement_answer_absent)
     FactoryGirl.create(:interleave_datapoint_relationship, interleave_datapoint: @interleave_datapoint_biopsy, interleave_sub_datapoint: @interleave_datapoint_biopsy_perineural_invaision, relationship_concept_id: @concept_relationship_has_asso_finding.id)
 
+    @interleave_datapoint_weight = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry_prostate, name: 'Weight', domain_id: Measurement::DOMAIN_ID, cardinality: 0 , overlap: false, value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NUMBER_INTEGER)
+    FactoryGirl.create(:interleave_datapoint_default_value, interleave_datapoint: @interleave_datapoint_weight, column: 'measurement_concept_id', concept: @concept_measurement_body_weight_measured, hardcoded: true)
+    FactoryGirl.create(:interleave_datapoint_default_value, interleave_datapoint: @interleave_datapoint_weight, column: 'measurement_type_concept_id', concept: @concept_lab_result, hardcoded: false)
+
+    @interleave_datapoint_psa_lab = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry_prostate, name: 'PSA Lab', domain_id: Measurement::DOMAIN_ID, cardinality: 0 , overlap: true, value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NUMBER_DECIMAL)
+    @psa_concepts.each do |psa_concept|
+      FactoryGirl.create(:interleave_datapoint_value, interleave_datapoint: @interleave_datapoint_psa_lab, column: 'value_as_concept_id', concept: psa_concept)
+    end
+    FactoryGirl.create(:interleave_datapoint_default_value, interleave_datapoint: @interleave_datapoint_psa_lab, column: 'measurement_type_concept_id', concept: @concept_lab_result, hardcoded: false)
+
     visit interleave_registries_path
 
     within("#interleave_registry_#{@interleave_registry_prostate.id}") do
@@ -123,6 +133,20 @@ RSpec.feature 'Interleave Person', type: :feature do
     end
   end
 
+  scenario 'Displaying only top level datapoints only', js: true, focus: false do
+    within(".measurements") do
+      expect(page).to have_content('Weight')
+    end
+
+    within(".measurements") do
+      expect(page).to have_content('PSA Lab')
+    end
+
+    within(".measurements") do
+      expect(page).to_not have_content('Total number of cores')
+    end
+  end
+
   scenario 'Adding a condition occurrence with validation', js: true, focus: false do
     click_link('Conditions')
     click_link('Diagnosis')
@@ -162,7 +186,6 @@ RSpec.feature 'Interleave Person', type: :feature do
   end
 
   scenario 'Adding a procedure occurrence', js: true, focus: false do
-    click_link('Procedures')
     click_link('Biopsy')
     click_link('Add')
     page.find('.select2-selection ').native.send_keys(:return)
@@ -191,6 +214,39 @@ RSpec.feature 'Interleave Person', type: :feature do
       expect(page.has_select?('Gleason primary', selected: '3')).to be_truthy
       expect(page.has_select?('Perineural invasion', selected: 'Present')).to be_truthy
     end
+  end
+
+  scenario 'Adding a measurement with a hardcoded measurement concept and a defaulted measurment type concept', js: true, focus: false do
+    click_link('Weight')
+    click_link('Add')
+    value_as_number = 200
+    fill_in('Value', with: value_as_number)
+    measurement_date = '02/01/2016'
+    page.execute_script("$('#measurement_measurement_date').val('#{measurement_date}')")
+    within(:css, ".measurement_form .measurement_concept_concept_name") do
+      expect(page).to have_content(@concept_measurement_body_weight_measured.concept_name)
+    end
+    expect(find_field('Type').find(:xpath, ".//option[@selected = 'selected'][text() = '#{@concept_lab_result.concept_name}']")).to be_truthy
+    click_button('Save')
+    sleep(1)
+    match_measurement(1, @concept_measurement_body_weight_measured.concept_name, Date.parse(measurement_date), @concept_lab_result.concept_name, value_as_number, nil)
+  end
+
+  scenario 'Adding a measurement with a list of measurement concepts and a defaulted measurment type concept', js: true, focus: false do
+    click_link('PSA Lab')
+    click_link('Add')
+    value_as_number = 0.20
+    fill_in('Value', with: value_as_number)
+    measurement_date = '02/01/2016'
+    page.execute_script("$('#measurement_measurement_date').val('#{measurement_date}')")
+    expect(find_field('Type').find(:xpath, ".//option[@selected = 'selected'][text() = '#{@concept_lab_result.concept_name}']")).to be_truthy
+    expect(find_field('Concept').value).to be_empty
+    page.find('.select2-selection ').native.send_keys(:return)
+    concept_name = @psa_concept_1.concept_name
+    find('.select2-dropdown input').set(concept_name)
+    find('.select2-results__option--highlighted').click
+    click_button('Save')
+    match_measurement(1, @psa_concept_1.concept_name, Date.parse(measurement_date), @concept_lab_result.concept_name, value_as_number, nil)
   end
 
   scenario 'Editing a condition occurrence', js: true, focus: false do
@@ -259,6 +315,64 @@ RSpec.feature 'Interleave Person', type: :feature do
       expect(page.has_select?('Gleason primary', selected: '3')).to be_truthy
       expect(page.has_select?('Perineural invasion', selected: 'Present')).to be_truthy
     end
+  end
+
+  scenario 'Editing a measurment with a hardcoded measurement concept and a defaulted measurment type concept', js: true, focus: false do
+    measurement_date = Date.parse('1/1/2015')
+    value_as_number = 150
+    measurement = FactoryGirl.build(:measurement, person: @person_moomin, measurement_concept: @concept_measurement_body_weight_measured, measurement_type_concept: @concept_lab_result, interleave_datapoint_id: @interleave_datapoint_weight.id, measurement_date: measurement_date, value_as_number: value_as_number)
+    measurement.create_with_sub_datapoints!(@interleave_registry_cdm_source)
+    click_link('Measurement')
+    click_link('Weight')
+    match_measurement(1, @concept_measurement_body_weight_measured.concept_name, measurement_date, @concept_lab_result.concept_name, value_as_number, nil)
+
+    within("#measurement_#{measurement.id}") do
+      click_link('Edit')
+    end
+
+    within(:css, ".measurement_form .measurement_concept_concept_name") do
+      expect(page).to have_content(@concept_measurement_body_weight_measured.concept_name)
+    end
+
+    select(@concept_pathology_finding.concept_name, from: 'Type')
+
+    value_as_number = 200
+    fill_in('Value', with: value_as_number)
+
+    measurement_date = '02/01/2016'
+    page.execute_script("$('#measurement_measurement_date').val('#{measurement_date}')")
+
+    click_button('Save')
+    match_measurement(1, @concept_measurement_body_weight_measured.concept_name, Date.parse(measurement_date), @concept_pathology_finding.concept_name, value_as_number, nil)
+  end
+
+  scenario 'Editing a measurment with a list of measurement concepts and a defaulted measurment type concept', js: true, focus: false do
+    measurement_date = Date.parse('1/1/2015')
+    value_as_number = 0.30
+    measurement = FactoryGirl.build(:measurement, person: @person_moomin, measurement_concept: @psa_concept_1, measurement_type_concept: @concept_lab_result, interleave_datapoint_id: @interleave_datapoint_psa_lab.id, measurement_date: measurement_date, value_as_number: value_as_number)
+    measurement.create_with_sub_datapoints!(@interleave_registry_cdm_source)
+    click_link('Measurement')
+    click_link('PSA Lab')
+    match_measurement(1, @psa_concept_1.concept_name, measurement_date, @concept_lab_result.concept_name, value_as_number, nil)
+
+    within("#measurement_#{measurement.id}") do
+      click_link('Edit')
+    end
+
+    page.find('.select2-selection ').native.send_keys(:return)
+    concept_name = @psa_concept_2.concept_name
+    find('.select2-dropdown input').set(concept_name)
+    find('.select2-results__option--highlighted').click
+
+    select(@concept_pathology_finding.concept_name, from: 'Type')
+
+    value_as_number = 0.50
+    fill_in('Value', with: value_as_number)
+
+    measurement_date = '02/01/2016'
+    page.execute_script("$('#measurement_measurement_date').val('#{measurement_date}')")
+    click_button('Save')
+    match_measurement(1, @psa_concept_2.concept_name, Date.parse(measurement_date), @concept_pathology_finding.concept_name, value_as_number, nil)
   end
 
   scenario 'Editing a condition occurrence with validation', js: true, focus: false do
@@ -460,6 +574,80 @@ RSpec.feature 'Interleave Person', type: :feature do
     match_procedure(1, @concept_procedure_biopsy_prostate_incisional.concept_name, Date.parse(procedure_date_2), @concept_procedure_type_secondary_procedure.concept_name, quantity_2)
     match_procedure(2, @concept_procedure_biopsy_prostate_needle.concept_name, Date.parse(procedure_date_1), @concept_procedure_type_primary_procedure.concept_name, quantity_1)
   end
+
+  scenario 'Sorting measurements', js: true, focus: false do
+    measurement_date_1 = '1/1/2015'
+    value_as_number_1 = 0.30
+    measurement_1 = FactoryGirl.build(:measurement, person: @person_moomin, measurement_concept: @psa_concept_1, measurement_type_concept: @concept_lab_result, interleave_datapoint_id: @interleave_datapoint_psa_lab.id, measurement_date: Date.parse(measurement_date_1), value_as_number: value_as_number_1)
+    measurement_1.create_with_sub_datapoints!(@interleave_registry_cdm_source)
+
+    measurement_date_2 = '2/1/2015'
+    value_as_number_2 = 0.60
+    measurement_2 = FactoryGirl.build(:measurement, person: @person_moomin, measurement_concept: @psa_concept_2, measurement_type_concept: @concept_pathology_finding, interleave_datapoint_id: @interleave_datapoint_psa_lab.id, measurement_date: Date.parse(measurement_date_2), value_as_number: value_as_number_2)
+    measurement_2.create_with_sub_datapoints!(@interleave_registry_cdm_source)
+
+    click_link('PSA Lab')
+
+    match_measurement(1, @psa_concept_1.concept_name, Date.parse(measurement_date_1), @concept_lab_result.concept_name, value_as_number_1, nil)
+    match_measurement(2, @psa_concept_2.concept_name, Date.parse(measurement_date_2), @concept_pathology_finding.concept_name, value_as_number_2, nil)
+
+    within(".measurements_list") do
+      click_link('Date')
+    end
+
+    match_measurement(1, @psa_concept_2.concept_name, Date.parse(measurement_date_2), @concept_pathology_finding.concept_name, value_as_number_2, nil)
+    match_measurement(2, @psa_concept_1.concept_name, Date.parse(measurement_date_1), @concept_lab_result.concept_name, value_as_number_1, nil)
+
+    within(".measurements_list") do
+      click_link('Measurement')
+    end
+
+    match_measurement(1, @psa_concept_1.concept_name, Date.parse(measurement_date_1), @concept_lab_result.concept_name, value_as_number_1, nil)
+    match_measurement(2, @psa_concept_2.concept_name, Date.parse(measurement_date_2), @concept_pathology_finding.concept_name, value_as_number_2, nil)
+
+    within(".measurements_list") do
+      click_link('Measurement')
+    end
+
+    match_measurement(1, @psa_concept_2.concept_name, Date.parse(measurement_date_2), @concept_pathology_finding.concept_name, value_as_number_2, nil)
+    match_measurement(2, @psa_concept_1.concept_name, Date.parse(measurement_date_1), @concept_lab_result.concept_name, value_as_number_1, nil)
+
+    within(".measurements_list") do
+      click_link('Measurement Type')
+    end
+
+    match_measurement(1, @psa_concept_1.concept_name, Date.parse(measurement_date_1), @concept_lab_result.concept_name, value_as_number_1, nil)
+    match_measurement(2, @psa_concept_2.concept_name, Date.parse(measurement_date_2), @concept_pathology_finding.concept_name, value_as_number_2, nil)
+
+    within(".measurements_list") do
+      click_link('Measurement Type')
+    end
+
+    match_measurement(1, @psa_concept_2.concept_name, Date.parse(measurement_date_2), @concept_pathology_finding.concept_name, value_as_number_2, nil)
+    match_measurement(2, @psa_concept_1.concept_name, Date.parse(measurement_date_1), @concept_lab_result.concept_name, value_as_number_1, nil)
+
+    within(".measurements_list") do
+      click_link('Value')
+    end
+
+    match_measurement(1, @psa_concept_1.concept_name, Date.parse(measurement_date_1), @concept_lab_result.concept_name, value_as_number_1, nil)
+    match_measurement(2, @psa_concept_2.concept_name, Date.parse(measurement_date_2), @concept_pathology_finding.concept_name, value_as_number_2, nil)
+
+    within(".measurements_list") do
+      click_link('Value')
+    end
+
+    match_measurement(1, @psa_concept_2.concept_name, Date.parse(measurement_date_2), @concept_pathology_finding.concept_name, value_as_number_2, nil)
+    match_measurement(2, @psa_concept_1.concept_name, Date.parse(measurement_date_1), @concept_lab_result.concept_name, value_as_number_1, nil)
+
+
+    within(".measurements_list") do
+      click_link('Value')
+    end
+
+    match_measurement(1, @psa_concept_1.concept_name, Date.parse(measurement_date_1), @concept_lab_result.concept_name, value_as_number_1, nil)
+    match_measurement(2, @psa_concept_2.concept_name, Date.parse(measurement_date_2), @concept_pathology_finding.concept_name, value_as_number_2, nil)
+  end
 end
 
 def match_person(interleave_person)
@@ -489,7 +677,6 @@ def match_person(interleave_person)
   # end
 end
 
-
 def match_condition(index, concept_name, start_date, end_date, condition_type_concept_name)
   within(".condition_occurrence:nth-of-type(#{index}) .condition_occurrence_concept_name") do
     expect(page).to have_content(concept_name)
@@ -508,7 +695,6 @@ def match_condition(index, concept_name, start_date, end_date, condition_type_co
   end
 end
 
-
 def match_procedure(index, concept_name, procedure_date, procedure_type_concept_name, quantity)
   within(".procedure_occurrence:nth-of-type(#{index}) .procedure_occurrence_concept_name") do
     expect(page).to have_content(concept_name)
@@ -524,5 +710,23 @@ def match_procedure(index, concept_name, procedure_date, procedure_type_concept_
 
   within(".procedure_occurrence:nth-of-type(#{index}) .procedure_occurrence_quantity") do
     expect(page).to have_content(quantity)
+  end
+end
+
+def match_measurement(index, concept_name, measurement_date, measurement_type_concept_name, value_as_number, value_as_concept_id)
+  within(".measurement:nth-of-type(#{index}) .measurement_concept_concept_name") do
+    expect(page).to have_content(concept_name)
+  end
+
+  within(".measurement:nth-of-type(#{index}) .measurement_date") do
+    expect(page).to have_content(measurement_date.to_s(:date))
+  end
+
+  within(".measurement:nth-of-type(#{index}) .measurement_type_concept_concept_name") do
+    expect(page).to have_content(measurement_type_concept_name)
+  end
+
+  within(".measurement:nth-of-type(#{index}) .value_as_number") do
+    expect(page).to have_content(value_as_number)
   end
 end

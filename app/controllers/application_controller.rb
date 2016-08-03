@@ -24,6 +24,8 @@ class ApplicationController < ActionController::Base
       case options[:datapoint].domain_id
       when 'Condition'
         @breadcrumbs << { name: "#{options[:datapoint].domain_id}:#{options[:datapoint].name}", url: interleave_registry_interleave_person_condition_occurrences_url(@registry, @interleave_person, datapoint_id: @datapoint.id), class: 'datapoint_link' }
+      when 'Measurement'
+        @breadcrumbs << { name: "#{options[:datapoint].domain_id}:#{options[:datapoint].name}", url: interleave_registry_interleave_person_measurements_url(@registry, @interleave_person, datapoint_id: @datapoint.id), class: 'datapoint_link' }
       when 'Procedure'
         @breadcrumbs << { name: "#{options[:datapoint].domain_id}:#{options[:datapoint].name}", url: interleave_registry_interleave_person_procedure_occurrences_url(@registry, @interleave_person, datapoint_id: @datapoint.id), class: 'datapoint_link' }
       end

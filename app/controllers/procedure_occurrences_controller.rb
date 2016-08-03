@@ -17,6 +17,8 @@ class ProcedureOccurrencesController < ApplicationController
 
   def new
     @procedure_occurrence = ProcedureOccurrence.new()
+    @procedure_occurrence.interleave_datapoint = @datapoint
+    @datapoint.initialize_defaults(@procedure_occurrence)
     @concepts = []
     @type_concepts = load_type_concepts
     @sub_datapoints = @datapoint.initialize_sub_datapoint_entities
@@ -40,6 +42,7 @@ class ProcedureOccurrencesController < ApplicationController
   end
 
   def edit
+    @procedure_occurrence.interleave_datapoint = @datapoint
     @concepts = [[@procedure_occurrence.procedure_concept.concept_name, @procedure_occurrence.procedure_concept_id]]
     @type_concepts = load_type_concepts
     @sub_datapoints = @datapoint.initialize_sub_datapoint_entities(@procedure_occurrence.interleave_entity)

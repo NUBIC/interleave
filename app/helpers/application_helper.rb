@@ -26,7 +26,7 @@ module ApplicationHelper
 
   def links_to_datapoints(registry, interleave_person, domain_id)
     capture do
-      registry.interleave_datapoints.select { |interleave_datapoint| interleave_datapoint.domain_id == domain_id }.each do |datapoint|
+      registry.interleave_datapoints.select { |interleave_datapoint| interleave_datapoint.domain_id == domain_id && interleave_datapoint.interleave_datapoint_parent.nil? }.each do |datapoint|
         generate_datapoint_url(registry, interleave_person, datapoint, domain_id)
       end
     end
@@ -37,7 +37,11 @@ module ApplicationHelper
       case domain_id
       when 'Condition'
         haml_tag(:li, class: active?('active', 'condition_occurrences', 'index', 'datapoint_id' => datapoint.id.to_s)) do
-          concat link_to datapoint.name, interleave_registry_interleave_person_condition_occurrences_url(registry, interleave_person, datapoint_id: datapoint.id)
+          concat link_to datapoint.name, interleave_registry_interleave_person_condition_occurrences_url(registry, interleave_person, datapoint_id: datapoint.id), class: 'datapoint'
+        end
+      when 'Measurement'
+        haml_tag(:li, class: active?('active', 'measurements', 'index', 'datapoint_id' => datapoint.id.to_s)) do
+          concat link_to datapoint.name, interleave_registry_interleave_person_measurements_url(registry, interleave_person, datapoint_id: datapoint.id), class: 'datapoint'
         end
       when 'Procedure'
         haml_tag(:li, class: active?('active', 'procedure_occurrences', 'index', 'datapoint_id' => datapoint.id.to_s)) do

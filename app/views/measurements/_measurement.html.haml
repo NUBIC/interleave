@@ -1,0 +1,61 @@
+%h3
+  Measurement:
+  = @datapoint.name
+#measurement
+  = form_for [@registry, @interleave_person, @measurement], html: { class: 'measurement_form' }, remote: true, validate: true do |f|
+    = link_to '', concepts_interleave_datapoint_url(@datapoint.id, column: 'measurement_concept_id'), class: 'hide', id: 'concepts_interleave_datapoint_url'
+    = f.hidden_field :interleave_datapoint_id, value: @datapoint.id
+    .row
+      .measurement_date
+        %label{for: 'measurement_date' }
+          Start
+          %span{ class: 'required' }
+            *
+          = f.text_field :measurement_date, class: 'datepicker'
+      .measurement_concept_id
+        %label{for: 'measurement_concept_id' }
+          Concept
+          %span{ class: 'required' }
+            *
+          - if @measurement.interleave_datapoint.hardcoded?('measurement_concept_id')
+            .measurement_concept_concept_name
+              = @measurement.measurement_concept.concept_name
+            = f.hidden_field :measurement_concept_id, value: @measurement.measurement_concept_id
+          - else
+            = f.select :measurement_concept_id, options_for_select(@concepts,  selected: f.object.measurement_concept_id), { include_blank: true }, { class: 'measurement_concept_id_select' }
+    .row
+      .measurement_type_concept_id
+        %label{for: 'measurement_type_concept_id' }
+          Type
+          %span{ class: 'required' }
+            *
+          = f.select :measurement_type_concept_id, options_for_select(@type_concepts, selected: f.object.measurement_type_concept_id), { include_blank: true }
+
+      .measurement_value
+        - case @measurement.interleave_datapoint.value_type
+        - when InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NUMBER_INTEGER, InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NUMBER_DECIMAL
+          %label{for: 'value_as_number' }
+            Value
+            %span{ class: 'required' }
+              *
+            = f.text_field :value_as_number
+        - when InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NUMBER_INTEGER_LIST
+          %label{for: 'value_as_number' }
+            Value
+            %span{ class: 'required' }
+              *
+            = f.select :value_as_number, options_for_select(@measurement.interleave_datapoint.integer_values('value_as_number'), selected: f.object.value_as_number.to_i), { include_blank: true }
+        - when InterleaveDatapoint::VALUE_TYPE_VALUE_AS_CONCEPT
+          %label{for: 'value_as_concept_id' }
+            Value
+            %span{ class: 'required' }
+              *
+            - concepts = @measurement.interleave_datapoint.concept_values('value_as_concept_id').map { |concept| [concept.concept_name, concept.concept_id] }
+            = f.select :value_as_concept_id, options_for_select(concepts, selected: f.object.value_as_concept_id), { include_blank: true }
+      .navigation
+        %p.help-text
+          %span{ class: 'required' }
+            *
+          Indicates required field
+        = f.submit 'Save', class: 'button'
+        = link_to 'Cancel', '#', class: 'cancel-link button warning'

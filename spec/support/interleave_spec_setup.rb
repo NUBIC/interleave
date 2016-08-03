@@ -31,18 +31,55 @@ module InterleaveSpecSetup
     @concept_measurement_perineural_invaison = FactoryGirl.create(:concept_measurement, concept_name: 'Perineural invasion by CAP cancer protocols', concept_code: '33741-0', concept_id: 23)
     @concept_measurement_answer_present = FactoryGirl.create(:concept_measurement_value, concept_name: 'Present', concept_code: 'LA9633-4', concept_id: 24)
     @concept_measurement_answer_absent = FactoryGirl.create(:concept_measurement_value, concept_name: 'Absent', concept_code: 'LA9634-2', concept_id: 25)
+    @concept_measurement_body_weight_measured = FactoryGirl.create(:concept_measurement, concept_name: 'Body weight Measured', concept_code: '3141-9', concept_id: 26)
+    @concept_measurement_body_height_measured = FactoryGirl.create(:concept_measurement, concept_name: 'Body height Measured', concept_code: '3137-7', concept_id: 27)
 
-    @concept_procedure_type_primary_procedure = FactoryGirl.create(:concept_procedure_type, concept_name: 'Primary Procedure', concept_id: 26)
-    @concept_procedure_type_secondary_procedure = FactoryGirl.create(:concept_procedure_type, concept_name: 'Secondary Procedure', concept_id: 27)
+    @concept_procedure_type_primary_procedure = FactoryGirl.create(:concept_procedure_type, concept_name: 'Primary Procedure', concept_id: 28)
+    @concept_procedure_type_secondary_procedure = FactoryGirl.create(:concept_procedure_type, concept_name: 'Secondary Procedure', concept_id: 29)
 
-    @concept_domain_condition = FactoryGirl.create(:concept_domain, concept_name: 'Condition', concept_id: 28)
-    @concept_domain_procedure = FactoryGirl.create(:concept_domain, concept_name: 'Procedure', concept_id: 29)
-    @concept_domain_measurement = FactoryGirl.create(:concept_domain, concept_name: 'Measurement', concept_id: 30)
+    @concept_domain_condition = FactoryGirl.create(:concept_domain, concept_name: 'Condition', concept_id: 30)
+    @concept_domain_procedure = FactoryGirl.create(:concept_domain, concept_name: 'Procedure', concept_id: 31)
+    @concept_domain_measurement = FactoryGirl.create(:concept_domain, concept_name: 'Measurement', concept_id: 32)
 
-    @concept_pathology_finding = FactoryGirl.create(:concept_type, concept_name: 'Pathology finding', concept_id: 31)
+    @concept_pathology_finding = FactoryGirl.create(:concept_type, concept_name: 'Pathology finding', concept_id: 33)
+    @concept_lab_result = FactoryGirl.create(:concept_type, concept_name: 'Lab result', concept_id: 34)
 
-    @concept_relationship_has_asso_finding = FactoryGirl.create(:concept_relationship, concept_name: 'Has associated finding (SNOMED)', concept_id: 32)
+    concept_id = 35
+    @concept_relationship_has_asso_finding = FactoryGirl.create(:concept_relationship, concept_name: 'Has associated finding (SNOMED)', concept_id: concept_id)
 
     @relationship_has_asso_finding = FactoryGirl.create(:relationship, relationship_id: 'Has asso finding', relationship_name: 'Has asso finding', is_hierarchical: false, defines_ancestry: false, reverse_relationship_id: 'Asso finding of', relationship_concept_id: @concept_relationship_has_asso_finding.id)
+
+    @psa_concepts = []
+    [{ concept_name: 'Prostate Specific Ag Free [Mass/volume] in Body fluid' , concept_code: '59239-4' },
+    { concept_name: 'Prostate Specific Ag Free [Mass/volume] in Cerebral spinal fluid' , concept_code: '59231-1' },
+    { concept_name: 'Prostate Specific Ag Free [Mass/volume] in Peritoneal fluid' , concept_code: '59224-6' },
+    { concept_name: 'Prostate Specific Ag Free [Mass/volume] in Pleural fluid' , concept_code: '59232-9' },
+    { concept_name: 'Prostate Specific Ag Free [Mass/volume] in Semen' , concept_code: '19205-4' },
+    { concept_name: 'Prostate Specific Ag Free [Moles/volume] in Semen' , concept_code: '19206-2' },
+    { concept_name: 'Prostate Specific Ag Free [Moles/volume] in Serum or Plasma' , concept_code: '19203-9' },
+    { concept_name: 'Prostate Specific Ag Free [Units/volume] in Semen' , concept_code: '19204-7' },
+    { concept_name: 'Prostate Specific Ag Free [Units/volume] in Serum or Plasma' , concept_code: '19201-3' },
+    { concept_name: 'Prostate Specific Ag Free/Prostate specific Ag.total [Pure mass fraction] in Serum or Plasma' , concept_code: '72576-2' },
+    { concept_name: 'Prostate Specific Ag Free/Prostate specific Ag.total in Body fluid' , concept_code: '59238-6' },
+    { concept_name: 'Prostate Specific Ag Free/Prostate specific Ag.total in Cerebral spinal fluid' , concept_code: '59235-2' },
+    { concept_name: 'Prostate Specific Ag Free/Prostate specific Ag.total in Peritoneal fluid' , concept_code: '59236-0' },
+    { concept_name: 'Prostate Specific Ag Free/Prostate specific Ag.total in Pleural fluid' , concept_code: '59237-8' },
+    { concept_name: 'Prostate specific Ag [Mass/volume] in Body fluid' , concept_code: '47738-0' },
+    { concept_name: 'Prostate specific Ag [Mass/volume] in Cerebral spinal fluid' , concept_code: '59230-3' },
+    { concept_name: 'Prostate specific Ag [Mass/volume] in Peritoneal fluid' , concept_code: '59223-8' },
+    { concept_name: 'Prostate specific Ag [Mass/volume] in Pleural fluid' , concept_code: '59221-2' },
+    { concept_name: 'Prostate specific Ag [Mass/volume] in Semen' , concept_code: '19199-9' },
+    { concept_name: 'Prostate specific Ag [Mass/volume] in Serum or Plasma by Detection limit <= 0.01 ng/mL' , concept_code: '35741-8' },
+    { concept_name: 'Prostate specific Ag [Mass/volume] in Urine' , concept_code: '34611-4' },
+    { concept_name: 'Prostate specific Ag [Moles/volume] in Semen' , concept_code: '19200-5' },
+    { concept_name: 'Prostate specific Ag [Moles/volume] in Serum or Plasma' , concept_code: '19197-3' },
+    { concept_name: 'Prostate specific Ag [Presence] in Tissue by Immune stain' , concept_code: '10508-0' },
+    { concept_name: 'Prostate specific Ag [Units/volume] in Semen' , concept_code: '19198-1' },
+    { concept_name: 'Prostate specific Ag [Units/volume] in Serum or Plasma' , concept_code: '19195-7' },
+    { concept_name: 'Prostate specific Ag.protein bound [Mass/volume] in Serum or Plasma' , concept_code: '33667-7' },
+    { concept_name: 'Prostate specific Ag/Creatinine [Mass Ratio] in Urine' , concept_code: '48167-1' }].each_with_index do |psa_concept, i|
+      @psa_concepts <<  psa_concept = FactoryGirl.create(:concept_measurement, concept_name: psa_concept[:concept_name], concept_code: psa_concept[:concept_code], concept_id: concept_id + i)
+      instance_variable_set("@psa_concept_#{i}", psa_concept)
+    end
   end
 end

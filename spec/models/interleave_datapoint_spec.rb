@@ -3,6 +3,11 @@ include InterleaveSpecSetup
 RSpec.describe InterleaveDatapoint, type: :model do
   it { should belong_to :interleave_registry }
   it { should have_many :interleave_datapoint_values }
+  it { should have_many :interleave_datapoint_default_values }
+  it { should have_many :interleave_datapoint_relationships }
+  it { should have_many :interleave_sub_datapoints }
+  it { should have_one :interleave_datapoint_relationship }
+  it { should have_one :interleave_datapoint_parent }
 
   before(:each) do
     interleave_spec_setup
@@ -37,6 +42,18 @@ RSpec.describe InterleaveDatapoint, type: :model do
     FactoryGirl.create(:interleave_datapoint_default_value, interleave_datapoint: @interleave_datapoint_biopsy_total_number_of_cores_positive, column: 'measurement_concept_id', concept: @concept_measurement_total_number_of_cores_positive, hardcoded: true)
     FactoryGirl.create(:interleave_datapoint_default_value, interleave_datapoint: @interleave_datapoint_biopsy_total_number_of_cores_positive, column: 'measurement_type_concept_id', concept: @concept_pathology_finding, hardcoded: true)
     FactoryGirl.create(:interleave_datapoint_relationship, interleave_datapoint: @interleave_datapoint_biopsy, interleave_sub_datapoint: @interleave_datapoint_biopsy_total_number_of_cores_positive, relationship_concept_id: @concept_relationship_has_asso_finding.id)
+
+    @interleave_datapoint_weight = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry, name: 'Weight', domain_id: Measurement::DOMAIN_ID, cardinality: 0 , overlap: false, value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NUMBER_INTEGER)
+    FactoryGirl.create(:interleave_datapoint_default_value, interleave_datapoint: @interleave_datapoint_weight, column: 'measurement_concept_id', concept: @concept_measurement_body_weight_measured, hardcoded: true)
+    FactoryGirl.create(:interleave_datapoint_default_value, interleave_datapoint: @interleave_datapoint_weight, column: 'measurement_type_concept_id', concept: @concept_lab_result, hardcoded: true)
+  end
+
+  it 'knows its parent datapoint', focus: false do
+    expect(@interleave_datapoint_biopsy_total_number_of_cores_positive.interleave_datapoint_parent).to eq(@interleave_datapoint_biopsy)
+  end
+
+  it 'knows it does not have a parent datapoint', focus: false do
+    expect(@interleave_datapoint_biopsy.interleave_datapoint_parent).to be_nil
   end
 
   it 'returns the integer values belonging to a datapoint', focus: false do
@@ -89,5 +106,21 @@ RSpec.describe InterleaveDatapoint, type: :model do
     expected_entities = [{ person_id: nil, measurement_concept_id: @concept_measurement_total_number_of_cores.concept_id, measurement_date: nil, value_as_concept_id: nil, value_as_number: nil, measurement_type_concept_id: @concept_pathology_finding.concept_id },{ person_id: nil, measurement_concept_id: @concept_measurement_total_number_of_cores_positive.concept_id, measurement_date: nil, value_as_concept_id: nil, value_as_number: nil, measurement_type_concept_id: @concept_pathology_finding.concept_id }]
 
     expect(expected_entities).to match_array(actual_entities)
+  end
+
+  it 'knows if a column is hardcoded', focus: false do
+    interleave_datapoint = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry, name: 'Hardcoded', domain_id: Measurement::DOMAIN_ID, cardinality: 1 , overlap: false, value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NUMBER_INTEGER)
+    FactoryGirl.create(:interleave_datapoint_default_value, interleave_datapoint: interleave_datapoint, column: 'measurement_concept_id', concept: @concept_measurement_total_number_of_cores, hardcoded: true)
+    FactoryGirl.create(:interleave_datapoint_default_value, interleave_datapoint: interleave_datapoint, column: 'measurement_type_concept_id', concept: @concept_pathology_finding, hardcoded: false)
+    expect(interleave_datapoint.hardcoded?('measurement_concept_id')).to be_truthy
+    expect(interleave_datapoint.hardcoded?('measurement_type_concept_id')).to be_falsy
+    expect(interleave_datapoint.hardcoded?('operator_concept_id')).to be_falsy
+  end
+
+  it 'initializes defaults', focus: false do
+    measurement = FactoryGirl.build(:measurement, person:  @person_little_my, measurement_concept: nil, measurement_type_concept: nil, measurement_date: nil, interleave_datapoint_id: @interleave_datapoint_weight.id)
+    @interleave_datapoint_weight.initialize_defaults(measurement)
+    expect(measurement.measurement_concept_id).to eq(@concept_measurement_body_weight_measured.id)
+    expect(measurement.measurement_type_concept_id).to eq(@concept_lab_result.id)
   end
 end

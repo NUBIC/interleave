@@ -4,6 +4,8 @@ class InterleaveDatapoint < ActiveRecord::Base
   has_many :interleave_datapoint_default_values
   has_many :interleave_datapoint_relationships
   has_many :interleave_sub_datapoints, through: :interleave_datapoint_relationships
+  has_one :interleave_datapoint_relationship, foreign_key: :interleave_sub_datapoint_id
+  has_one :interleave_datapoint_parent, through: :interleave_datapoint_relationship, source: :interleave_datapoint
 
   VALUE_TYPE_VALUE_AS_NOT_APPICABLE = 'Not applicable'
   VALUE_TYPE_VALUE_AS_CONCEPT = 'Value as concept'
@@ -23,10 +25,12 @@ class InterleaveDatapoint < ActiveRecord::Base
       results = Concept.standard.valid.where(concept_id: interleave_datapoint_values.where(column: column).map(&:value_as_concept_id))
     else
       results = case column
-      when 'condition_concept_id', 'procedure_concept_id'
+      when 'condition_concept_id', 'procedure_concept_id', 'measurement_concept_id'
         Concept.standard.valid.where(domain_id: domain_id)
       when 'condition_type_concept_id'
         Concept.standard.valid.condition_types
+      when 'measurement_type_concept_id'
+        Concept.standard.valid.measurement_types
       when 'procedure_type_concept_id'
         Concept.standard.valid.procedure_types
       else
@@ -55,12 +59,20 @@ class InterleaveDatapoint < ActiveRecord::Base
         sub_datapoint_entity = interleave_sub_datapoint.domain_id.constantize.new
         sub_datapoint_entity.interleave_datapoint_id = interleave_sub_datapoint.id
         sub_datapoint_entity.interleave_datapoint = interleave_sub_datapoint
-        interleave_sub_datapoint.interleave_datapoint_default_values.each do |interleave_datapoint_default_value|
-          sub_datapoint_entity[interleave_datapoint_default_value.column] = interleave_datapoint_default_value.value_as
-        end
+        interleave_sub_datapoint.initialize_defaults(sub_datapoint_entity)
         sub_datapoint_entities << sub_datapoint_entity
       end
     end
     sub_datapoint_entities
+  end
+
+  def initialize_defaults(entity)
+    interleave_datapoint_default_values.each do |interleave_datapoint_default_value|
+      entity[interleave_datapoint_default_value.column] = interleave_datapoint_default_value.value_as
+    end
+  end
+
+  def hardcoded?(column)
+    interleave_datapoint_default_values.where(column: column, hardcoded: true).count == 1
   end
 end

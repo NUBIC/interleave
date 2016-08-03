@@ -53,6 +53,10 @@ class Concept < ActiveRecord::Base
     valid.where(domain_id: Concept::DOMAIN_ID_TYPE_CONCEPT, vocabulary_id: Concept::VOCABULARY_ID_CONDITION_TYPE , concept_class_id: Concept::CONCEPT_CLASS_CONDITION_TYPE)
   end
 
+  def self.measurement_types
+    valid.where(domain_id: Concept::DOMAIN_ID_TYPE_CONCEPT, vocabulary_id: Concept::VOCABULARY_ID_MEAS_TYPE , concept_class_id: Concept::CONCEPT_CLASS_MEAS_TYPE)
+  end
+
   def self.procedure_types
     valid.where(domain_id: Concept::DOMAIN_ID_TYPE_CONCEPT, vocabulary_id: Concept::VOCABULARY_ID_PROCEDURE_TYPE , concept_class_id: Concept::CONCEPT_CLASS_PROCEDURE_TYPE)
   end

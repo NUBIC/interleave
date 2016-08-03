@@ -46,10 +46,6 @@ class Interleave.ConditionOccurrence
           $(this).blur()
           return
 
-        $('#condition_occurrence_condition_type_concept_id').on 'change', (e) ->
-          $(this).blur()
-          return
-
         $('.condition_occurrence_form').on('ajax:success', (e, data, status, xhr) ->
           $modal.foundation 'close'
           Turbolinks.visit(location.toString())

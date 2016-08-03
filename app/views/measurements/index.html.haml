@@ -1,0 +1,42 @@
+- content_for(:title) do
+  Measurements
+#measurements
+  = render 'interleave_people/header'
+  = render 'interleave_people/navigation'
+  .interleave_datapoint
+    %h3
+      = @datapoint.name
+    .measurements_list
+      = will_paginate @measurements, renderer: FoundationPagination::Rails
+      %table
+        %thead
+          %tr
+            %th.measurement_concept_concept_name{ width: 200 }
+              = sortable 'measurement_concept.concept_name', 'Measurement'
+            %th.measurement_date{ width: 200 }
+              = sortable 'measurement_date', 'Date'
+            %th.measurement_type_concept_concept_name{ width: 200 }
+              = sortable 'measurement_type_concept.concept_name', 'Measurement Type'
+            %th.value_as_number{ width: 200 }
+              = sortable 'value_as_number', 'Value'
+            %th.review{ width: 100 }
+        %tbody
+          - @measurements.each do |measurement|
+            = content_tag_for(:tr, measurement) do
+              %td.measurement_concept_concept_name
+                = measurement.measurement_concept.concept_name
+              %td.measurement_date
+                = measurement.measurement_date.to_s(:date)
+              %td.measurement_type_concept_concept_name
+                = measurement.measurement_type_concept.concept_name
+              %td.value_as_number
+                = measurement.value_as_number
+              %td.review
+                = link_to 'Edit', edit_interleave_registry_interleave_person_measurement_url(@registry, @interleave_person, measurement, datapoint_id: @datapoint.id), 'data-no-turbolink' => '', class: 'edit_measurement_link measurement_link'
+      .new_measurement_link
+        = link_to 'Add', new_interleave_registry_interleave_person_measurement_url(@registry, @interleave_person, datapoint_id: @datapoint.id), 'data-no-turbolink' => '', id: 'new_measurement_link', class: 'measurement_link'
+      = will_paginate @measurements, renderer: FoundationPagination::Rails
+  #measurement_modal.reveal.large{ "data-reveal" => "" }
+    .measurement
+    %button.close-button{"aria-label" => "Close modal", "data-close" => "", :type => "button"}
+      %span{"aria-hidden" => "true"} &times;

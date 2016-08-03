@@ -38,11 +38,11 @@
             - if i.even?
               .left
                 - if sub_datapoint.class.to_s == 'Measurement'
-                  = render 'measurement/measurement_sub_datapoint', measurement: sub_datapoint
+                  = render 'measurements/measurement_sub_datapoint', measurement: sub_datapoint
             - else
               .right
                 - if sub_datapoint.class.to_s == 'Measurement'
-                  = render 'measurement/measurement_sub_datapoint', measurement: sub_datapoint
+                  = render 'measurements/measurement_sub_datapoint', measurement: sub_datapoint
       .navigation
         %p.help-text
           %span{ class: 'required' }

@@ -17,6 +17,8 @@ class ConditionOccurrencesController < ApplicationController
 
   def new
     @condition_occurrence = ConditionOccurrence.new()
+    @condition_occurrence.interleave_datapoint = @datapoint
+    @datapoint.initialize_defaults(@condition_occurrence)
     @concepts = []
     @type_concepts = load_type_concepts
     respond_to do |format|
@@ -25,7 +27,7 @@ class ConditionOccurrencesController < ApplicationController
   end
 
   def create
-    @condition_occurrence = ConditionOccurrence.new(condition_occurence_params)
+    @condition_occurrence = ConditionOccurrence.new(condition_occurrence_params)
     interleave_registry_cdm_source =  @registry.interleave_registry_cdm_sources.where(cdm_source_name: InterleaveRegistryCdmSource::CDM_SOURCE_EX_NIHILO).first
     @condition_occurrence.person = @interleave_person.person
     respond_to do |format|
@@ -38,6 +40,7 @@ class ConditionOccurrencesController < ApplicationController
   end
 
   def edit
+    @condition_occurrence.interleave_datapoint = @datapoint
     @concepts = [[@condition_occurrence.condition_concept.concept_name, @condition_occurrence.condition_concept_id]]
     @type_concepts = load_type_concepts
     respond_to do |format|
@@ -47,7 +50,7 @@ class ConditionOccurrencesController < ApplicationController
 
   def update
     respond_to do |format|
-      if @condition_occurrence.update_attributes(condition_occurence_params)
+      if @condition_occurrence.update_attributes(condition_occurrence_params)
         format.js { }
       else
         format.js { render json: { errors: @condition_occurrence.errors.full_messages }, status: :unprocessable_entity }
@@ -56,7 +59,7 @@ class ConditionOccurrencesController < ApplicationController
   end
 
   private
-    def condition_occurence_params
+    def condition_occurrence_params
       params.require(:condition_occurrence).permit(:interleave_datapoint_id, :condition_concept_id, :condition_start_date, :condition_end_date, :condition_type_concept_id)
     end
 
