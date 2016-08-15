@@ -1,4 +1,59 @@
 FactoryGirl.define do
+  factory :concept_drug_clinical_drug, class: Concept do
+    domain_id Concept::DOMAIN_ID_DRUG
+    vocabulary_id Concept::VOCABULARY_ID_RXNORM
+    concept_class_id Concept::CONCEPT_CLASS_CLINICAL_DRUG
+    standard_concept 'S'
+    concept_code nil
+    valid_start_date Date.parse('1970-01-01')
+    valid_end_date Date.parse('2099-12-31')
+    invalid_reason nil
+  end
+
+  factory :concept_drug_ingredient, class: Concept do
+    domain_id Concept::DOMAIN_ID_DRUG
+    vocabulary_id Concept::VOCABULARY_ID_RXNORM
+    concept_class_id Concept::CONCEPT_CLASS_INGREDIENT
+    standard_concept 'S'
+    concept_code nil
+    valid_start_date Date.parse('1970-01-01')
+    valid_end_date Date.parse('2099-12-31')
+    invalid_reason nil
+  end
+
+  factory :concept_unit, class: Concept do
+    domain_id Concept::DOMAIN_ID_UNIT
+    vocabulary_id Concept::VOCABULARY_ID_UCUM
+    concept_class_id Concept::CONCEPT_CLASS_UNIT
+    standard_concept 'S'
+    concept_code 'OMOP generated'
+    valid_start_date Date.parse('1970-01-01')
+    valid_end_date Date.parse('2099-12-31')
+    invalid_reason nil
+  end
+
+  factory :concept_route, class: Concept do
+    domain_id Concept::DOMAIN_ID_ROUTE
+    vocabulary_id Concept::VOCABULARY_ID_SNOMED
+    concept_class_id Concept::CONCEPT_CLASS_QUALIFIER_VALUE
+    standard_concept 'S'
+    concept_code 'OMOP generated'
+    valid_start_date Date.parse('1970-01-01')
+    valid_end_date Date.parse('2099-12-31')
+    invalid_reason nil
+  end
+
+  factory :concept_drug_type, class: Concept do
+    domain_id Concept::DOMAIN_ID_TYPE_CONCEPT
+    vocabulary_id Concept::VOCABULARY_ID_DRUG_TYPE
+    concept_class_id Concept::CONCEPT_CLASS_DRUG_TYPE
+    standard_concept 'S'
+    concept_code 'OMOP generated'
+    valid_start_date Date.parse('1970-01-01')
+    valid_end_date Date.parse('2099-12-31')
+    invalid_reason nil
+  end
+
   factory :concept_measurement_type, class: Concept do
     domain_id Concept::DOMAIN_ID_TYPE_CONCEPT
     vocabulary_id Concept::VOCABULARY_ID_MEAS_TYPE

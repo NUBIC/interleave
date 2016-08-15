@@ -13,7 +13,7 @@ RSpec.feature 'Interleave Person', type: :feature do
 
     @interleave_registry_cdm_source = FactoryGirl.create(:interleave_registry_cdm_source, cdm_source_name: InterleaveRegistryCdmSource::CDM_SOURCE_EX_NIHILO, interleave_registry: @interleave_registry_prostate)
     @interleave_datapoint_diagnosis = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry_prostate, name: 'Diagnosis', domain_id: ConditionOccurrence::DOMAIN_ID, cardinality: 1, overlap: true)
-    @interleave_datapoint_comorbidities = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry_prostate, name: 'Comorbidities', domain_id: ConditionOccurrence::DOMAIN_ID, cardinality: 0, overlap: false)
+    @interleave_datapoint_comorbidities = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry_prostate, name: 'Comorbidity', domain_id: ConditionOccurrence::DOMAIN_ID, cardinality: 0, overlap: false)
     FactoryGirl.create(:interleave_datapoint_value, interleave_datapoint: @interleave_datapoint_diagnosis, concept: @concept_condition_neoplasam_of_prostate, column: 'condition_concept_id')
     FactoryGirl.create(:interleave_datapoint_value, interleave_datapoint: @interleave_datapoint_diagnosis, concept: @concept_condition_benign_prostatic_hyperplasia, column: 'condition_concept_id')
 
@@ -52,6 +52,8 @@ RSpec.feature 'Interleave Person', type: :feature do
       FactoryGirl.create(:interleave_datapoint_value, interleave_datapoint: @interleave_datapoint_psa_lab, column: 'value_as_concept_id', concept: psa_concept)
     end
     FactoryGirl.create(:interleave_datapoint_default_value, interleave_datapoint: @interleave_datapoint_psa_lab, column: 'measurement_type_concept_id', concept: @concept_lab_result, hardcoded: false)
+
+    @interleave_datapoint_drug_exposure = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry_prostate, name: 'Drug Exposure', domain_id: DrugExposure::DOMAIN_ID, cardinality: 0, overlap: true)
 
     visit interleave_registries_path
 
@@ -92,19 +94,11 @@ RSpec.feature 'Interleave Person', type: :feature do
     match_person(@interleave_person_moomin)
 
     within('.person_navigation') do
-      click_link('Conditions')
-    end
-
-    within('.person_navigation') do
       click_link('Diagnosis')
     end
 
     within('.breadcrumbs') do
       click_link('Condition:Diagnosis')
-    end
-
-    within('.person_navigation') do
-      click_link('Procedures')
     end
 
     within('.person_navigation') do
@@ -115,7 +109,15 @@ RSpec.feature 'Interleave Person', type: :feature do
       click_link('Procedure:Biopsy')
     end
 
-    sleep(2)
+    within('.person_navigation') do
+      click_link('Drug Exposure')
+    end
+
+    within('.breadcrumbs') do
+      click_link('Drug:Drug Exposure')
+    end
+
+    sleep(1)
   end
 
   scenario 'Displaying multiple datapoints', js: true, focus: false do
@@ -126,10 +128,10 @@ RSpec.feature 'Interleave Person', type: :feature do
       expect(page).to have_content('Diagnosis')
     end
 
-    click_link('Comorbidities')
+    click_link('Comorbidity')
 
     within("#condition_occurrences h3") do
-      expect(page).to have_content('Comorbidities')
+      expect(page).to have_content('Comorbidity')
     end
   end
 
@@ -148,7 +150,6 @@ RSpec.feature 'Interleave Person', type: :feature do
   end
 
   scenario 'Adding a condition occurrence with validation', js: true, focus: false do
-    click_link('Conditions')
     click_link('Diagnosis')
     click_link('Add')
     click_button('Save')
@@ -158,7 +159,6 @@ RSpec.feature 'Interleave Person', type: :feature do
   end
 
   scenario 'Adding a procedure occurrence with validation', js: true, focus: false do
-    click_link('Procedures')
     click_link('Biopsy')
     click_link('Add')
     click_button('Save')
@@ -168,7 +168,6 @@ RSpec.feature 'Interleave Person', type: :feature do
   end
 
   scenario 'Adding a condition occurrence', js: true, focus: false do
-    click_link('Conditions')
     click_link('Diagnosis')
     click_link('Add')
     page.find('.select2-selection ').native.send_keys(:return)
@@ -180,7 +179,7 @@ RSpec.feature 'Interleave Person', type: :feature do
     page.execute_script("$('#condition_occurrence_condition_end_date').val('#{end_date}')")
     start_date = '01/01/2016'
     page.execute_script("$('#condition_occurrence_condition_start_date').val('#{start_date}')")
-    sleep(10)
+    sleep(1)
     click_button('Save')
     match_condition(1, concept_name, Date.parse(start_date), Date.parse(end_date), @concept_condition_type_ehr_problem_list_entry.concept_name)
   end
@@ -247,6 +246,21 @@ RSpec.feature 'Interleave Person', type: :feature do
     find('.select2-results__option--highlighted').click
     click_button('Save')
     match_measurement(1, @psa_concept_1.concept_name, Date.parse(measurement_date), @concept_lab_result.concept_name, value_as_number, nil)
+  end
+
+  scenario 'Adding a drug exposure', js: true, focus: false do
+    click_link('Drug Exposure')
+    click_link('Add')
+    page.find('.select2-selection ').native.send_keys(:return)
+    find('.select2-dropdown input').set(@concept_drug_carbidopa.concept_name)
+    find('.select2-results__option--highlighted').click
+    select(@concept_drug_prescription_written.concept_name, from: 'Type')
+    start_date = '01/01/2016'
+    page.execute_script("$('#drug_exposure_drug_exposure_start_date').val('#{start_date}')")
+    end_date = '02/01/2016'
+    page.execute_script("$('#drug_exposure_drug_exposure_end_date').val('#{end_date}')")
+    click_button('Save')
+    match_drug_exposure(1, @concept_drug_carbidopa.concept_name, Date.parse(start_date), Date.parse(end_date), @concept_drug_prescription_written.concept_name)
   end
 
   scenario 'Editing a condition occurrence', js: true, focus: false do
@@ -373,6 +387,31 @@ RSpec.feature 'Interleave Person', type: :feature do
     page.execute_script("$('#measurement_measurement_date').val('#{measurement_date}')")
     click_button('Save')
     match_measurement(1, @psa_concept_2.concept_name, Date.parse(measurement_date), @concept_pathology_finding.concept_name, value_as_number, nil)
+  end
+
+  scenario 'Editing a drug exposure', js: true, focus: false do
+    start_date = '1/1/2015'
+    end_date = '2/1/2015'
+    durg_exposure = FactoryGirl.build(:drug_exposure, person: @person_moomin, drug_concept: @concept_drug_carbidopa, drug_type_concept: @concept_drug_prescription_written, drug_exposure_start_date: Date.parse(start_date), drug_exposure_end_date: Date.parse(end_date), interleave_datapoint_id: @interleave_datapoint_drug_exposure.id)
+    durg_exposure.create_with_sub_datapoints!(@interleave_registry_cdm_source)
+    click_link('Drug Exposure')
+    match_drug_exposure(1, @concept_drug_carbidopa.concept_name, Date.parse(start_date), Date.parse(end_date), @concept_drug_prescription_written.concept_name)
+
+    within("#drug_exposure_#{durg_exposure.id}") do
+      click_link('Edit')
+    end
+
+    page.find('.select2-selection ').native.send_keys(:return)
+    find('.select2-dropdown input').set(@concept_drug_carbidopa_25mg_oral_tablet.concept_name)
+    find('.select2-results__option--highlighted').click
+    select(@concept_drug_inpatient_administration.concept_name, from: 'Type')
+    start_date = '01/01/2016'
+    page.execute_script("$('#drug_exposure_drug_exposure_start_date').val('#{start_date}')")
+    end_date = '02/01/2016'
+    page.execute_script("$('#drug_exposure_drug_exposure_end_date').val('#{end_date}')")
+    click_button('Save')
+    match_drug_exposure(1, @concept_drug_carbidopa_25mg_oral_tablet.concept_name, Date.parse(start_date), Date.parse(end_date), @concept_drug_inpatient_administration.concept_name)
+    sleep(1)
   end
 
   scenario 'Editing a condition occurrence with validation', js: true, focus: false do
@@ -648,6 +687,78 @@ RSpec.feature 'Interleave Person', type: :feature do
     match_measurement(1, @psa_concept_1.concept_name, Date.parse(measurement_date_1), @concept_lab_result.concept_name, value_as_number_1, nil)
     match_measurement(2, @psa_concept_2.concept_name, Date.parse(measurement_date_2), @concept_pathology_finding.concept_name, value_as_number_2, nil)
   end
+
+  scenario 'Sorting drug exposures', js: true, focus: false do
+    start_date_1 = Date.parse('1/1/2015')
+    end_date_1 = Date.parse('2/1/2015')
+    durg_exposure_1 = FactoryGirl.build(:drug_exposure, person: @person_moomin, drug_concept: @concept_drug_carbidopa, drug_type_concept: @concept_drug_prescription_written, drug_exposure_start_date: start_date_1, drug_exposure_end_date: end_date_1, interleave_datapoint_id: @interleave_datapoint_drug_exposure.id)
+    durg_exposure_1.create_with_sub_datapoints!(@interleave_registry_cdm_source)
+    start_date_2 = Date.parse('1/1/2016')
+    end_date_2 = Date.parse('2/1/2016')
+    durg_exposure_2 = FactoryGirl.build(:drug_exposure, person: @person_moomin, drug_concept: @concept_drug_carbidopa_25mg_oral_tablet, drug_type_concept: @concept_drug_inpatient_administration, drug_exposure_start_date: start_date_2, drug_exposure_end_date: end_date_2, interleave_datapoint_id: @interleave_datapoint_drug_exposure.id)
+    durg_exposure_2.create_with_sub_datapoints!(@interleave_registry_cdm_source)
+
+    click_link('Drug Exposure')
+    match_drug_exposure(1, @concept_drug_carbidopa.concept_name, start_date_1, end_date_1, @concept_drug_prescription_written.concept_name)
+    match_drug_exposure(2, @concept_drug_carbidopa_25mg_oral_tablet.concept_name, start_date_2, end_date_2, @concept_drug_inpatient_administration.concept_name)
+
+    within(".drug_exposures_list") do
+      click_link('Drug')
+    end
+
+    match_drug_exposure(1, @concept_drug_carbidopa.concept_name, start_date_1, end_date_1, @concept_drug_prescription_written.concept_name)
+    match_drug_exposure(2, @concept_drug_carbidopa_25mg_oral_tablet.concept_name, start_date_2, end_date_2, @concept_drug_inpatient_administration.concept_name)
+
+    within(".drug_exposures_list") do
+      click_link('Drug')
+    end
+
+    match_drug_exposure(1, @concept_drug_carbidopa_25mg_oral_tablet.concept_name, start_date_2, end_date_2, @concept_drug_inpatient_administration.concept_name)
+    match_drug_exposure(2, @concept_drug_carbidopa.concept_name, start_date_1, end_date_1, @concept_drug_prescription_written.concept_name)
+
+
+    within(".drug_exposures_list") do
+      click_link('Start')
+    end
+
+    match_drug_exposure(1, @concept_drug_carbidopa.concept_name, start_date_1, end_date_1, @concept_drug_prescription_written.concept_name)
+    match_drug_exposure(2, @concept_drug_carbidopa_25mg_oral_tablet.concept_name, start_date_2, end_date_2, @concept_drug_inpatient_administration.concept_name)
+
+    within(".drug_exposures_list") do
+      click_link('Start')
+    end
+
+    match_drug_exposure(1, @concept_drug_carbidopa_25mg_oral_tablet.concept_name, start_date_2, end_date_2, @concept_drug_inpatient_administration.concept_name)
+    match_drug_exposure(2, @concept_drug_carbidopa.concept_name, start_date_1, end_date_1, @concept_drug_prescription_written.concept_name)
+
+    within(".drug_exposures_list") do
+      click_link('End')
+    end
+
+    match_drug_exposure(1, @concept_drug_carbidopa.concept_name, start_date_1, end_date_1, @concept_drug_prescription_written.concept_name)
+    match_drug_exposure(2, @concept_drug_carbidopa_25mg_oral_tablet.concept_name, start_date_2, end_date_2, @concept_drug_inpatient_administration.concept_name)
+
+    within(".drug_exposures_list") do
+      click_link('End')
+    end
+
+    match_drug_exposure(1, @concept_drug_carbidopa_25mg_oral_tablet.concept_name, start_date_2, end_date_2, @concept_drug_inpatient_administration.concept_name)
+    match_drug_exposure(2, @concept_drug_carbidopa.concept_name, start_date_1, end_date_1, @concept_drug_prescription_written.concept_name)
+
+    within(".drug_exposures_list") do
+      click_link('Drug Type')
+    end
+
+    match_drug_exposure(1, @concept_drug_carbidopa_25mg_oral_tablet.concept_name, start_date_2, end_date_2, @concept_drug_inpatient_administration.concept_name)
+    match_drug_exposure(2, @concept_drug_carbidopa.concept_name, start_date_1, end_date_1, @concept_drug_prescription_written.concept_name)
+
+    within(".drug_exposures_list") do
+      click_link('Drug Type')
+    end
+
+    match_drug_exposure(1, @concept_drug_carbidopa.concept_name, start_date_1, end_date_1, @concept_drug_prescription_written.concept_name)
+    match_drug_exposure(2, @concept_drug_carbidopa_25mg_oral_tablet.concept_name, start_date_2, end_date_2, @concept_drug_inpatient_administration.concept_name)
+  end
 end
 
 def match_person(interleave_person)
@@ -728,5 +839,23 @@ def match_measurement(index, concept_name, measurement_date, measurement_type_co
 
   within(".measurement:nth-of-type(#{index}) .value_as_number") do
     expect(page).to have_content(value_as_number)
+  end
+end
+
+def match_drug_exposure(index, concept_name, start_date, end_date, drug_type_concept_name)
+  within(".drug_exposure:nth-of-type(#{index}) .drug_exposure_concept_name") do
+    expect(page).to have_content(concept_name)
+  end
+
+  within(".drug_exposure:nth-of-type(#{index}) .drug_exposure_start_date") do
+    expect(page).to have_content(start_date.to_s(:date))
+  end
+
+  within(".drug_exposure:nth-of-type(#{index}) .drug_exposure_end_date") do
+    expect(page).to have_content(end_date.to_s(:date)) if end_date
+  end
+
+  within(".drug_exposure:nth-of-type(#{index}) .drug_exposurer_drug_type_concept_name") do
+    expect(page).to have_content(drug_type_concept_name)
   end
 end

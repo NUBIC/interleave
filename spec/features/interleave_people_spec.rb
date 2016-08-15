@@ -35,6 +35,8 @@ RSpec.feature 'Interleave People', type: :feature do
       click_link('Registries')
     end
 
+    sleep(1)
+
     within('.interleave_registry:nth-of-type(1) .registry_name') do
       expect(page).to have_content('Breast SPORE')
     end

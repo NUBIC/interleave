@@ -20,7 +20,7 @@ class ConditionOccurrencesController < ApplicationController
     @condition_occurrence.interleave_datapoint = @datapoint
     @datapoint.initialize_defaults(@condition_occurrence)
     @concepts = []
-    @type_concepts = load_type_concepts
+    @type_concepts = load_concepts('condition_type_concept_id')
     respond_to do |format|
       format.html { render :layout => false }
     end
@@ -42,7 +42,7 @@ class ConditionOccurrencesController < ApplicationController
   def edit
     @condition_occurrence.interleave_datapoint = @datapoint
     @concepts = [[@condition_occurrence.condition_concept.concept_name, @condition_occurrence.condition_concept_id]]
-    @type_concepts = load_type_concepts
+    @type_concepts = load_concepts('condition_type_concept_id')
     respond_to do |format|
       format.html { render :layout => false }
     end
@@ -63,24 +63,8 @@ class ConditionOccurrencesController < ApplicationController
       params.require(:condition_occurrence).permit(:interleave_datapoint_id, :condition_concept_id, :condition_start_date, :condition_end_date, :condition_type_concept_id)
     end
 
-    def load_interleave_registry
-      @registry = InterleaveRegistry.find(params[:interleave_registry_id])
-    end
-
-    def load_interleave_person
-      @interleave_person = InterleavePerson.find(params[:interleave_person_id])
-    end
-
     def load_condition_occurrence
       @condition_occurrence = ConditionOccurrence.find(params[:id])
-    end
-
-    def load_interleave_datapoint
-      @datapoint = InterleaveDatapoint.find(params[:datapoint_id])
-    end
-
-    def load_type_concepts
-      @datapoint.concept_values('condition_type_concept_id').map { |condition_type| [condition_type.concept_name, condition_type.concept_id] }
     end
 
     def sort_column

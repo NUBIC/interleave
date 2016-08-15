@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       end
 
       resources :condition_occurrences, path: 'conditions'
+      resources :drug_exposures, path: 'drugs'
       resources :measurements
       resources :procedure_occurrences, path: 'procedures'
     end

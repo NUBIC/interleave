@@ -27,12 +27,20 @@ class InterleaveDatapoint < ActiveRecord::Base
       results = case column
       when 'condition_concept_id', 'procedure_concept_id', 'measurement_concept_id'
         Concept.standard.valid.where(domain_id: domain_id)
+      when 'drug_concept_id'
+        Concept.standard.valid.where(domain_id: domain_id, vocabulary_id: Concept::VOCABULARY_ID_RXNORM)
       when 'condition_type_concept_id'
         Concept.standard.valid.condition_types
+      when 'dose_unit_concept_id'
+        Concept.standard.valid.units
+      when 'drug_type_concept_id'
+        Concept.standard.valid.drug_types
       when 'measurement_type_concept_id'
         Concept.standard.valid.measurement_types
       when 'procedure_type_concept_id'
         Concept.standard.valid.procedure_types
+      when 'route_concept_id'
+        Concept.standard.valid.routes
       else
         raise ArgumentError.new('Unknown column.')
       end

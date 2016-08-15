@@ -20,7 +20,7 @@ class ProcedureOccurrencesController < ApplicationController
     @procedure_occurrence.interleave_datapoint = @datapoint
     @datapoint.initialize_defaults(@procedure_occurrence)
     @concepts = []
-    @type_concepts = load_type_concepts
+    @type_concepts = load_concepts('procedure_type_concept_id')
     @sub_datapoints = @datapoint.initialize_sub_datapoint_entities
     respond_to do |format|
       format.html { render :layout => false }
@@ -44,7 +44,7 @@ class ProcedureOccurrencesController < ApplicationController
   def edit
     @procedure_occurrence.interleave_datapoint = @datapoint
     @concepts = [[@procedure_occurrence.procedure_concept.concept_name, @procedure_occurrence.procedure_concept_id]]
-    @type_concepts = load_type_concepts
+    @type_concepts = load_concepts('procedure_type_concept_id')
     @sub_datapoints = @datapoint.initialize_sub_datapoint_entities(@procedure_occurrence.interleave_entity)
     respond_to do |format|
       format.html { render :layout => false }
@@ -66,24 +66,8 @@ class ProcedureOccurrencesController < ApplicationController
       params.require(:procedure_occurrence).permit(:interleave_datapoint_id, :procedure_concept_id, :procedure_date, :procedure_type_concept_id, :modifier_concept_id, :quantity)
     end
 
-    def load_interleave_registry
-      @registry = InterleaveRegistry.find(params[:interleave_registry_id])
-    end
-
-    def load_interleave_person
-      @interleave_person = InterleavePerson.find(params[:interleave_person_id])
-    end
-
     def load_procedure_occurrence
       @procedure_occurrence = ProcedureOccurrence.find(params[:id])
-    end
-
-    def load_interleave_datapoint
-      @datapoint = InterleaveDatapoint.find(params[:datapoint_id])
-    end
-
-    def load_type_concepts
-      @datapoint.concept_values('procedure_type_concept_id').map { |condition_type| [condition_type.concept_name, condition_type.concept_id] }
     end
 
     def sort_column

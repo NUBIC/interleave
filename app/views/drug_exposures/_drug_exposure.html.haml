@@ -1,0 +1,38 @@
+%h3
+  Drug:
+  = @datapoint.name
+#drug_exposure
+  = form_for [@registry, @interleave_person, @drug_exposure], html: { class: 'drug_exposure_form' }, remote: true, validate: true do |f|
+    = link_to '', concepts_interleave_datapoint_url(@datapoint.id, column: 'drug_concept_id'), class: 'hide', id: 'concepts_interleave_datapoint_url'
+    = f.hidden_field :interleave_datapoint_id, value: @datapoint.id
+    .row
+      .drug_exposure_start_date
+        %label{for: 'drug_exposure_start_date' }
+          Start
+          %span{ class: 'required' }
+            *
+          = f.text_field :drug_exposure_start_date, class: 'datepicker'
+      .drug_exposure_end_date
+        %label{for: 'drug_exposure_end_date' }
+          End
+          = f.text_field :drug_exposure_end_date, class: 'datepicker'
+    .row
+      .drug_concept_id
+        %label{for: 'drug_concept_id' }
+          Concept
+          %span{ class: 'required' }
+            *
+          = f.select :drug_concept_id, options_for_select(@concepts,  selected: f.object.drug_concept_id), { include_blank: true }
+      .drug_type_concept_id
+        %label{for: 'drug_type_concept_id' }
+          Type
+          %span{ class: 'required' }
+            *
+          = f.select :drug_type_concept_id, options_for_select(@type_concepts, selected: f.object.drug_type_concept_id), { include_blank: true }
+      .navigation
+        %p.help-text
+          %span{ class: 'required' }
+            *
+          Indicates required field
+        = f.submit 'Save', class: 'button'
+        = link_to 'Cancel', '#', class: 'cancel-link button warning'

@@ -1,0 +1,42 @@
+- content_for(:title) do
+  Drugs
+#drug_exposures
+  = render 'interleave_people/header'
+  = render 'interleave_people/navigation'
+  .interleave_datapoint
+    %h3
+      = @datapoint.name
+    .drug_exposures_list
+      = will_paginate @drug_exposures, renderer: FoundationPagination::Rails
+      %table
+        %thead
+          %tr
+            %th.drug_concept_concept_name{ width: 200 }
+              = sortable 'drug_concept.concept_name', 'Drug'
+            %th.drug_exposure_start_date{ width: 200 }
+              = sortable 'drug_exposure_start_date', 'Start'
+            %th.drug_exposure_end_date{ width: 200 }
+              = sortable 'drug_exposure_end_date', 'End'
+            %th.drug_type_concept_concept_name{ width: 200 }
+              = sortable 'drug_type_concept.concept_name', 'Drug Type'
+            %th.review{ width: 100 }
+        %tbody
+          - @drug_exposures.each do |drug_exposure|
+            = content_tag_for(:tr, drug_exposure) do
+              %td.drug_exposure_concept_name
+                = drug_exposure.drug_concept.concept_name
+              %td.drug_exposure_start_date
+                = drug_exposure.drug_exposure_start_date.to_s(:date)
+              %td.drug_exposure_end_date
+                = drug_exposure.drug_exposure_end_date.to_s(:date) unless drug_exposure.drug_exposure_end_date.nil?
+              %td.drug_exposurer_drug_type_concept_name
+                = drug_exposure.drug_type_concept.concept_name
+              %td.review
+                = link_to 'Edit', edit_interleave_registry_interleave_person_drug_exposure_url(@registry, @interleave_person, drug_exposure, datapoint_id: @datapoint.id), 'data-no-turbolink' => '', class: 'edit_drug_exposure_link drug_exposure_link'
+      .new_drug_exposure_link
+        = link_to 'Add', new_interleave_registry_interleave_person_drug_exposure_url(@registry, @interleave_person, datapoint_id: @datapoint.id), 'data-no-turbolink' => '', id: 'new_drug_exposure_link', class: 'drug_exposure_link'
+      = will_paginate @drug_exposures, renderer: FoundationPagination::Rails
+  #drug_exposure_modal.reveal.large{ "data-reveal" => "" }
+    .drug_exposure
+    %button.close-button{"aria-label" => "Close modal", "data-close" => "", :type => "button"}
+      %span{"aria-hidden" => "true"} &times;

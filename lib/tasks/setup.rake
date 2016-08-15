@@ -52,15 +52,18 @@ namespace :setup do
     concept_from_physical_examination = Concept.standard.where(vocabulary_id: Concept::VOCABULARY_ID_MEAS_TYPE, concept_name: 'From physical examination').first #From physical examination
     concept_lab_result = Concept.standard.where(vocabulary_id: Concept::VOCABULARY_ID_MEAS_TYPE, concept_name: 'Lab result').first #Lab result
 
+    #datapoint drug exposure
+    interleave_datapoint_drug_exposure = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, name: 'Drug Exposure', domain_id: DrugExposure::DOMAIN_ID, cardinality: 0, overlap: true).first_or_create
+
     #datapoint diagnosis
-    interleave_datapoint_diagnosis = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, name: 'Diagnosis', domain_id: ConditionOccurrencez::DOMAIN_ID, cardinality: 1, overlap: true,  value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NOT_APPICABLE).first_or_create
+    interleave_datapoint_diagnosis = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, name: 'Diagnosis', domain_id: ConditionOccurrence::DOMAIN_ID, cardinality: 1, overlap: true,  value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NOT_APPICABLE).first_or_create
     concept = Concept.standard.where(domain_id: Concept::DOMAIN_ID_CONDITION, concept_code: '126906006').first #Neoplasm of prostate
     InterleaveDatapointValue.where(interleave_datapoint_id: interleave_datapoint_diagnosis.id, concept: concept, column: 'condition_concept_id').first_or_create
     concept = Concept.standard.where(domain_id: Concept::DOMAIN_ID_CONDITION, concept_code: '266569009').first #"Benign prostatic hyperplasia"
     InterleaveDatapointValue.where(interleave_datapoint_id: interleave_datapoint_diagnosis.id, concept: concept, column: 'condition_concept_id').first_or_create
 
-    #datapoint comorbidities
-    interleave_datapoint_comorbidities = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, name: 'Comorbidities', domain_id: 'Condition', cardinality: 0, overlap: false,  value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NOT_APPICABLE).first_or_create
+    #datapoint comorbidity
+    interleave_datapoint_comorbidities = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, name: 'Comorbidity', domain_id: 'Condition', cardinality: 0, overlap: false,  value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NOT_APPICABLE).first_or_create
 
     #datapoint trus
     interleave_datapoint_trus = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, name: 'TRUS', domain_id: 'Procedure', cardinality: 0, overlap: true,  value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NOT_APPICABLE).first_or_create

@@ -6,6 +6,10 @@
     %ul.conditions.menu.vertical.nested{ class: "is-active #{active?('is-active','condition_occurrences', 'index')}"}
       = links_to_datapoints(@registry, @interleave_person, 'Condition')
   %li.menu-text
+    = link_to 'Drugs', '#'
+    %ul.drugs.menu.vertical.nested{ class: "is-active #{active?('is-active','drug_exposures', 'index')}"}
+      = links_to_datapoints(@registry, @interleave_person, 'Drug')
+  %li.menu-text
     = link_to 'Measurements', '#'
     %ul.measurements.menu.vertical.nested{ class: "is-active #{active?('is-active','measurements', 'index')}"}
       = links_to_datapoints(@registry, @interleave_person, 'Measurement')

@@ -24,11 +24,29 @@ class ApplicationController < ActionController::Base
       case options[:datapoint].domain_id
       when 'Condition'
         @breadcrumbs << { name: "#{options[:datapoint].domain_id}:#{options[:datapoint].name}", url: interleave_registry_interleave_person_condition_occurrences_url(@registry, @interleave_person, datapoint_id: @datapoint.id), class: 'datapoint_link' }
+      when 'Drug'
+        @breadcrumbs << { name: "#{options[:datapoint].domain_id}:#{options[:datapoint].name}", url: interleave_registry_interleave_person_drug_exposures_url(@registry, @interleave_person, datapoint_id: @datapoint.id), class: 'datapoint_link' }
       when 'Measurement'
         @breadcrumbs << { name: "#{options[:datapoint].domain_id}:#{options[:datapoint].name}", url: interleave_registry_interleave_person_measurements_url(@registry, @interleave_person, datapoint_id: @datapoint.id), class: 'datapoint_link' }
       when 'Procedure'
         @breadcrumbs << { name: "#{options[:datapoint].domain_id}:#{options[:datapoint].name}", url: interleave_registry_interleave_person_procedure_occurrences_url(@registry, @interleave_person, datapoint_id: @datapoint.id), class: 'datapoint_link' }
       end
     end
+  end
+
+  def load_concepts(column)
+    @datapoint.concept_values(column).map { |concept| [concept.concept_name, concept.concept_id] }
+  end
+
+  def load_interleave_registry
+    @registry = InterleaveRegistry.find(params[:interleave_registry_id])
+  end
+
+  def load_interleave_person
+    @interleave_person = InterleavePerson.find(params[:interleave_person_id])
+  end
+
+  def load_interleave_datapoint
+    @datapoint = InterleaveDatapoint.find(params[:datapoint_id])
   end
 end

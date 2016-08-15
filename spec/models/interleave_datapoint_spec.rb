@@ -77,7 +77,7 @@ RSpec.describe InterleaveDatapoint, type: :model do
     expect(@interleave_datapoint_comorbidities.concept_values('condition_type_concept_id')).to match_array([@concept_condition_type_ehr_chief_complaint, @concept_condition_type_ehr_episode_entry, @concept_condition_type_ehr_problem_list_entry])
   end
 
-  it 'searches the concepts belonging to a datapoint with restricted concepts case insensitively by column', focus: false do
+  it 'searches the concepts belonging to a datapoint with unrestricted concepts case insensitively by column', focus: false do
     expect(@interleave_datapoint_comorbidities.concept_values('condition_concept_id', 'adenom')).to match_array([@concept_condition_pituitary_adenoma])
     expect(@interleave_datapoint_comorbidities.concept_values('condition_concept_id', 'ADENOM')).to match_array([@concept_condition_pituitary_adenoma])
 
@@ -93,7 +93,7 @@ RSpec.describe InterleaveDatapoint, type: :model do
     expect(expected_entities).to match_array(actual_entities)
   end
 
-  it 'initializess sub datapoint entities from an existing interleave entity', focus: false do
+  it 'initializes sub datapoint entities from an existing interleave entity', focus: false do
     procedure_occurrence_1 = FactoryGirl.build(:procedure_occurrence, person: @person_little_my, procedure_concept: @concept_procedure_biopsy_prostate_needle, procedure_type_concept: @concept_procedure_type_primary_procedure, procedure_date: Date.parse('1/1/2016'), interleave_datapoint_id: @interleave_datapoint_biopsy.id, quantity: 1)
     sub_datapoint_entities = @interleave_datapoint_biopsy.initialize_sub_datapoint_entities
     measurements = sub_datapoint_entities.map { |sub_datapoint_entity| sub_datapoint_entity.attributes.merge(interleave_datapoint_id: sub_datapoint_entity.interleave_datapoint_id).symbolize_keys }

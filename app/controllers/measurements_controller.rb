@@ -20,7 +20,7 @@ class MeasurementsController < ApplicationController
     @measurement.interleave_datapoint = @datapoint
     @datapoint.initialize_defaults(@measurement)
     @concepts = []
-    @type_concepts = load_type_concepts
+    @type_concepts = load_concepts('measurement_type_concept_id')
     respond_to do |format|
       format.html { render :layout => false }
     end
@@ -42,7 +42,7 @@ class MeasurementsController < ApplicationController
   def edit
     @measurement.interleave_datapoint = @datapoint
     @concepts = [[@measurement.measurement_concept.concept_name, @measurement.measurement_concept_id]]
-    @type_concepts = load_type_concepts
+    @type_concepts = load_concepts('measurement_type_concept_id')
     respond_to do |format|
       format.html { render :layout => false }
     end
@@ -63,24 +63,8 @@ class MeasurementsController < ApplicationController
       params.require(:measurement).permit(:interleave_datapoint_id, :measurement_concept_id, :measurement_date, :measurement_type_concept_id, :value_as_number, :value_as_concept_id)
     end
 
-    def load_interleave_registry
-      @registry = InterleaveRegistry.find(params[:interleave_registry_id])
-    end
-
-    def load_interleave_person
-      @interleave_person = InterleavePerson.find(params[:interleave_person_id])
-    end
-
     def load_measurement
       @measurement = Measurement.find(params[:id])
-    end
-
-    def load_interleave_datapoint
-      @datapoint = InterleaveDatapoint.find(params[:datapoint_id])
-    end
-
-    def load_type_concepts
-      @datapoint.concept_values('measurement_type_concept_id').map { |measuremet_type| [measuremet_type.concept_name, measuremet_type.concept_id] }
     end
 
     def sort_column
