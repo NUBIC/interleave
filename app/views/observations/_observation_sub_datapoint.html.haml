@@ -1,0 +1,17 @@
+= fields_for 'observations[]', observation do |observation_form|
+  = observation_form.hidden_field :observation_id, value: observation.observation_id
+  = observation_form.hidden_field :observation_concept_id, value: observation.observation_concept_id
+  = observation_form.hidden_field :interleave_datapoint_id, value: observation.interleave_datapoint.id
+  = observation_form.hidden_field :observation_type_concept_id, value: observation.observation_type_concept_id
+  %label{for: 'observation_value' }
+    = observation.interleave_datapoint.name
+    %span{ class: 'required' }
+      *
+    - case observation.interleave_datapoint.value_type
+    - when InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NUMBER_INTEGER, InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NUMBER_DECIMAL
+      = observation_form.text_field :value_as_number
+    - when InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NUMBER_INTEGER_LIST
+      = observation_form.select :value_as_number, options_for_select(observation.interleave_datapoint.integer_values('value_as_number'), selected: observation_form.object.value_as_number.to_i), { include_blank: true }
+    - when InterleaveDatapoint::VALUE_TYPE_VALUE_AS_CONCEPT
+      - concepts = observation.interleave_datapoint.concept_values('value_as_concept_id').order('concept_name').map { |concept| [concept.concept_name, concept.concept_id] }
+      = observation_form.select :value_as_concept_id, options_for_select(concepts, selected: observation_form.object.value_as_concept_id), { include_blank: true }

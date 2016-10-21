@@ -47,6 +47,10 @@ module ApplicationHelper
         haml_tag(:li, class: active?('active', 'measurements', 'index', 'datapoint_id' => datapoint.id.to_s)) do
           concat link_to datapoint.name, interleave_registry_interleave_person_measurements_url(registry, interleave_person, datapoint_id: datapoint.id), class: 'datapoint'
         end
+      when 'Observation'
+        haml_tag(:li, class: active?('active', 'observations', 'index', 'datapoint_id' => datapoint.id.to_s)) do
+          concat link_to datapoint.group_name, interleave_registry_interleave_person_observations_url(registry, interleave_person, datapoint_id: datapoint.id), class: 'datapoint'
+        end
       when 'Procedure'
         haml_tag(:li, class: active?('active', 'procedure_occurrences', 'index', 'datapoint_id' => datapoint.id.to_s)) do
           concat link_to datapoint.name, interleave_registry_interleave_person_procedure_occurrences_url(registry, interleave_person, datapoint_id: datapoint.id)

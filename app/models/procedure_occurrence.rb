@@ -19,4 +19,8 @@ class ProcedureOccurrence < ActiveRecord::Base
 
     s
   end
+
+  def interleave_date
+    procedure_date
+  end
 end

@@ -37,6 +37,8 @@ class InterleaveDatapoint < ActiveRecord::Base
         Concept.standard.valid.drug_types
       when 'measurement_type_concept_id'
         Concept.standard.valid.measurement_types
+      when 'observation_type_concept_id'
+        Concept.standard.valid.observation_types
       when 'procedure_type_concept_id'
         Concept.standard.valid.procedure_types
       when 'route_concept_id'

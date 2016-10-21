@@ -68,9 +68,9 @@ RSpec.describe ProcedureOccurrence, type: :model do
   end
 
   it 'reports procedure occurrences by interleave datapoint', focus: false do
-    procedure_occurrence_1 = FactoryGirl.create(:procedure_occurrence, person: @person_little_my, procedure_concept: @concept_procedure_biopsy_prostate_needle, procedure_type_concept: @concept_procedure_type_primary_procedure, procedure_date: Date.parse('1/1/2016'), interleave_datapoint_id: @interleave_datapoint_biopsy.id, quantity: 1)
+    procedure_occurrence_1 = FactoryGirl.build(:procedure_occurrence, person: @person_little_my, procedure_concept: @concept_procedure_biopsy_prostate_needle, procedure_type_concept: @concept_procedure_type_primary_procedure, procedure_date: Date.parse('1/1/2016'), interleave_datapoint_id: @interleave_datapoint_biopsy.id, quantity: 1)
     procedure_occurrence_1.create_with_sub_datapoints!(@interleave_registry_cdm_source)
-    procedure_occurrence_2 = FactoryGirl.create(:procedure_occurrence, person: @person_moomin, procedure_concept: @concept_procedure_ultrasound_transrectal, procedure_type_concept: @concept_procedure_type_secondary_procedure, procedure_date: Date.parse('1/1/2016'), interleave_datapoint_id: @interleave_datapoint_trus.id, quantity: 1)
+    procedure_occurrence_2 = FactoryGirl.build(:procedure_occurrence, person: @person_moomin, procedure_concept: @concept_procedure_ultrasound_transrectal, procedure_type_concept: @concept_procedure_type_secondary_procedure, procedure_date: Date.parse('1/1/2016'), interleave_datapoint_id: @interleave_datapoint_trus.id, quantity: 1)
     procedure_occurrence_2.create_with_sub_datapoints!(@interleave_registry_cdm_source)
 
     expect(ProcedureOccurrence.by_interleave_data_point(@interleave_datapoint_biopsy.id)).to match_array([procedure_occurrence_1])
@@ -78,5 +78,11 @@ RSpec.describe ProcedureOccurrence, type: :model do
 
   it 'knows its domain concept', focus: false do
     expect(ProcedureOccurrence.domain_concept).to eq(@concept_domain_procedure)
+  end
+
+  it 'knows its interleave date', focus: false do
+    procedure_date = Date.parse('1/1/2016')
+    procedure_occurrence_1 = FactoryGirl.create(:procedure_occurrence, person: @person_little_my, procedure_concept: @concept_procedure_biopsy_prostate_needle, procedure_type_concept: @concept_procedure_type_primary_procedure, procedure_date: procedure_date, interleave_datapoint_id: @interleave_datapoint_biopsy.id, quantity: 1)
+    expect(procedure_occurrence_1.interleave_date).to eq(procedure_date)
   end
 end

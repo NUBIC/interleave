@@ -1,0 +1,70 @@
+%h3
+  Observation:
+  = @datapoint.name
+#observation
+  = form_for [@registry, @interleave_person, @observation], html: { class: 'observation_form' }, remote: true, validate: true do |f|
+    = link_to '', concepts_interleave_datapoint_url(@datapoint.id, column: 'observation_concept_id'), class: 'hide', id: 'concepts_interleave_datapoint_url'
+    = f.hidden_field :interleave_datapoint_id, value: @datapoint.id
+    = f.hidden_field :observation_concept_id, value: @observation.observation_concept_id
+    .row
+      .observation_date
+        %label{for: 'observation_date' }
+          Date
+          %span{ class: 'required' }
+            *
+          = f.text_field :observation_date, class: 'datepicker'
+
+      .observation_type_concept_id
+        %label{for: 'observation_type_concept_id' }
+          Type
+          %span{ class: 'required' }
+            *
+          = f.select :observation_type_concept_id, options_for_select(@type_concepts, selected: f.object.observation_type_concept_id), { include_blank: true }
+    .row
+      .observation_value
+        - case @observation.interleave_datapoint.value_type
+        - when InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NUMBER_INTEGER, InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NUMBER_DECIMAL
+          %label{for: 'value_as_number' }
+            = @datapoint.name
+            %span{ class: 'required' }
+              *
+            = f.text_field :value_as_number
+        - when InterleaveDatapoint::VALUE_TYPE_VALUE_AS_NUMBER_INTEGER_LIST
+          %label{for: 'value_as_number' }
+            = @datapoint.name
+            %span{ class: 'required' }
+              *
+            = f.select :value_as_number, options_for_select(@observation.interleave_datapoint.integer_values('value_as_number'), selected: f.object.value_as_number.to_i), { include_blank: true }
+        - when InterleaveDatapoint::VALUE_TYPE_VALUE_AS_CONCEPT
+          %label{for: 'value_as_concept_id' }
+            = @datapoint.name
+            %span{ class: 'required' }
+              *
+            - concepts = @observation.interleave_datapoint.concept_values('value_as_concept_id').order('concept_name ASC').map { |concept| [concept.concept_name, concept.concept_id] }
+            = f.select :value_as_concept_id, options_for_select(concepts, selected: f.object.value_as_concept_id), { include_blank: true }
+      .observation_value
+        - sub_datapoint = @sub_datapoints.shift
+        %div{ class: "interleave_sub_datapoint_#{sub_datapoint.id}"}
+          -  if sub_datapoint.present?
+            - if sub_datapoint.class.to_s == 'Observation'
+              = render 'observations/observation_sub_datapoint', observation: sub_datapoint
+    .interleave_sub_datapoints
+      - @sub_datapoints.in_groups_of(2).each do |sub_datapoints_group|
+        .row
+          - sub_datapoints_group.each_with_index do |sub_datapoint, i|
+            - if i.even?
+              .left
+                %div{ class: "interleave_sub_datapoint_#{sub_datapoint.id}"}
+                  - if sub_datapoint.class.to_s == 'Observation'
+                    = render 'observations/observation_sub_datapoint', observation: sub_datapoint
+            - else
+              .right
+                - if sub_datapoint.class.to_s == 'Observation'
+                  = render 'observations/observation_sub_datapoint', observation: sub_datapoint
+      .navigation
+        %p.help-text
+          %span{ class: 'required' }
+            *
+          Indicates required field
+        = f.submit 'Save', class: 'button'
+        = link_to 'Cancel', '#', class: 'cancel-link button warning'

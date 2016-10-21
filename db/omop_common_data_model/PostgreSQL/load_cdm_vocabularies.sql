@@ -1,1 +1,1 @@
-psql --u interleave_dvelopment -d interleave_dvelopment -f "OMOP CDM vocabulary load - PostgreSQL.sql"
+psql --u interleave_development -d interleave_development -f "OMOP CDM vocabulary load - PostgreSQL.sql"

@@ -1,0 +1,43 @@
+- content_for(:title) do
+  Observations
+#observations
+  = render 'interleave_people/header'
+  = render 'interleave_people/navigation'
+  .interleave_datapoint
+    %h3
+      = @datapoint.group_name
+    .observations_list
+      = will_paginate @observations, renderer: FoundationPagination::Rails
+      %table
+        %thead
+          %tr
+            %th.observation_observation_date{ width: 200 }
+              = sortable 'observation_date', 'Date'
+            %th.observation_datapoint_name{ width: 200 }
+              = sortable "#{@datapoint.id}", "#{@datapoint.name}"
+            - @datapoint.interleave_sub_datapoints.each do |interleave_sub_datapoint|
+              %th.observation_datapoint_name{ width: 200 }
+                = sortable "#{interleave_sub_datapoint.id}", "#{interleave_sub_datapoint.name}"
+            %th.review{ width: 100 }
+        %tbody
+          - @observations.each do |observation|
+            = content_tag_for(:tr, observation) do
+              %td.observation_observation_date
+                = observation.observation_date.to_s(:date)
+              %td.observation_value
+                %div{ class: "interleave_sub_datapoint_#{@datapoint.id}"}
+                  = observation.value
+              - sub_datapoints = @datapoint.initialize_sub_datapoint_entities(observation.interleave_entity)
+              - sub_datapoints.each do |sub_datapoint|
+                %td.observation_value
+                  %div{ class: "interleave_sub_datapoint_#{sub_datapoint.interleave_entity.interleave_datapoint_id}"}
+                    = sub_datapoint.value
+              %td.review
+                = link_to 'Edit', edit_interleave_registry_interleave_person_observation_url(@registry, @interleave_person, observation, datapoint_id: @datapoint.id), 'data-no-turbolink' => '', class: 'edit_observation_link observation_link'
+      .new_observation_link
+        = link_to 'Add', new_interleave_registry_interleave_person_observation_url(@registry, @interleave_person, datapoint_id: @datapoint.id), 'data-no-turbolink' => '', id: 'new_observation_link', class: 'observation_link'
+      = will_paginate @observations, renderer: FoundationPagination::Rails
+  #observation_modal.reveal.large{ "data-reveal" => "" }
+    .observation
+    %button.close-button{"aria-label" => "Close modal", "data-close" => "", :type => "button"}
+      %span{"aria-hidden" => "true"} &times;

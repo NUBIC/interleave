@@ -21,4 +21,5 @@
 //= require interleave.condition_occurrence
 //= require interleave.drug_exposure
 //= require interleave.measurement
+//= require interleave.observation
 //= require interleave.procedure_occurrence

@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       resources :condition_occurrences, path: 'conditions'
       resources :drug_exposures, path: 'drugs'
       resources :measurements
+      resources :observations
       resources :procedure_occurrences, path: 'procedures'
     end
   end

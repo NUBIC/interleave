@@ -4,7 +4,8 @@ namespace :setup do
     Rails.root
     path = '/db/omop_common_data_model/PostgreSQL/VocabImport/CDMV5VOCAB/'
 
-    ['DRUG_STRENGTH.csv',
+# 'DRUG_STRENGTH.csv',
+    [
      'CONCEPT.csv',
      'CONCEPT_RELATIONSHIP.csv',
      'CONCEPT_ANCESTOR.csv',
@@ -201,6 +202,47 @@ namespace :setup do
       InterleaveDatapointValue.where(interleave_datapoint_id: interleave_datapoint_psa_lab.id, concept: concept, column: 'measurement_concept_id').first_or_create
       InterleaveDatapointDefaultValue.where(interleave_datapoint_id: interleave_datapoint_psa_lab.id, column: 'measurement_type_concept_id', concept: concept_lab_result, hardcoded: true).first_or_create
     end
+
+    #datapoint family history
+    interleave_datapoint_family_history_of_disease_relationship = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, group_name: 'Family History of Disease', name: 'Family Relationship', domain_id: Observation::DOMAIN_ID, cardinality: 0, overlap: true, value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_CONCEPT).first_or_create
+    concept = Concept.standard.where(domain_id: Concept::DOMAIN_ID_OBSERVATION, concept_code: '54136-7').first #"Relationship to patient family member [USSG-FHT]"
+    InterleaveDatapointDefaultValue.where(interleave_datapoint_id: interleave_datapoint_family_history_of_disease_relationship.id, column: 'observation_concept_id', concept: concept, hardcoded: true).first_or_create
+
+    ConceptRelationship.where(concept_id_1: concept.id, relationship_id: 'Has Answer').each do |concept_relationship|
+      concept = Concept.standard.where(concept_id: concept_relationship.concept_id_2).first
+      InterleaveDatapointValue.where(interleave_datapoint_id: interleave_datapoint_family_history_of_disease_relationship.id, concept: concept, column: 'value_as_concept_id').first_or_create
+    end
+
+    concept = Concept.standard.where(domain_id: Concept::DOMAIN_ID_TYPE_CONCEPT, concept_name: 'Patient reported').first #Patient reported
+    InterleaveDatapointDefaultValue.where(interleave_datapoint_id: interleave_datapoint_family_history_of_disease_relationship.id, column: 'observation_type_concept_id', concept: concept, hardcoded: true).first_or_create
+
+    #subdatapoint
+    interleave_datapoint_family_history_of_disease_disease = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, name: 'Disease', domain_id: Observation::DOMAIN_ID, cardinality: 1 , overlap: false, value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_CONCEPT).first_or_create
+    concept = Concept.standard.where(domain_id: Concept::DOMAIN_ID_OBSERVATION, concept_code: '54116-9').first #History of diseases family member [USSG-FHT]
+    InterleaveDatapointDefaultValue.where(interleave_datapoint_id: interleave_datapoint_family_history_of_disease_disease.id, column: 'observation_concept_id', concept: concept, hardcoded: true).first_or_create
+
+    ConceptRelationship.where(concept_id_1: concept.id, relationship_id: 'Has Answer').each do |concept_relationship|
+      concept = Concept.standard.where(concept_id: concept_relationship.concept_id_2).first
+      InterleaveDatapointValue.where(interleave_datapoint_id: interleave_datapoint_family_history_of_disease_disease.id, concept: concept, column: 'value_as_concept_id').first_or_create
+    end
+
+    concept = Concept.standard.where(domain_id: Concept::DOMAIN_ID_TYPE_CONCEPT, concept_name: 'Patient reported').first #Patient reported
+    InterleaveDatapointDefaultValue.where(interleave_datapoint_id: interleave_datapoint_family_history_of_disease_disease.id, column: 'observation_type_concept_id', concept: concept, hardcoded: true).first_or_create
+    InterleaveDatapointRelationship.where(interleave_datapoint_id: interleave_datapoint_family_history_of_disease_relationship.id, interleave_sub_datapoint_id: interleave_datapoint_family_history_of_disease_disease.id, relationship_concept_id: relationship.relationship_concept_id).first_or_create
+
+    #subdatapoint
+    interleave_datapoint_family_history_of_disease_age_range = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, name: 'Age range at diagnosis', domain_id: Observation::DOMAIN_ID, cardinality: 1 , overlap: false, value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_CONCEPT).first_or_create
+    concept = Concept.standard.where(domain_id: Concept::DOMAIN_ID_OBSERVATION, concept_code: '54115-1').first #Age range at onset of disease family member [USSG-FHT]
+    InterleaveDatapointDefaultValue.where(interleave_datapoint_id: interleave_datapoint_family_history_of_disease_age_range.id, column: 'observation_concept_id', concept: concept, hardcoded: true).first_or_create
+
+    ConceptRelationship.where(concept_id_1: concept.id, relationship_id: 'Has Answer').each do |concept_relationship|
+      concept = Concept.standard.where(concept_id: concept_relationship.concept_id_2).first
+      InterleaveDatapointValue.where(interleave_datapoint_id: interleave_datapoint_family_history_of_disease_age_range.id, concept: concept, column: 'value_as_concept_id').first_or_create
+    end
+
+    concept = Concept.standard.where(domain_id: Concept::DOMAIN_ID_TYPE_CONCEPT, concept_name: 'Patient reported').first #Patient reported
+    InterleaveDatapointDefaultValue.where(interleave_datapoint_id: interleave_datapoint_family_history_of_disease_age_range.id, column: 'observation_type_concept_id', concept: concept, hardcoded: true).first_or_create
+    InterleaveDatapointRelationship.where(interleave_datapoint_id: interleave_datapoint_family_history_of_disease_relationship.id, interleave_sub_datapoint_id: interleave_datapoint_family_history_of_disease_age_range.id, relationship_concept_id: relationship.relationship_concept_id).first_or_create
   end
 end
 

@@ -1,0 +1,129 @@
+#observations {
+  @include grid-row();
+
+  .interleave_datapoint {
+    @include grid-column(
+     $columns: 20
+    );
+  }
+
+  .observations_list {
+		@include grid-column(
+		  $columns: 24
+		);
+
+    th .current {
+      padding-right: 2em;
+      background-repeat: no-repeat;
+      background-position: right center;
+    }
+
+    th .asc {
+      background-image: asset_url("drop25.png");
+    }
+
+    th .desc {
+      background-image: asset_url("drop27.png");
+    }
+
+    table {
+      @include grid-column(
+       $columns: 24
+      );
+    }
+  }
+}
+
+#observation_modal {
+  position: fixed;
+  bottom: 0;
+  top: 30% !important;
+  right: 0;
+  left: 0;
+  width: 100%;
+}
+
+#observation {
+  @include grid-row();
+
+  .ui-autocomplete-input {
+    width: 90%;
+    height: 2.5rem;
+  }
+  .ui-button {
+    width: 5%;
+    height: 2.5rem;
+  }
+
+  .observation_date {
+    @include grid-column(
+     $columns: 12
+    );
+    input {
+      margin-bottom: 0;
+    }
+  }
+
+  .observation_type_concept_id {
+    label {
+      display: block;
+    }
+    @include grid-column(
+     $columns: 12
+    );
+    select {
+      margin-bottom: 0;
+    }
+
+    .select2 {
+      width: 100% !important;
+    }
+  }
+
+  .observation_value {
+    label {
+      display: block;
+    }
+    @include grid-column(
+     $columns: 12
+    );
+    input {
+      margin-bottom: 0;
+    }
+  }
+
+  .interleave_sub_datapoint {
+    label {
+      display: block;
+    }
+    @include grid-column(
+     $columns: 12
+    );
+    input {
+      margin-bottom: 0;
+    }
+  }
+
+  .interleave_sub_datapoints {
+    .left {
+      @include grid-column(
+       $columns: 12
+      );
+
+    }
+
+    .right {
+      @include grid-column(
+       $columns: 12
+      );
+    }
+  }
+
+  .navigation {
+    padding: 1rem;
+    @include grid-column-offset(12);
+    @include grid-column(
+     $columns: 12
+    );
+  }
+}

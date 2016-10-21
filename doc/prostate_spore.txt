@@ -1,5 +1,81 @@
 select *
 from concept
+where concept_code = '21899-0'
+
+select cr.relationship_id, c1.concept_name, c2.concept_name
+from concept_relationship cr join concept c1 on cr.concept_id_1 = c1.concept_id
+                             join concept c2 on cr.concept_id_2 = c2.concept_id
+where concept_id_1 = 3016308
+order by cr.relationship_id, c2.concept_name
+
+
+
+--Clinical Staging
+LOINC Codes
+
+21905-5
+21906-3
+21907-1
+
+--Pathological Staging
+
+
+
+
+
+--Family History
+
+select *
+from concept
+where concept_code = '21899-0'
+
+select cr.relationship_id, c1.concept_name, c2.concept_name
+from concept_relationship cr join concept c1 on cr.concept_id_1 = c1.concept_id
+                             join concept c2 on cr.concept_id_2 = c2.concept_id
+where concept_id_1 = 3016308
+
+
+
+
+select c1.concept_id, c2.concept_id, c1.concept_name, c2.concept_name, c1.*
+from concept_relationship cr join concept c1 on cr.concept_id_1 = c1.concept_id
+                             join concept c2 on cr.concept_id_2 = c2.concept_id
+where cr.concept_id_1 in(
+select concept_id
+from concept
+where lower(concept_name) like '% family %'
+and concept_name like '%USSG%'
+)
+--and lower(concept_name) like '% diagnosis %'
+--order by lower(concept_name)
+and relationship_id = 'Has Answer'
+order by c1.concept_name, c2.concept_name
+
+select *
+from concept
+where concept_name like '%USSG%'
+order by concept_code
+
+
+
+select c1.concept_id, c2.concept_id, c1.concept_name, c2.concept_name, c1.*
+from concept_relationship cr join concept c1 on cr.concept_id_1 = c1.concept_id
+                             join concept c2 on cr.concept_id_2 = c2.concept_id
+where cr.concept_id_1 in(
+select concept_id
+from concept
+where lower(concept_name) like '% family %'
+and concept_name like '%USSG%'
+)
+--and lower(concept_name) like '% diagnosis %'
+--order by lower(concept_name)
+and relationship_id = 'Has Answer'
+order by c1.concept_name, c2.concept_name
+
+--Other
+
+select *
+from concept
 where domain_id = 'Condition'
 and standard_concept = 'S'
 and lower(concept_name) like '%benign prostatic hyperplasia%'

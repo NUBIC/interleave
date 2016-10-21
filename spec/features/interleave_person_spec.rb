@@ -55,6 +55,38 @@ RSpec.feature 'Interleave Person', type: :feature do
 
     @interleave_datapoint_drug_exposure = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry_prostate, name: 'Drug Exposure', domain_id: DrugExposure::DOMAIN_ID, cardinality: 0, overlap: true)
 
+    #datapoint
+    @interleave_datapoint_family_history_of_disease_relationship = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry_prostate, group_name: 'Family History of Disease', name: 'Family Relationship', domain_id: Observation::DOMAIN_ID, cardinality: 0, overlap: true, value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_CONCEPT)
+    FactoryGirl.create(:interleave_datapoint_default_value, interleave_datapoint: @interleave_datapoint_family_history_of_disease_relationship, column: 'observation_concept_id', concept: @concept_observation_relationship_to_patient_family_member, hardcoded: true)
+
+    @concept_observation_relationship_to_patient_family_member_answers.each do |answer|
+      FactoryGirl.create(:interleave_datapoint_value, interleave_datapoint: @interleave_datapoint_family_history_of_disease_relationship, column: 'value_as_concept_id', concept: answer)
+    end
+
+    FactoryGirl.create(:interleave_datapoint_default_value, interleave_datapoint: @interleave_datapoint_family_history_of_disease_relationship, column: 'observation_type_concept_id', concept: @concept_observation_type_patient_reported, hardcoded: true)
+
+    #sub datapoint
+    @interleave_datapoint_family_history_of_disease_disease = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry_prostate, group_name: nil, name: 'Disease', domain_id: Observation::DOMAIN_ID, cardinality: 0, overlap: true, value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_CONCEPT)
+    FactoryGirl.create(:interleave_datapoint_default_value, interleave_datapoint: @interleave_datapoint_family_history_of_disease_disease, column: 'observation_concept_id', concept: @concept_observation_relationship_to_patient_family_member_disease, hardcoded: true)
+
+    @concept_observation_relationship_to_patient_family_member_disease_answers.each do |answer|
+      FactoryGirl.create(:interleave_datapoint_value, interleave_datapoint: @interleave_datapoint_family_history_of_disease_disease, column: 'value_as_concept_id', concept: answer)
+    end
+
+    FactoryGirl.create(:interleave_datapoint_default_value, interleave_datapoint: @interleave_datapoint_family_history_of_disease_disease, column: 'observation_type_concept_id', concept: @concept_observation_type_patient_reported, hardcoded: true)
+    FactoryGirl.create(:interleave_datapoint_relationship, interleave_datapoint: @interleave_datapoint_family_history_of_disease_relationship, interleave_sub_datapoint: @interleave_datapoint_family_history_of_disease_disease, relationship_concept_id: @concept_relationship_has_asso_finding.id)
+
+    #sub datapoint
+    @interleave_datapoint_family_history_of_disease_age_range = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry_prostate, group_name: nil, name: 'Age range at diagnosis', domain_id: Observation::DOMAIN_ID, cardinality: 0, overlap: true, value_type: InterleaveDatapoint::VALUE_TYPE_VALUE_AS_CONCEPT)
+    FactoryGirl.create(:interleave_datapoint_default_value, interleave_datapoint: @interleave_datapoint_family_history_of_disease_age_range, column: 'observation_concept_id', concept: @concept_observation_age_range_at_onset_of_disease_family_member, hardcoded: true)
+
+    @concept_observation_age_range_at_onset_of_disease_family_member_answers.each do |answer|
+      FactoryGirl.create(:interleave_datapoint_value, interleave_datapoint: @interleave_datapoint_family_history_of_disease_age_range, column: 'value_as_concept_id', concept: answer)
+    end
+
+    FactoryGirl.create(:interleave_datapoint_default_value, interleave_datapoint: @interleave_datapoint_family_history_of_disease_age_range, column: 'observation_type_concept_id', concept: @concept_observation_type_patient_reported, hardcoded: true)
+    FactoryGirl.create(:interleave_datapoint_relationship, interleave_datapoint: @interleave_datapoint_family_history_of_disease_relationship, interleave_sub_datapoint: @interleave_datapoint_family_history_of_disease_age_range, relationship_concept_id: @concept_relationship_has_asso_finding.id)
+
     visit interleave_registries_path
 
     within("#interleave_registry_#{@interleave_registry_prostate.id}") do
@@ -263,6 +295,24 @@ RSpec.feature 'Interleave Person', type: :feature do
     match_drug_exposure(1, @concept_drug_carbidopa.concept_name, Date.parse(start_date), Date.parse(end_date), @concept_drug_prescription_written.concept_name)
   end
 
+  scenario 'Adding an observation', js: true, focus: false do
+    interleave_datapoints = []
+    click_link('Family History of Disease')
+    click_link('Add')
+    concept_brother = Concept.where(concept_code: 'LA10415-0').first
+    interleave_datapoints << { concept: concept_brother, interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_relationship.id}
+    select(concept_brother.concept_name, from: 'Family Relationship')
+    concept_heart_diseases = Concept.where(concept_code: 'LA10523-1').first
+    interleave_datapoints << { concept: concept_heart_diseases, interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_disease.id}
+    select(concept_heart_diseases.concept_name, from: 'Disease')
+    concept_40_to_49 = Concept.where(concept_code: 'LA10398-8').first
+    select(concept_40_to_49.concept_name, from: 'Age range at diagnosis')
+    observation_date = '02/01/2016'
+    page.execute_script("$('#observation_observation_date').val('#{observation_date}')")
+    click_button('Save')
+    match_observation(1, Date.parse(observation_date), interleave_datapoints)
+  end
+
   scenario 'Editing a condition occurrence', js: true, focus: false do
     start_date = Date.parse('1/1/2015')
     end_date = Date.parse('2/1/2015')
@@ -412,6 +462,53 @@ RSpec.feature 'Interleave Person', type: :feature do
     click_button('Save')
     match_drug_exposure(1, @concept_drug_carbidopa_25mg_oral_tablet.concept_name, Date.parse(start_date), Date.parse(end_date), @concept_drug_inpatient_administration.concept_name)
     sleep(1)
+  end
+
+  scenario 'Editing an observation', js: true, focus: false do
+    interleave_datapoints = []
+    observation_date = '1/1/2015'
+    concept_brother = Concept.where(concept_code: 'LA10415-0').first
+    interleave_datapoints << { concept: concept_brother, interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_relationship.id}
+    observation_1 = FactoryGirl.build(:observation, person: @person_moomin, observation_concept: @concept_observation_relationship_to_patient_family_member, observation_type_concept: @concept_observation_type_patient_reported, observation_date: Date.parse(observation_date), interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_relationship.id, value_as_concept: concept_brother)
+    sub_datapoint_entities = @interleave_datapoint_family_history_of_disease_relationship.initialize_sub_datapoint_entities
+    observations = sub_datapoint_entities.map { |sub_datapoint_entity| sub_datapoint_entity.attributes.merge(interleave_datapoint_id: sub_datapoint_entity.interleave_datapoint_id).symbolize_keys }
+    concept_lung_disease = Concept.where(concept_code: 'LA10531-4').first
+    interleave_datapoints << { concept: concept_lung_disease, interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_disease.id}
+    observations.detect { |observation| observation[:interleave_datapoint_id] == @interleave_datapoint_family_history_of_disease_disease.id }[:value_as_concept_id] = concept_lung_disease.id
+    concept_20_to_29 = Concept.where(concept_code: 'LA10396-2').first
+    interleave_datapoints << { concept: concept_20_to_29, interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_age_range.id}
+    observations.detect { |observation| observation[:interleave_datapoint_id] == @interleave_datapoint_family_history_of_disease_age_range.id }[:value_as_concept_id] = concept_20_to_29.id
+    observation_1.create_with_sub_datapoints!(@interleave_registry_cdm_source, observations: observations)
+
+    click_link('Family History of Disease')
+    match_observation(1, Date.parse(observation_date), interleave_datapoints)
+
+    within("#observation_#{observation_1.id}") do
+      click_link('Edit')
+    end
+
+    within("#edit_observation_#{observation_1.id}") do
+      expect(page.has_field?('Date', with: Date.parse(observation_date).to_s)).to be_truthy
+      expect(page.has_select?('Type', selected: @concept_observation_type_patient_reported.concept_name)).to be_truthy
+      expect(page.has_select?('Family Relationship', selected: concept_brother.concept_name)).to be_truthy
+      expect(page.has_select?('Disease', selected: concept_lung_disease.concept_name)).to be_truthy
+      expect(page.has_select?('Age range at diagnosis', selected: concept_20_to_29.concept_name)).to be_truthy
+    end
+
+    interleave_datapoints = []
+    concept_mother = Concept.where(concept_code: 'LA10417-6').first
+    interleave_datapoints << { concept: concept_mother, interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_relationship.id}
+    select(concept_mother.concept_name, from: 'Family Relationship')
+    concept_cancer = Concept.where(concept_code: 'LA10524-9').first
+    interleave_datapoints << { concept: concept_cancer, interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_disease.id}
+    select(concept_cancer.concept_name, from: 'Disease')
+    concept_40_to_49 = Concept.where(concept_code: 'LA10398-8').first
+    interleave_datapoints << { concept: concept_40_to_49, interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_age_range.id}
+    select(concept_40_to_49.concept_name, from: 'Age range at diagnosis')
+    observation_date = '02/01/2016'
+    page.execute_script("$('#observation_observation_date').val('#{observation_date}')")
+    click_button('Save')
+    match_observation(1, Date.parse(observation_date), interleave_datapoints)
   end
 
   scenario 'Editing a condition occurrence with validation', js: true, focus: false do
@@ -759,6 +856,98 @@ RSpec.feature 'Interleave Person', type: :feature do
     match_drug_exposure(1, @concept_drug_carbidopa.concept_name, start_date_1, end_date_1, @concept_drug_prescription_written.concept_name)
     match_drug_exposure(2, @concept_drug_carbidopa_25mg_oral_tablet.concept_name, start_date_2, end_date_2, @concept_drug_inpatient_administration.concept_name)
   end
+
+  scenario 'Sorting observations', js: true, focus: false do
+    interleave_datapoints_1 = []
+    observation_date_1 = '1/1/2015'
+    concept_brother = Concept.where(concept_code: 'LA10415-0').first
+    interleave_datapoints_1 << { concept: concept_brother, interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_relationship.id}
+    observation_1 = FactoryGirl.build(:observation, person: @person_moomin, observation_concept: @concept_observation_relationship_to_patient_family_member, observation_type_concept: @concept_observation_type_patient_reported, observation_date: Date.parse(observation_date_1), interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_relationship.id, value_as_concept: concept_brother)
+    sub_datapoint_entities = @interleave_datapoint_family_history_of_disease_relationship.initialize_sub_datapoint_entities
+    observations = sub_datapoint_entities.map { |sub_datapoint_entity| sub_datapoint_entity.attributes.merge(interleave_datapoint_id: sub_datapoint_entity.interleave_datapoint_id).symbolize_keys }
+    concept_lung_disease = Concept.where(concept_code: 'LA10531-4').first
+    interleave_datapoints_1 << { concept: concept_lung_disease, interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_disease.id}
+    observations.detect { |observation| observation[:interleave_datapoint_id] == @interleave_datapoint_family_history_of_disease_disease.id }[:value_as_concept_id] = concept_lung_disease.id
+    concept_20_to_29 = Concept.where(concept_code: 'LA10396-2').first
+    interleave_datapoints_1 << { concept: concept_20_to_29, interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_age_range.id}
+    observations.detect { |observation| observation[:interleave_datapoint_id] == @interleave_datapoint_family_history_of_disease_age_range.id }[:value_as_concept_id] = concept_20_to_29.id
+    observation_1.create_with_sub_datapoints!(@interleave_registry_cdm_source, observations: observations)
+
+    interleave_datapoints_2 = []
+    observation_date_2 = '1/1/2016'
+    concept_nephew = Concept.where(concept_code: 'LA10419-2').first
+    interleave_datapoints_2 << { concept: concept_nephew, interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_relationship.id}
+    observation_2 = FactoryGirl.build(:observation, person: @person_moomin, observation_concept: @concept_observation_relationship_to_patient_family_member, observation_type_concept: @concept_observation_type_patient_reported, observation_date: Date.parse(observation_date_2), interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_relationship.id, value_as_concept: concept_nephew)
+    sub_datapoint_entities = @interleave_datapoint_family_history_of_disease_relationship.initialize_sub_datapoint_entities
+    observations = sub_datapoint_entities.map { |sub_datapoint_entity| sub_datapoint_entity.attributes.merge(interleave_datapoint_id: sub_datapoint_entity.interleave_datapoint_id).symbolize_keys }
+    concept_septicemia = Concept.where(concept_code: 'LA10591-8').first
+    interleave_datapoints_2 << { concept: concept_septicemia, interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_disease.id}
+    observations.detect { |observation| observation[:interleave_datapoint_id] == @interleave_datapoint_family_history_of_disease_disease.id }[:value_as_concept_id] = concept_septicemia.id
+    concept_50_to_59 = Concept.where(concept_code: 'LA10399-6').first
+    interleave_datapoints_2 << { concept: concept_50_to_59, interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_age_range.id}
+    observations.detect { |observation| observation[:interleave_datapoint_id] == @interleave_datapoint_family_history_of_disease_age_range.id }[:value_as_concept_id] = concept_50_to_59.id
+    observation_2.create_with_sub_datapoints!(@interleave_registry_cdm_source, observations: observations)
+
+    click_link('Family History of Disease')
+    match_observation(1, Date.parse(observation_date_1), interleave_datapoints_1)
+    match_observation(2, Date.parse(observation_date_2), interleave_datapoints_2)
+
+    within(".observations_list") do
+      click_link('Date')
+    end
+
+    match_observation(1, Date.parse(observation_date_1), interleave_datapoints_1)
+    match_observation(2, Date.parse(observation_date_2), interleave_datapoints_2)
+
+    within(".observations_list") do
+      click_link('Date')
+    end
+
+    match_observation(1, Date.parse(observation_date_2), interleave_datapoints_2)
+    match_observation(2, Date.parse(observation_date_1), interleave_datapoints_1)
+
+    within(".observations_list") do
+      click_link('Family Relationship')
+    end
+
+    match_observation(1, Date.parse(observation_date_1), interleave_datapoints_1)
+    match_observation(2, Date.parse(observation_date_2), interleave_datapoints_2)
+
+    within(".observations_list") do
+      click_link('Family Relationship')
+    end
+
+    match_observation(1, Date.parse(observation_date_2), interleave_datapoints_2)
+    match_observation(2, Date.parse(observation_date_1), interleave_datapoints_1)
+
+    within(".observations_list") do
+      click_link('Disease')
+    end
+
+    match_observation(1, Date.parse(observation_date_1), interleave_datapoints_1)
+    match_observation(2, Date.parse(observation_date_2), interleave_datapoints_2)
+
+    within(".observations_list") do
+      click_link('Disease')
+    end
+
+    match_observation(1, Date.parse(observation_date_2), interleave_datapoints_2)
+    match_observation(2, Date.parse(observation_date_1), interleave_datapoints_1)
+
+    within(".observations_list") do
+      click_link('Age range at diagnosis')
+    end
+
+    match_observation(1, Date.parse(observation_date_1), interleave_datapoints_1)
+    match_observation(2, Date.parse(observation_date_2), interleave_datapoints_2)
+
+    within(".observations_list") do
+      click_link('Age range at diagnosis')
+    end
+
+    match_observation(1, Date.parse(observation_date_2), interleave_datapoints_2)
+    match_observation(2, Date.parse(observation_date_1), interleave_datapoints_1)
+  end
 end
 
 def match_person(interleave_person)
@@ -857,5 +1046,17 @@ def match_drug_exposure(index, concept_name, start_date, end_date, drug_type_con
 
   within(".drug_exposure:nth-of-type(#{index}) .drug_exposurer_drug_type_concept_name") do
     expect(page).to have_content(drug_type_concept_name)
+  end
+end
+
+def match_observation(index, observation_date, interleave_datapoints)
+  within(".observation:nth-of-type(#{index}) .observation_observation_date") do
+    expect(page).to have_content(observation_date.to_s(:date))
+  end
+
+  interleave_datapoints.each do |interleave_datapoint|
+    within(".observation:nth-of-type(#{index}) .interleave_sub_datapoint_#{interleave_datapoint[:interleave_datapoint_id]}") do
+      expect(page).to have_content(interleave_datapoint[:concept].concept_name)
+    end
   end
 end

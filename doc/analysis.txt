@@ -1,3 +1,51 @@
+select *
+from concept
+where lower(concept_name) like '%distant%'
+order by domain_id, concept_name
+
+
+select *
+from concept
+where lower(concept_name) like '%potency%'
+order by domain_id, concept_name
+
+
+select *
+from concept_relationship
+where concept_id_1 = 4041277
+
+
+select *
+from concept
+where concept_id = 4270628
+
+
+select *
+from concept
+where lower(concept_name) like '%local recurrence%'
+order by domain_id, concept_name
+
+
+select *
+from concept_relationship
+where concept_id_1 = 4200890
+
+
+
+Data Dictionary
+  https://www.auanet.org/resources/aqua-resources.cfm
+
+  http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3651578/
+
+  https://search.loinc.org/search.zul?query=recurrence
+
+OHDSI
+  Protocol to add in-house concept_ids in v5
+    http://forums.ohdsi.org/t/protocol-to-add-in-house-concept-ids-in-v5/1232/3
+
+  ETL
+    http://www.ohdsi.org/web/wiki/doku.php?id=documentation:vocabulary:data_etl
+
 Support multi-Tenancy
 
 	interleave_registries
