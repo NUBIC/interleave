@@ -19,6 +19,7 @@
 //= require turbolinks
 //= require init
 //= require interleave.condition_occurrence
+//= require interleave.death
 //= require interleave.drug_exposure
 //= require interleave.measurement
 //= require interleave.observation

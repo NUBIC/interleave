@@ -20,4 +20,12 @@ class DrugExposure < ActiveRecord::Base
 
     s
   end
+
+  def drug_exposure_start_date
+    read_attribute(:drug_exposure_start_date).to_s(:date) if read_attribute(:drug_exposure_start_date).present?
+  end
+
+  def drug_exposure_end_date
+    read_attribute(:drug_exposure_end_date).to_s(:date) if read_attribute(:drug_exposure_end_date).present?
+  end
 end

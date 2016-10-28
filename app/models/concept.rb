@@ -5,6 +5,7 @@ class Concept < ActiveRecord::Base
   VOCABULARY_ID_CONDITION_TYPE = 'Condition Type'
   VOCABULARY_ID_CPT4 = 'CPT4'
   VOCABULARY_ID_DOMAIN = 'Domain'
+  VOCABULARY_ID_DEATH_TYPE = 'Death Type'
   VOCABULARY_ID_DRUG_TYPE = 'Drug Type'
   VOCABULARY_ID_ETHNICITY = 'Ethnicity'
   VOCABULARY_ID_GENDER = 'Gender'
@@ -41,6 +42,7 @@ class Concept < ActiveRecord::Base
   CONCEPT_CLASS_DRUG_TYPE = 'Drug Type'
   CONCEPT_CLASS_CLINICAL_DRUG = 'Clinical Drug'
   CONCEPT_CLASS_CPT4 = 'CPT4'
+  CONCEPT_CLASS_DEATH_TYPE = 'Death Type'
   CONCEPT_CLASS_DOMAIN = 'Domain'
   CONCEPT_CLASS_GENDER = 'Gender'
   CONCEPT_CLASS_ETHNICITY = 'Ethnicity'
@@ -70,6 +72,10 @@ class Concept < ActiveRecord::Base
 
   def self.domain_concepts
     valid.where(domain_id: Concept::DOMAIN_ID_METADATA, vocabulary_id: Concept::VOCABULARY_ID_DOMAIN, concept_class_id: Concept::CONCEPT_CLASS_DOMAIN)
+  end
+
+  def self.death_types
+    valid.where(domain_id: Concept::DOMAIN_ID_TYPE_CONCEPT, vocabulary_id: Concept::VOCABULARY_ID_DEATH_TYPE , concept_class_id: Concept::CONCEPT_CLASS_DEATH_TYPE)
   end
 
   def self.drug_types

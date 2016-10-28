@@ -4,7 +4,6 @@ class CreateInterleaveEntities < ActiveRecord::Migration
       t.integer   :interleave_datapoint_id, null: false
       t.integer   :parent_id, null: true
       t.string    :cdm_table, null: false
-      t.integer   :domain_concept_id, null: false
       t.integer   :fact_id, null: false
       t.integer   :interleave_registry_cdm_source_id, null: false
       t.string    :domain_concept_source_value, null: true

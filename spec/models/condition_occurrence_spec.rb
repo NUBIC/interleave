@@ -23,7 +23,7 @@ RSpec.describe ConditionOccurrence, type: :model do
   it 'creates an interleave entity upon save with sub datapoints', focus: false do
     condition_occurrence_1 = FactoryGirl.build(:condition_occurrence, person:  @person_little_my, condition_concept: @concept_condition_glioblastoma_multiforme, condition_type_concept: @concept_condition_type_ehr_chief_complaint, condition_start_date: Date.parse('1/1/2016'), interleave_datapoint_id: @interleave_datapoint_diagnosis.id)
     condition_occurrence_1.create_with_sub_datapoints!(@interleave_registry_cdm_source)
-    expect(InterleaveEntity.where(interleave_datapoint_id: @interleave_datapoint_diagnosis, cdm_table: ConditionOccurrence.table_name, domain_concept_id: ConditionOccurrence.domain_concept.id, fact_id: condition_occurrence_1.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source).count).to eq(1)
+    expect(InterleaveEntity.where(interleave_datapoint_id: @interleave_datapoint_diagnosis, cdm_table: ConditionOccurrence.table_name, fact_id: condition_occurrence_1.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source).count).to eq(1)
   end
 
   it 'reports condition occurrences by person', focus: false do

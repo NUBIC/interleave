@@ -30,7 +30,7 @@ RSpec.describe DrugExposure, type: :model do
   it 'creates an interleave entity upon save with sub datapoints', focus: false do
     durg_exposure_1 = FactoryGirl.build(:drug_exposure, person: @person_little_my, drug_concept: @concept_drug_carbidopa, drug_type_concept: @concept_drug_prescription_written, drug_exposure_start_date: Date.parse('1/1/2016'), interleave_datapoint_id: @interleave_datapoint_drug.id)
     durg_exposure_1.create_with_sub_datapoints!(@interleave_registry_cdm_source)
-    expect(InterleaveEntity.where(interleave_datapoint_id: @interleave_datapoint_drug, cdm_table: DrugExposure.table_name, domain_concept_id: DrugExposure.domain_concept.id, fact_id: durg_exposure_1.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source).count).to eq(1)
+    expect(InterleaveEntity.where(interleave_datapoint_id: @interleave_datapoint_drug, cdm_table: DrugExposure.table_name, fact_id: durg_exposure_1.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source).count).to eq(1)
   end
 
   it 'reports drug exposures by person', focus: false do

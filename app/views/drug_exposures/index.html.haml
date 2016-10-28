@@ -26,9 +26,9 @@
               %td.drug_exposure_concept_name
                 = drug_exposure.drug_concept.concept_name
               %td.drug_exposure_start_date
-                = drug_exposure.drug_exposure_start_date.to_s(:date)
+                = drug_exposure.drug_exposure_start_date
               %td.drug_exposure_end_date
-                = drug_exposure.drug_exposure_end_date.to_s(:date) unless drug_exposure.drug_exposure_end_date.nil?
+                = drug_exposure.drug_exposure_end_date
               %td.drug_exposurer_drug_type_concept_name
                 = drug_exposure.drug_type_concept.concept_name
               %td.review

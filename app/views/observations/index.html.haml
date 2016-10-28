@@ -23,7 +23,7 @@
           - @observations.each do |observation|
             = content_tag_for(:tr, observation) do
               %td.observation_observation_date
-                = observation.observation_date.to_s(:date)
+                = observation.observation_date
               %td.observation_value
                 %div{ class: "interleave_sub_datapoint_#{@datapoint.id}"}
                   = observation.value

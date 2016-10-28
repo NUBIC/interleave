@@ -17,4 +17,12 @@ class ConditionOccurrence < ActiveRecord::Base
 
     s
   end
+
+  def condition_start_date
+    read_attribute(:condition_start_date).to_s(:date) if read_attribute(:condition_start_date).present?
+  end
+
+  def condition_end_date
+    read_attribute(:condition_end_date).to_s(:date) if read_attribute(:condition_end_date).present?
+  end
 end

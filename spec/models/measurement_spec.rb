@@ -26,7 +26,7 @@ RSpec.describe Measurement, type: :model do
   it 'creates an interleave entity upon save with sub datapoints', focus: false do
     measurement_1 = FactoryGirl.build(:measurement, person:  @person_little_my, measurement_concept: @psa_concept_1, measurement_type_concept: @concept_lab_result, measurement_date: Date.parse('1/1/2016'), interleave_datapoint_id: @interleave_datapoint_psa_lab.id)
     measurement_1.create_with_sub_datapoints!(@interleave_registry_cdm_source)
-    expect(InterleaveEntity.where(interleave_datapoint_id: @interleave_datapoint_psa_lab, cdm_table: Measurement.table_name, domain_concept_id: Measurement.domain_concept.id, fact_id: measurement_1.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source).count).to eq(1)
+    expect(InterleaveEntity.where(interleave_datapoint_id: @interleave_datapoint_psa_lab, cdm_table: Measurement.table_name, fact_id: measurement_1.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source).count).to eq(1)
   end
 
   it 'reports measurements by person', focus: false do

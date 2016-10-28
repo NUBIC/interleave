@@ -17,4 +17,8 @@ class Measurement < ActiveRecord::Base
 
     s
   end
+
+  def measurement_date
+    read_attribute(:measurement_date).to_s(:date) if read_attribute(:measurement_date).present?
+  end
 end

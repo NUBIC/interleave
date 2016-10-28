@@ -25,12 +25,16 @@ class InterleaveDatapoint < ActiveRecord::Base
       results = Concept.standard.valid.where(concept_id: interleave_datapoint_values.where(column: column).map(&:value_as_concept_id))
     else
       results = case column
+      when 'cause_concept_id'
+        Concept.standard.valid.where(domain_id: ConditionOccurrence::DOMAIN_ID)
       when 'condition_concept_id', 'procedure_concept_id', 'measurement_concept_id'
         Concept.standard.valid.where(domain_id: domain_id)
-      when 'drug_concept_id'
-        Concept.standard.valid.where(domain_id: domain_id, vocabulary_id: Concept::VOCABULARY_ID_RXNORM)
       when 'condition_type_concept_id'
         Concept.standard.valid.condition_types
+      when 'drug_concept_id'
+        Concept.standard.valid.where(domain_id: domain_id, vocabulary_id: Concept::VOCABULARY_ID_RXNORM)
+      when 'death_type_concept_id'
+        Concept.standard.valid.death_types
       when 'dose_unit_concept_id'
         Concept.standard.valid.units
       when 'drug_type_concept_id'

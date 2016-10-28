@@ -1,4 +1,15 @@
 FactoryGirl.define do
+  factory :concept_death_type, class: Concept do
+    domain_id Concept::DOMAIN_ID_TYPE_CONCEPT
+    vocabulary_id Concept::VOCABULARY_ID_DEATH_TYPE
+    concept_class_id Concept::CONCEPT_CLASS_DEATH_TYPE
+    standard_concept 'S'
+    concept_code 'OMOP generated'
+    valid_start_date Date.parse('1970-01-01')
+    valid_end_date Date.parse('2099-12-31')
+    invalid_reason nil
+  end
+
   factory :concept_observation_type, class: Concept do
     domain_id Concept::DOMAIN_ID_TYPE_CONCEPT
     vocabulary_id Concept::VOCABULARY_ID_OBSERVATION_TYPE

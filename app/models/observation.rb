@@ -56,6 +56,10 @@ class Observation < ActiveRecord::Base
     observation_date
   end
 
+  def observation_date
+    read_attribute(:observation_date).to_s(:date) if read_attribute(:observation_date).present?
+  end
+
   def value
     if value_as_number.present?
       value_as_number

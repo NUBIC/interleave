@@ -5,6 +5,7 @@ Rails.application.routes.draw do
         get :details
       end
 
+      resources :deaths
       resources :condition_occurrences, path: 'conditions'
       resources :drug_exposures, path: 'drugs'
       resources :measurements

@@ -1,6 +1,6 @@
 module InterleaveSpecSetup
   def interleave_spec_setup
-    concept_id = 1
+    concept_id = 0
     @concept_gender_male = FactoryGirl.create(:concept_gender_male, concept_id: concept_id+=1)
     @concept_gender_female = FactoryGirl.create(:concept_gender_female, concept_id: concept_id+=1)
 
@@ -207,5 +207,25 @@ module InterleaveSpecSetup
       @psa_concepts <<  psa_concept = FactoryGirl.create(:concept_measurement, concept_name: psa_concept[:concept_name], concept_code: psa_concept[:concept_code], concept_id: concept_id+=1)
       instance_variable_set("@psa_concept_#{i}", psa_concept)
     end
+
+    @death_types_concepts = []
+
+    ['Death Certificate contributory cause',
+    'Death Certificate immediate cause',
+    'Death Certificate underlying cause',
+    'EHR Record contributory cause',
+    'EHR Record immediate cause',
+    'EHR Record underlying cause',
+    'EHR discharge status "Expired"',
+    'EHR record patient status "Deceased"',
+    'Medical claim DRG code indicating death',
+    'Medical claim diagnostic code indicating death',
+    'Medical claim discharge status "Died"',
+    'Other government reported or identified death',
+    'Payer enrollment status "Deceased"',
+    'US Social Security Death Master File record'
+     ].each do |death_type_concept|
+       @death_types_concepts <<  FactoryGirl.create(:concept_death_type, concept_name: death_type_concept, concept_id: concept_id+=1)
+     end
   end
 end

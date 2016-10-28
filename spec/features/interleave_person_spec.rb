@@ -87,6 +87,8 @@ RSpec.feature 'Interleave Person', type: :feature do
     FactoryGirl.create(:interleave_datapoint_default_value, interleave_datapoint: @interleave_datapoint_family_history_of_disease_age_range, column: 'observation_type_concept_id', concept: @concept_observation_type_patient_reported, hardcoded: true)
     FactoryGirl.create(:interleave_datapoint_relationship, interleave_datapoint: @interleave_datapoint_family_history_of_disease_relationship, interleave_sub_datapoint: @interleave_datapoint_family_history_of_disease_age_range, relationship_concept_id: @concept_relationship_has_asso_finding.id)
 
+    @interleave_datapoint_death = FactoryGirl.create(:interleave_datapoint, interleave_registry: @interleave_registry_prostate, group_name: nil, name: 'Death', domain_id: Death::DOMAIN_ID, cardinality: 0, overlap: true)
+
     visit interleave_registries_path
 
     within("#interleave_registry_#{@interleave_registry_prostate.id}") do
@@ -147,6 +149,22 @@ RSpec.feature 'Interleave Person', type: :feature do
 
     within('.breadcrumbs') do
       click_link('Drug:Drug Exposure')
+    end
+
+    within('.person_navigation') do
+      click_link('Family History of Disease')
+    end
+
+    within('.breadcrumbs') do
+      click_link('Observation:Family History of Disease')
+    end
+
+    within('.person_navigation') do
+      click_link('Death')
+    end
+
+    within('.breadcrumbs') do
+      click_link('Death')
     end
 
     sleep(1)
@@ -488,7 +506,7 @@ RSpec.feature 'Interleave Person', type: :feature do
     end
 
     within("#edit_observation_#{observation_1.id}") do
-      expect(page.has_field?('Date', with: Date.parse(observation_date).to_s)).to be_truthy
+      expect(page.has_field?('Date', with: Date.parse(observation_date).to_s(:date))).to be_truthy
       expect(page.has_select?('Type', selected: @concept_observation_type_patient_reported.concept_name)).to be_truthy
       expect(page.has_select?('Family Relationship', selected: concept_brother.concept_name)).to be_truthy
       expect(page.has_select?('Disease', selected: concept_lung_disease.concept_name)).to be_truthy
@@ -509,6 +527,46 @@ RSpec.feature 'Interleave Person', type: :feature do
     page.execute_script("$('#observation_observation_date').val('#{observation_date}')")
     click_button('Save')
     match_observation(1, Date.parse(observation_date), interleave_datapoints)
+  end
+
+  scenario 'Editing death', js: true, focus: false do
+    interleave_datapoints = []
+    click_link('Death')
+
+    expect(find_field('Date', with: nil)).to be_truthy
+    expect(find_field('Type', with: nil)).to be_truthy
+    expect(find_field('Cause', with: nil)).to be_truthy
+
+    death_date = '02/01/2016'
+    page.execute_script("$('#death_death_date').val('#{death_date}')")
+    select(@death_types_concepts.first.concept_name, from: 'Type')
+    page.find('.select2-selection ').native.send_keys(:return)
+    concept_name = @concept_condition_neoplasam_of_prostate.concept_name
+    find('.select2-dropdown input').set(concept_name)
+    find('.select2-results__option--highlighted').click
+
+    click_button('Save')
+
+    find_field('Date', with: death_date)
+    expect(find_field('Type', with: @death_types_concepts.first.concept_id)).to be_truthy
+    within('#select2-death_cause_concept_id-container') do
+      expect(page).to have_content(@concept_condition_neoplasam_of_prostate.concept_name)
+    end
+
+    within('.flash') do
+      expect(page).to have_content('You have successfully updated death data.')
+    end
+    expect(find_button('Clear')).to be_truthy
+
+    click_button('Clear')
+
+    expect(find_field('Date', with: nil)).to be_truthy
+    expect(find_field('Type', with: nil)).to be_truthy
+    expect(find_field('Cause', with: nil)).to be_truthy
+
+    within('.flash') do
+      expect(page).to have_content('You have successfully cleared death data. ')
+    end
   end
 
   scenario 'Editing a condition occurrence with validation', js: true, focus: false do

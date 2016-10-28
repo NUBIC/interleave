@@ -9,3 +9,9 @@
 .required {
   color: $alert-color;
 }
+
+.flash {
+  @include grid-row();
+  @include grid-column(24);
+  text-align: center;
+}

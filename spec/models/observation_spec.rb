@@ -57,7 +57,7 @@ RSpec.describe Observation, type: :model do
   it 'creates an interleave entity upon create with sub datapoints', focus: false do
     observation_1 = FactoryGirl.create(:observation, person: @person_little_my, observation_concept: @concept_observation_relationship_to_patient_family_member, observation_type_concept: @concept_observation_type_patient_reported, observation_date: Date.parse('1/1/2016'), interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_relationship.id)
     observation_1.create_with_sub_datapoints!(@interleave_registry_cdm_source)
-    expect(InterleaveEntity.where(interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_relationship.id, cdm_table: Observation.table_name, domain_concept_id: Observation.domain_concept.id, fact_id: observation_1.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source).count).to eq(1)
+    expect(InterleaveEntity.where(interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_relationship.id, cdm_table: Observation.table_name, fact_id: observation_1.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source).count).to eq(1)
   end
 
   it 'creates sub datapoints upon create with sub datapoints', focus: false do
@@ -66,7 +66,7 @@ RSpec.describe Observation, type: :model do
     observations = sub_datapoint_entities.map { |sub_datapoint_entity| sub_datapoint_entity.attributes.merge(interleave_datapoint_id: sub_datapoint_entity.interleave_datapoint_id).symbolize_keys }
     expect(Observation.count).to eq(0)
     observation_1.create_with_sub_datapoints!(@interleave_registry_cdm_source, observations: observations)
-    interleave_entity = InterleaveEntity.where(interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_relationship, cdm_table: Observation.table_name, domain_concept_id: Observation.domain_concept.id, fact_id: observation_1.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source).first
+    interleave_entity = InterleaveEntity.where(interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_relationship, cdm_table: Observation.table_name, fact_id: observation_1.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source).first
     expect(Observation.count).to eq(3)
     expect(interleave_entity.children.count).to eq(2)
     expected_observations = sub_datapoint_entities.map  do |e|
@@ -182,6 +182,6 @@ RSpec.describe Observation, type: :model do
   it 'knows its interleave date', focus: false do
     observation_date = Date.parse('1/1/2016')
     observation_1 = FactoryGirl.create(:observation, person: @person_little_my, observation_concept: @concept_observation_relationship_to_patient_family_member, observation_type_concept: @concept_observation_type_patient_reported, observation_date: observation_date, interleave_datapoint_id: @interleave_datapoint_family_history_of_disease_relationship.id)
-    expect(observation_1.interleave_date).to eq(observation_date)
+    expect(observation_1.interleave_date).to eq(observation_date.to_s(:date))
   end
 end

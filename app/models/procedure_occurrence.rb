@@ -23,4 +23,8 @@ class ProcedureOccurrence < ActiveRecord::Base
   def interleave_date
     procedure_date
   end
+
+  def procedure_date
+    read_attribute(:procedure_date).to_s(:date) if read_attribute(:procedure_date).present?
+  end
 end

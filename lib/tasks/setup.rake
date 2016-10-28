@@ -243,6 +243,9 @@ namespace :setup do
     concept = Concept.standard.where(domain_id: Concept::DOMAIN_ID_TYPE_CONCEPT, concept_name: 'Patient reported').first #Patient reported
     InterleaveDatapointDefaultValue.where(interleave_datapoint_id: interleave_datapoint_family_history_of_disease_age_range.id, column: 'observation_type_concept_id', concept: concept, hardcoded: true).first_or_create
     InterleaveDatapointRelationship.where(interleave_datapoint_id: interleave_datapoint_family_history_of_disease_relationship.id, interleave_sub_datapoint_id: interleave_datapoint_family_history_of_disease_age_range.id, relationship_concept_id: relationship.relationship_concept_id).first_or_create
+
+    #datapoint death
+    interleave_datapoint_death = InterleaveDatapoint.where(interleave_registry_id: interleave_registry.id, group_name: nil, name: 'Death', domain_id: Death::DOMAIN_ID, cardinality: 0, overlap: false).first_or_create
   end
 end
 

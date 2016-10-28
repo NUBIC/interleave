@@ -35,7 +35,7 @@ RSpec.describe ProcedureOccurrence, type: :model do
   it 'creates an interleave entity upon create with sub datapoints', focus: false do
     procedure_occurrence_1 = FactoryGirl.create(:procedure_occurrence, person: @person_little_my, procedure_concept: @concept_procedure_biopsy_prostate_needle, procedure_type_concept: @concept_procedure_type_primary_procedure, procedure_date: Date.parse('1/1/2016'), interleave_datapoint_id: @interleave_datapoint_biopsy.id, quantity: 1)
     procedure_occurrence_1.create_with_sub_datapoints!(@interleave_registry_cdm_source)
-    expect(InterleaveEntity.where(interleave_datapoint_id: @interleave_datapoint_biopsy, cdm_table: ProcedureOccurrence.table_name, domain_concept_id: ProcedureOccurrence.domain_concept.id, fact_id: procedure_occurrence_1.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source).count).to eq(1)
+    expect(InterleaveEntity.where(interleave_datapoint_id: @interleave_datapoint_biopsy, cdm_table: ProcedureOccurrence.table_name, fact_id: procedure_occurrence_1.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source).count).to eq(1)
   end
 
   it 'creates sub datapoints upon create with sub datapoints', focus: false do
@@ -44,7 +44,7 @@ RSpec.describe ProcedureOccurrence, type: :model do
     measurements = sub_datapoint_entities.map { |sub_datapoint_entity| sub_datapoint_entity.attributes.merge(interleave_datapoint_id: sub_datapoint_entity.interleave_datapoint_id).symbolize_keys }
     expect(Measurement.count).to eq(0)
     procedure_occurrence_1.create_with_sub_datapoints!(@interleave_registry_cdm_source, measurements: measurements)
-    interleave_entity = InterleaveEntity.where(interleave_datapoint_id: @interleave_datapoint_biopsy, cdm_table: ProcedureOccurrence.table_name, domain_concept_id: ProcedureOccurrence.domain_concept.id, fact_id: procedure_occurrence_1.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source).first
+    interleave_entity = InterleaveEntity.where(interleave_datapoint_id: @interleave_datapoint_biopsy, cdm_table: ProcedureOccurrence.table_name, fact_id: procedure_occurrence_1.id, interleave_registry_cdm_source_id: @interleave_registry_cdm_source).first
     expect(Measurement.count).to eq(2)
     expect(interleave_entity.children.count).to eq(2)
     expected_measurements = sub_datapoint_entities.map  do |e|
@@ -83,6 +83,6 @@ RSpec.describe ProcedureOccurrence, type: :model do
   it 'knows its interleave date', focus: false do
     procedure_date = Date.parse('1/1/2016')
     procedure_occurrence_1 = FactoryGirl.create(:procedure_occurrence, person: @person_little_my, procedure_concept: @concept_procedure_biopsy_prostate_needle, procedure_type_concept: @concept_procedure_type_primary_procedure, procedure_date: procedure_date, interleave_datapoint_id: @interleave_datapoint_biopsy.id, quantity: 1)
-    expect(procedure_occurrence_1.interleave_date).to eq(procedure_date)
+    expect(procedure_occurrence_1.interleave_date).to eq(procedure_date.to_s(:date))
   end
 end

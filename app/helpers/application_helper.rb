@@ -39,6 +39,10 @@ module ApplicationHelper
         haml_tag(:li, class: active?('active', 'condition_occurrences', 'index', 'datapoint_id' => datapoint.id.to_s)) do
           concat link_to datapoint.name, interleave_registry_interleave_person_condition_occurrences_url(registry, interleave_person, datapoint_id: datapoint.id), class: 'datapoint'
         end
+      when 'Death'
+        haml_tag(:li, class: active?('active', 'deaths', 'index', 'datapoint_id' => datapoint.id.to_s)) do
+          concat link_to datapoint.name, interleave_registry_interleave_person_deaths_url(registry, interleave_person, datapoint_id: datapoint.id), class: 'datapoint'
+        end
       when 'Drug'
         haml_tag(:li, class: active?('active', 'drug_exposures', 'index', 'datapoint_id' => datapoint.id.to_s)) do
           concat link_to datapoint.name, interleave_registry_interleave_person_drug_exposures_url(registry, interleave_person, datapoint_id: datapoint.id), class: 'datapoint'

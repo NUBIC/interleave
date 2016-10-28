@@ -1,0 +1,66 @@
+#death {
+  @include grid-row();
+
+  .destroy_death_form {
+    @include grid-row();
+    .button_to {
+      margin-top: -3.5rem;
+      @include grid-column-offset(12);
+      @include grid-column(
+       $columns: 8
+      );
+    }
+  }
+  .death_form {
+    @include grid-column(
+     $columns: 20
+    );
+
+    .ui-autocomplete-input {
+      width: 90%;
+      height: 2.5rem;
+    }
+    .ui-button {
+      width: 5%;
+      height: 2.5rem;
+    }
+
+    .death_date {
+      @include grid-column(
+       $columns: 12
+      );
+      input {
+        margin-bottom: 0;
+      }
+    }
+    .death_type_concept_id {
+      @include grid-column(
+       $columns: 12
+      );
+      input {
+        margin-bottom: 0;
+      }
+    }
+    .cause_concept_id {
+      label {
+        display: block;
+      }
+      @include grid-column(
+       $columns: 12
+      );
+      select {
+        margin-bottom: 0;
+      }
+
+      .select2 {
+        width: 100% !important;
+      }
+    }
+    .navigation {
+
+      @include grid-column(
+       $columns: 12
+      );
+    }
+  }
+}

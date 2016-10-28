@@ -26,9 +26,9 @@
               %td.condition_occurrence_concept_name
                 = condition_occurrence.condition_concept.concept_name
               %td.condition_occurrence_start_date
-                = condition_occurrence.condition_start_date.to_s(:date)
+                = condition_occurrence.condition_start_date
               %td.condition_occurrence_end_date
-                = condition_occurrence.condition_end_date.to_s(:date) unless condition_occurrence.condition_end_date.nil?
+                = condition_occurrence.condition_end_date
               %td.condition_occurrence_condition_type_concept_name
                 = condition_occurrence.condition_type_concept.concept_name
               %td.review

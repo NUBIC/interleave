@@ -24,8 +24,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.text    "attribute_syntax"
   end
 
-  add_index "attribute_definition", ["attribute_definition_id"], name: "idx_attribute_definition_id", using: :btree
-
   create_table "care_site", id: false, force: :cascade do |t|
     t.integer "care_site_id",                              null: false
     t.string  "care_site_name",                limit: 255
@@ -55,9 +53,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.date    "cohort_end_date",      null: false
   end
 
-  add_index "cohort", ["cohort_definition_id"], name: "idx_cohort_c_definition_id", using: :btree
-  add_index "cohort", ["subject_id"], name: "idx_cohort_subject_id", using: :btree
-
   create_table "cohort_attribute", id: false, force: :cascade do |t|
     t.integer "cohort_definition_id",    null: false
     t.date    "cohort_start_date",       null: false
@@ -68,9 +63,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.integer "value_as_concept_id"
   end
 
-  add_index "cohort_attribute", ["cohort_definition_id"], name: "idx_ca_definition_id", using: :btree
-  add_index "cohort_attribute", ["subject_id"], name: "idx_ca_subject_id", using: :btree
-
   create_table "cohort_definition", id: false, force: :cascade do |t|
     t.integer "cohort_definition_id",                      null: false
     t.string  "cohort_definition_name",        limit: 255, null: false
@@ -80,8 +72,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.integer "subject_concept_id",                        null: false
     t.date    "cohort_initiation_date"
   end
-
-  add_index "cohort_definition", ["cohort_definition_id"], name: "idx_cohort_definition_id", using: :btree
 
   create_table "concept", id: false, force: :cascade do |t|
     t.integer "concept_id",                   null: false
@@ -96,12 +86,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.string  "invalid_reason",   limit: 1
   end
 
-  add_index "concept", ["concept_class_id"], name: "idx_concept_class_id", using: :btree
-  add_index "concept", ["concept_code"], name: "idx_concept_code", using: :btree
-  add_index "concept", ["concept_id"], name: "idx_concept_concept_id", unique: true, using: :btree
-  add_index "concept", ["domain_id"], name: "idx_concept_domain_id", using: :btree
-  add_index "concept", ["vocabulary_id"], name: "idx_concept_vocabluary_id", using: :btree
-
   create_table "concept_ancestor", id: false, force: :cascade do |t|
     t.integer "ancestor_concept_id",      null: false
     t.integer "descendant_concept_id",    null: false
@@ -109,16 +93,11 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.integer "max_levels_of_separation", null: false
   end
 
-  add_index "concept_ancestor", ["ancestor_concept_id"], name: "idx_concept_ancestor_id_1", using: :btree
-  add_index "concept_ancestor", ["descendant_concept_id"], name: "idx_concept_ancestor_id_2", using: :btree
-
   create_table "concept_class", id: false, force: :cascade do |t|
     t.string  "concept_class_id",         limit: 20,  null: false
     t.string  "concept_class_name",       limit: 255, null: false
     t.integer "concept_class_concept_id",             null: false
   end
-
-  add_index "concept_class", ["concept_class_id"], name: "idx_concept_class_class_id", unique: true, using: :btree
 
   create_table "concept_relationship", id: false, force: :cascade do |t|
     t.integer "concept_id_1",                null: false
@@ -129,17 +108,11 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.string  "invalid_reason",   limit: 1
   end
 
-  add_index "concept_relationship", ["concept_id_1"], name: "idx_concept_relationship_id_1", using: :btree
-  add_index "concept_relationship", ["concept_id_2"], name: "idx_concept_relationship_id_2", using: :btree
-  add_index "concept_relationship", ["relationship_id"], name: "idx_concept_relationship_id_3", using: :btree
-
   create_table "concept_synonym", id: false, force: :cascade do |t|
     t.integer "concept_id",                        null: false
     t.string  "concept_synonym_name", limit: 1000, null: false
     t.integer "language_concept_id",               null: false
   end
-
-  add_index "concept_synonym", ["concept_id"], name: "idx_concept_synonym_id", using: :btree
 
   create_table "condition_era", id: false, force: :cascade do |t|
     t.integer "condition_era_id",           null: false
@@ -149,9 +122,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.date    "condition_era_end_date",     null: false
     t.integer "condition_occurrence_count"
   end
-
-  add_index "condition_era", ["condition_concept_id"], name: "idx_condition_era_concept_id", using: :btree
-  add_index "condition_era", ["person_id"], name: "idx_condition_era_person_id", using: :btree
 
   create_table "condition_occurrence", primary_key: "condition_occurrence_id", force: :cascade do |t|
     t.integer  "person_id",                              null: false
@@ -167,10 +137,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
   end
-
-  add_index "condition_occurrence", ["condition_concept_id"], name: "idx_condition_concept_id", using: :btree
-  add_index "condition_occurrence", ["person_id"], name: "idx_condition_person_id", using: :btree
-  add_index "condition_occurrence", ["visit_occurrence_id"], name: "idx_condition_visit_id", using: :btree
 
   create_table "cost", id: false, force: :cascade do |t|
     t.integer "cost_id",                             null: false
@@ -206,8 +172,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.datetime "updated_at",                         null: false
   end
 
-  add_index "death", ["person_id"], name: "idx_death_person_id", using: :btree
-
   create_table "device_exposure", primary_key: "device_exposure_id", force: :cascade do |t|
     t.integer  "person_id",                              null: false
     t.integer  "device_concept_id",                      null: false
@@ -224,17 +188,11 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.datetime "updated_at",                             null: false
   end
 
-  add_index "device_exposure", ["device_concept_id"], name: "idx_device_concept_id", using: :btree
-  add_index "device_exposure", ["person_id"], name: "idx_device_person_id", using: :btree
-  add_index "device_exposure", ["visit_occurrence_id"], name: "idx_device_visit_id", using: :btree
-
   create_table "domain", id: false, force: :cascade do |t|
     t.string  "domain_id",         limit: 20,  null: false
     t.string  "domain_name",       limit: 255, null: false
     t.integer "domain_concept_id",             null: false
   end
-
-  add_index "domain", ["domain_id"], name: "idx_domain_domain_id", unique: true, using: :btree
 
   create_table "dose_era", id: false, force: :cascade do |t|
     t.integer "dose_era_id",         null: false
@@ -246,9 +204,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.date    "dose_era_end_date",   null: false
   end
 
-  add_index "dose_era", ["drug_concept_id"], name: "idx_dose_era_concept_id", using: :btree
-  add_index "dose_era", ["person_id"], name: "idx_dose_era_person_id", using: :btree
-
   create_table "drug_era", id: false, force: :cascade do |t|
     t.integer "drug_era_id",         null: false
     t.integer "person_id",           null: false
@@ -258,9 +213,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.integer "drug_exposure_count"
     t.integer "gap_days"
   end
-
-  add_index "drug_era", ["drug_concept_id"], name: "idx_drug_era_concept_id", using: :btree
-  add_index "drug_era", ["person_id"], name: "idx_drug_era_person_id", using: :btree
 
   create_table "drug_exposure", primary_key: "drug_exposure_id", force: :cascade do |t|
     t.integer  "person_id",                           null: false
@@ -287,10 +239,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.datetime "updated_at",                          null: false
   end
 
-  add_index "drug_exposure", ["drug_concept_id"], name: "idx_drug_concept_id", using: :btree
-  add_index "drug_exposure", ["person_id"], name: "idx_drug_person_id", using: :btree
-  add_index "drug_exposure", ["visit_occurrence_id"], name: "idx_drug_visit_id", using: :btree
-
   create_table "drug_strength", id: false, force: :cascade do |t|
     t.integer "drug_concept_id",                       null: false
     t.integer "ingredient_concept_id",                 null: false
@@ -305,9 +253,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.string  "invalid_reason",              limit: 1
   end
 
-  add_index "drug_strength", ["drug_concept_id"], name: "idx_drug_strength_id_1", using: :btree
-  add_index "drug_strength", ["ingredient_concept_id"], name: "idx_drug_strength_id_2", using: :btree
-
   create_table "fact_relationship", primary_key: "fact_relationship_id", force: :cascade do |t|
     t.integer  "domain_concept_id_1",     null: false
     t.integer  "fact_id_1",               null: false
@@ -317,10 +262,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end
-
-  add_index "fact_relationship", ["domain_concept_id_1"], name: "idx_fact_relationship_id_1", using: :btree
-  add_index "fact_relationship", ["domain_concept_id_2"], name: "idx_fact_relationship_id_2", using: :btree
-  add_index "fact_relationship", ["relationship_concept_id"], name: "idx_fact_relationship_id_3", using: :btree
 
   create_table "interleave_datapoint_default_values", force: :cascade do |t|
     t.integer  "interleave_datapoint_id",     null: false
@@ -369,7 +310,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.integer  "interleave_datapoint_id",               null: false
     t.integer  "parent_id"
     t.string   "cdm_table",                             null: false
-    t.integer  "domain_concept_id",                     null: false
     t.integer  "fact_id",                               null: false
     t.integer  "interleave_registry_cdm_source_id",     null: false
     t.string   "domain_concept_source_value"
@@ -468,10 +408,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.datetime "updated_at",                               null: false
   end
 
-  add_index "measurement", ["measurement_concept_id"], name: "idx_measurement_concept_id", using: :btree
-  add_index "measurement", ["person_id"], name: "idx_measurement_person_id", using: :btree
-  add_index "measurement", ["visit_occurrence_id"], name: "idx_measurement_visit_id", using: :btree
-
   create_table "note", primary_key: "note_id", force: :cascade do |t|
     t.integer  "person_id",                       null: false
     t.date     "note_date",                       null: false
@@ -484,10 +420,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
   end
-
-  add_index "note", ["note_type_concept_id"], name: "idx_note_concept_id", using: :btree
-  add_index "note", ["person_id"], name: "idx_note_person_id", using: :btree
-  add_index "note", ["visit_occurrence_id"], name: "idx_note_visit_id", using: :btree
 
   create_table "observation", primary_key: "observation_id", force: :cascade do |t|
     t.integer  "person_id",                                null: false
@@ -510,10 +442,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.datetime "updated_at",                               null: false
   end
 
-  add_index "observation", ["observation_concept_id"], name: "idx_observation_concept_id", using: :btree
-  add_index "observation", ["person_id"], name: "idx_observation_person_id", using: :btree
-  add_index "observation", ["visit_occurrence_id"], name: "idx_observation_visit_id", using: :btree
-
   create_table "observation_period", primary_key: "observation_period_id", force: :cascade do |t|
     t.integer  "person_id",                     null: false
     t.date     "observation_period_start_date", null: false
@@ -522,8 +450,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
   end
-
-  add_index "observation_period", ["person_id"], name: "idx_observation_period_id", using: :btree
 
   create_table "payer_plan_period", id: false, force: :cascade do |t|
     t.integer "payer_plan_period_id",                    null: false
@@ -534,8 +460,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.string  "plan_source_value",            limit: 50
     t.string  "family_source_value",          limit: 50
   end
-
-  add_index "payer_plan_period", ["person_id"], name: "idx_period_person_id", using: :btree
 
   create_table "person", primary_key: "person_id", force: :cascade do |t|
     t.integer  "gender_concept_id",                      null: false
@@ -559,8 +483,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.datetime "updated_at",                             null: false
   end
 
-  add_index "person", ["person_id"], name: "idx_person_id", unique: true, using: :btree
-
   create_table "procedure_occurrence", primary_key: "procedure_occurrence_id", force: :cascade do |t|
     t.integer  "person_id",                              null: false
     t.integer  "procedure_concept_id",                   null: false
@@ -576,10 +498,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
   end
-
-  add_index "procedure_occurrence", ["person_id"], name: "idx_procedure_person_id", using: :btree
-  add_index "procedure_occurrence", ["procedure_concept_id"], name: "idx_procedure_concept_id", using: :btree
-  add_index "procedure_occurrence", ["visit_occurrence_id"], name: "idx_procedure_visit_id", using: :btree
 
   create_table "provider", id: false, force: :cascade do |t|
     t.integer "provider_id",                             null: false
@@ -606,8 +524,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.integer "relationship_concept_id",             null: false
   end
 
-  add_index "relationship", ["relationship_id"], name: "idx_relationship_rel_id", unique: true, using: :btree
-
   create_table "source_to_concept_map", id: false, force: :cascade do |t|
     t.string  "source_code",             limit: 50,  null: false
     t.integer "source_concept_id",                   null: false
@@ -619,11 +535,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.date    "valid_end_date",                      null: false
     t.string  "invalid_reason",          limit: 1
   end
-
-  add_index "source_to_concept_map", ["source_code"], name: "idx_source_to_concept_map_code", using: :btree
-  add_index "source_to_concept_map", ["source_vocabulary_id"], name: "idx_source_to_concept_map_id_1", using: :btree
-  add_index "source_to_concept_map", ["target_concept_id"], name: "idx_source_to_concept_map_id_3", using: :btree
-  add_index "source_to_concept_map", ["target_vocabulary_id"], name: "idx_source_to_concept_map_id_2", using: :btree
 
   create_table "specimen", primary_key: "specimen_id", force: :cascade do |t|
     t.integer  "person_id",                              null: false
@@ -644,9 +555,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.datetime "updated_at",                             null: false
   end
 
-  add_index "specimen", ["person_id"], name: "idx_specimen_person_id", using: :btree
-  add_index "specimen", ["specimen_concept_id"], name: "idx_specimen_concept_id", using: :btree
-
   create_table "visit_occurrence", primary_key: "visit_occurrence_id", force: :cascade do |t|
     t.integer  "person_id",                          null: false
     t.integer  "visit_concept_id",                   null: false
@@ -663,9 +571,6 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.datetime "updated_at",                         null: false
   end
 
-  add_index "visit_occurrence", ["person_id"], name: "idx_visit_person_id", using: :btree
-  add_index "visit_occurrence", ["visit_concept_id"], name: "idx_visit_concept_id", using: :btree
-
   create_table "vocabulary", id: false, force: :cascade do |t|
     t.string  "vocabulary_id",         limit: 20,  null: false
     t.string  "vocabulary_name",       limit: 255, null: false
@@ -673,7 +578,5 @@ ActiveRecord::Schema.define(version: 20160628195204) do
     t.string  "vocabulary_version",    limit: 255
     t.integer "vocabulary_concept_id",             null: false
   end
-
-  add_index "vocabulary", ["vocabulary_id"], name: "idx_vocabulary_vocabulary_id", unique: true, using: :btree
 
 end

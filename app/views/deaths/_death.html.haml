@@ -1,0 +1,36 @@
+%h3
+  Death
+= form_for [@registry, @interleave_person, @death], html: { class: 'death_form' }, validate: true do |f|
+  = link_to '', concepts_interleave_datapoint_url(@datapoint.id, column: 'cause_concept_id'), class: 'hide', id: 'concepts_interleave_datapoint_url'
+  = f.hidden_field :interleave_datapoint_id, value: @datapoint.id
+  .row
+    .death_date
+      %label{for: 'death_date' }
+        Date
+        %span{ class: 'required' }
+          *
+        = f.text_field :death_date, class: 'datepicker'
+    .death_type_concept_id
+      %label{for: 'death_type_concept_id' }
+        Type
+        %span{ class: 'required' }
+          *
+        = f.select :death_type_concept_id, options_for_select(@type_concepts, selected: f.object.death_type_concept_id), { include_blank: true }
+  .row
+    .cause_concept_id
+      %label{for: 'cause_concept_id' }
+        Cause
+        %span{ class: 'required' }
+          *
+        = f.select :cause_concept_id, options_for_select(@cause_concepts, selected: f.object.cause_concept_id), { include_blank: true }
+    .navigation
+      %p.help-text
+        %span{ class: 'required' }
+          *
+        Indicates required field
+      = f.submit 'Save', class: 'button'
+
+- if @death.persisted?
+  .destroy_death_form
+    = button_to 'Clear', [@registry, @interleave_person, @death], method: :delete,  params: {interleave_datapoint_id: @datapoint.id }, class: 'button alert'
+
